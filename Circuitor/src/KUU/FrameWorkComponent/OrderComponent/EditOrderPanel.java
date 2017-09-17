@@ -32,6 +32,8 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
     private GeneralItemPanel allDeleteLabel;
     private SelectOrderPanel selectOrderPanel;
 
+    private boolean clickEditDeleteFlg;
+    private boolean clickAddFlg;
     private int lineNumber;
 
     public EditOrderPanel(BaseFrame frame) {
@@ -42,9 +44,9 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
 
         add(nowFunctionLabel = new GeneralItemPanel(null, null, ""));
         add(programScroll    = new JScrollPane(programList));
-        add(editLabel        = new GeneralItemPanel(true, ImageMaster.getImageMaster().getEditIcon(), "編集"));
-        add(deleteLabel      = new GeneralItemPanel(true, ImageMaster.getImageMaster().getDeleteIcon(), "削除"));
-        add(allDeleteLabel   = new GeneralItemPanel(true, ImageMaster.getImageMaster().getDeleteIcon(), "全削除"));
+        add(editLabel        = new GeneralItemPanel(false, ImageMaster.getImageMaster().getEditIcon(), "編集"));
+        add(deleteLabel      = new GeneralItemPanel(false, ImageMaster.getImageMaster().getDeleteIcon(), "削除"));
+        add(allDeleteLabel   = new GeneralItemPanel(true,  ImageMaster.getImageMaster().getDeleteIcon(), "全削除"));
         add(selectOrderPanel = new SelectOrderPanel(frame));
 
         programList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -54,6 +56,7 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
         deleteLabel.addMouseListener(this);
         allDeleteLabel.addMouseListener(this);
 
+        clickEditDeleteFlg = false;
         lineNumber = 0;
     }
 
@@ -72,68 +75,7 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
         selectOrderPanel.handResize(width - partsWidth,  height - partsHeight*9);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        /** 命令選択 */
-        if (e.getSource()instanceof JPanel) {
-            JPanel panel;
-            if (e.getSource() instanceof JPanel) {
-                panel = (JPanel) e.getSource();
-                if (panel == editLabel) {
-                    String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
-                    ListElement element = getFrame().getMasterTerminal().searchOrder(functionName, lineNumber);
-                    if (element instanceof Command) {
-                        selectOrderPanel.openEditDialog(((Command) element).getType(), e);
-                    } else if (element instanceof Syntax) {
-                        selectOrderPanel.openEditDialog(((Syntax) element).getsType(), e);
-                    }else {
-                        JOptionPane.showMessageDialog(editLabel, "編集したい行を選択してください。");
-                    }
-                } else if (panel == deleteLabel) {
-                    String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
-                    if (getFrame().getMasterTerminal().getFunctionGroup().searchFunction(functionName).getProgramList().get(lineNumber).getElementType() == ListElement.ElementType.VOID) {
-                        JOptionPane.showMessageDialog(this, "\"...\"は削除できません。");
-                    } else {
-                        getFrame().getMasterTerminal().removeOrder(functionName, lineNumber);
-                        getFrame().updateOrderPanel(false);
-                    }
-                } else if (panel == allDeleteLabel) {
-                    /**
-                     * 警告ダイアログを生成し、
-                     * YESなら変数、プログラムを全削除して
-                     * main操作パネルを関数にセットする
-                     */
-                    if (JOptionPane.showConfirmDialog(getFrame(), "プログラムおよび、変数を全て削除します。\n本当に全て削除してもよろしいですか？", "警告", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        getFrame().getMasterTerminal().initAllProgram();
-                        getFrame().getBasePanel().getMainOrderPanel().getFunctionLabel().setBackground(ColorMaster.getSelectedColor());
-                        getFrame().getBasePanel().getMainOrderPanel().getVariableLabel().setBackground(ColorMaster.getNotSelectedColor());
-                        getFrame().getBasePanel().getMainOrderPanel().getOneDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
-                        getFrame().getBasePanel().getMainOrderPanel().getTwoDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
-                        getFrame().getBasePanel().getMainOrderPanel().setVariableMode(MainOrderVariableMode.FUNCTION);
-                        getFrame().updateOrderPanel(false);
-                    }
-                }
-            }
-        }
-
-        /** プログラムリスト */
-        if (e.getSource()instanceof JList) {
-            lineNumber = programList.getSelectedIndex();
-        }
-    }
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
+    /** エディタ部の更新を行うメソッド */
     public void updateProgramList(){
         programModel.removeAllElements();
         String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
@@ -142,9 +84,109 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
         }
     }
 
-    public void updateNowFunctionName(){
+    /** 現在の関数名をラベルに表示する */
+    public void setNowFunctionName(){
         nowFunctionLabel.setText(getFrame().getBasePanel().getSubOrderPanel().getFunctionName());
         nowFunctionLabel.repaint();
+    }
+
+    /** 編集/削除パネルがクリック可能か設定する */
+    public void setProgramEditDeleteCanClick(boolean flg){
+        if (flg) {
+            clickEditDeleteFlg = true;
+            editLabel.setBackground(ColorMaster.getSelectableColor());
+            deleteLabel.setBackground(ColorMaster.getSelectableColor());
+        }else {
+            clickEditDeleteFlg = false;
+            editLabel.setBackground(ColorMaster.getBackColor());
+            deleteLabel.setBackground(ColorMaster.getBackColor());
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        /** 命令選択パネル */
+        if (e.getSource()instanceof JPanel) {
+            JPanel panel = (JPanel) e.getSource();
+            if (panel == editLabel && clickEditDeleteFlg) {
+                String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
+                ListElement element = getFrame().getMasterTerminal().searchOrder(functionName, lineNumber);
+                if (element instanceof Command) {
+                    selectOrderPanel.openEditDialog(((Command) element).getType(), e);
+                } else if (element instanceof Syntax) {
+                    selectOrderPanel.openEditDialog(((Syntax) element).getsType(), e);
+                } else {
+                    JOptionPane.showMessageDialog(editLabel, "編集したい行を選択してください。");
+                }
+            } else if (panel == deleteLabel && clickEditDeleteFlg) {
+                String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
+                getFrame().getMasterTerminal().removeOrder(functionName, lineNumber);
+                getFrame().updateOrderPanel(false);
+            } else if (panel == allDeleteLabel) {
+                /**
+                 * 警告ダイアログを生成
+                 * YESなら変数、プログラムを全削除する
+                 * main操作パネルを関数にセット
+                 * エディタパネルをMAINにセット
+                 */
+                if (JOptionPane.showConfirmDialog(getFrame(), "プログラムおよび、変数を全て削除します。\n本当に全て削除してもよろしいですか？", "警告", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                    getFrame().getMasterTerminal().initAllProgram();
+                    getFrame().getBasePanel().getMainOrderPanel().getFunctionLabel().setBackground(ColorMaster.getSelectedColor());
+                    getFrame().getBasePanel().getMainOrderPanel().getVariableLabel().setBackground(ColorMaster.getNotSelectedColor());
+                    getFrame().getBasePanel().getMainOrderPanel().getOneDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
+                    getFrame().getBasePanel().getMainOrderPanel().getTwoDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
+                    getFrame().getBasePanel().getMainOrderPanel().setVariableMode(MainOrderVariableMode.FUNCTION);
+                    getFrame().getBasePanel().getSubOrderPanel().setFunctionName("MAIN");
+                    getFrame().getBasePanel().getEditOrderPanel().getSelectOrderPanel().setPanelVisible("MAIN");
+                    getFrame().setOrderPanelCanClick(false, false, true);
+                    getFrame().updateOrderPanel(true);
+                    lineNumber = 0;
+                }
+            }
+            getFrame().setOrderPanelCanClick(false, false, (clickEditDeleteFlg || selectOrderPanel.getClickAddFlg()));
+        }
+
+        /** プログラムリスト */
+        if (e.getSource()instanceof JList) {
+            lineNumber = programList.getSelectedIndex();
+            String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
+            /** 編集/削除パネルがクリックできるか・命令挿入パネルがクリックできるかを判定 */
+            clickEditDeleteFlg = getFrame().getMasterTerminal().searchFunction(functionName).isCanControlOrder(lineNumber);
+            String str = programList.getSelectedValue();
+            char c = str.charAt(str.length()-1);
+            clickAddFlg = !(c == ':' || c == '}');
+            getFrame().setOrderPanelCanClick(false, clickEditDeleteFlg, clickAddFlg);
+        }
+    }
+    /** クリック時パネルが有効なら色変更 */
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getSource()instanceof JPanel && clickEditDeleteFlg){
+            JPanel panel = (JPanel)e.getSource();
+            if (panel == editLabel || panel == deleteLabel){
+                panel.setBackground(ColorMaster.getClickedColor());
+            }
+        }
+    }
+    /** クリック終了時パネルの有効無効にあわせ色変更 */
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getSource()instanceof JPanel){
+            JPanel panel = (JPanel)e.getSource();
+            if (panel == editLabel || panel == deleteLabel){
+                if (clickEditDeleteFlg){
+                    panel.setBackground(ColorMaster.getSelectableColor());
+                }else {
+                    panel.setBackground(ColorMaster.getBackColor());
+                }
+            }
+        }
+    }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     public int getLineNumber() {
@@ -292,11 +334,14 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
             @Override
             public void drop(DropTargetDropEvent e) {
                 String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
+                System.out.println("drag"+draggedIndex);
+                System.out.println("target"+targetIndex);
                 getFrame().getMasterTerminal().moveOrder(functionName, draggedIndex, targetIndex);
                 e.dropComplete(false);
                 targetIndex = -1;
                 repaint();
                 getFrame().updateOrderPanel(false);
+                getFrame().setOrderPanelCanClick(false, false, false);
             }
 
             private boolean isDragAcceptable(DropTargetDragEvent e) {

@@ -230,7 +230,7 @@ public class SubstitutionDialog extends NewJDialog {
             updateOrderIndicateLabel();
         }
 
-        setBounds(e.getXOnScreen() - 430, e.getYOnScreen() - 350, 860, 300);
+        setBounds(e.getXOnScreen() - 330, e.getYOnScreen() - 350, 660, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -260,18 +260,16 @@ public class SubstitutionDialog extends NewJDialog {
 
             /** 下の空欄の幅/高さ */
             int partsHeight = panel.getHeight() - 30;
-            /** コンポーネント１つの基準幅 */
-            int partsWidth = 85;
 
-            firstSelectPinVariableTitleLabel.setBounds(0, 0, partsWidth*4, 20);
-            firstSelectPinVariablePanel.setBounds(0, 20, partsWidth*4, partsHeight);
-            firstSelectPinVariablePanel.handResize(partsWidth*4, partsHeight);
+            firstSelectPinVariableTitleLabel.setBounds(0, 0, 270, 20);
+            firstSelectPinVariablePanel.setBounds(0, 20, 270, partsHeight);
+            firstSelectPinVariablePanel.handResize(270, partsHeight);
 
-            equalsBaseLabel.setBounds(partsWidth*4, 0, partsWidth, partsHeight + 20);
+            equalsBaseLabel.setBounds(270, 0, 70, partsHeight + 20);
 
-            secondSelectConstantPinVariableTitleLabel.setBounds(partsWidth*5, 0, basePanel.getWidth() - partsWidth*5, 20);
-            secondSelectConstantPinVariablePanel.setBounds(partsWidth*5, 20, basePanel.getWidth() - partsWidth*5, partsHeight);
-            secondSelectConstantPinVariablePanel.handResize(basePanel.getWidth() - partsWidth*5, partsHeight);
+            secondSelectConstantPinVariableTitleLabel.setBounds(340, 0, 320, 20);
+            secondSelectConstantPinVariablePanel.setBounds(340, 20, 320, partsHeight);
+            secondSelectConstantPinVariablePanel.handResize(320, partsHeight);
         }
 
         @Override

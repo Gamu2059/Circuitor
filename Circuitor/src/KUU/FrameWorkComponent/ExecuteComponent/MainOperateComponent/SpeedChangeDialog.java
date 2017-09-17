@@ -2,6 +2,7 @@ package KUU.FrameWorkComponent.ExecuteComponent.MainOperateComponent;
 
 import KUU.BaseComponent.BaseFrame;
 import KUU.GeneralComponent.GeneralItemPanel;
+import KUU.GeneralComponent.GeneralTextField;
 import Master.ColorMaster.*;
 import KUU.NewComponent.NewJDialog;
 import KUU.NewComponent.NewJPanel;
@@ -19,9 +20,9 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
     private ButtonGroup             speedButtonGroup;
     private GeneralItemPanel        speedCustomIndicateLabel;
     private GeneralItemPanel speedCustomLabel;
-    private JTextField              speedCustomText;
+    private GeneralTextField speedCustomText;
     private GeneralItemPanel speedConfirmLabel;
-    private DialogBasePanel         panel;
+    private DialogBasePanel  basePanel;
 
     private GeneralItemPanel verySlowLabel;
     private GeneralItemPanel slowLabel;
@@ -29,33 +30,33 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
     private GeneralItemPanel fastLabel;
     private GeneralItemPanel veryFastLabel;
     private String speedMode;
-
+    private int    customSpeed;
 
     public SpeedChangeDialog(BaseFrame frame, MouseEvent e){
         super(frame);
         setLayout(new GridLayout(1,1));
 
-        panel = new DialogBasePanel(frame);
-        panel.setLayout(null);
+        basePanel = new DialogBasePanel(frame);
+        basePanel.setLayout(null);
 
         /** カスタム設定 */
-        panel.add(speedRadioButton1 = new JRadioButton("リストから選択"));
-        panel.add(speedRadioButton2 = new JRadioButton("カスタム設定"));
+        basePanel.add(speedRadioButton1 = new JRadioButton("リストから選択"));
+        basePanel.add(speedRadioButton2 = new JRadioButton("カスタム設定"));
         speedButtonGroup = new ButtonGroup();
         speedButtonGroup.add(speedRadioButton1);
         speedButtonGroup.add(speedRadioButton2);
-        panel.add(speedCustomLabel  = new GeneralItemPanel("カスタム"));
-        panel.add(speedCustomIndicateLabel = new GeneralItemPanel("1～100(1が最速)で入力"));
-        panel.add(speedCustomText = new JTextField());
-        panel.add(speedConfirmLabel = new GeneralItemPanel(true,null,"確定"));
+        basePanel.add(speedCustomLabel  = new GeneralItemPanel("カスタム"));
+        basePanel.add(speedCustomIndicateLabel = new GeneralItemPanel("1～100(1が最速)で入力"));
+        basePanel.add(speedCustomText = new GeneralTextField());
+        basePanel.add(speedConfirmLabel = new GeneralItemPanel(true,null,"確定"));
 
 
         /** リスト設定 */
-        panel.add(verySlowLabel = new GeneralItemPanel(null,null,"とても遅い"));
-        panel.add(slowLabel = new GeneralItemPanel(null,null,"遅い"));
-        panel.add(normalLabel = new GeneralItemPanel(null,null,"普通"));
-        panel.add(fastLabel = new GeneralItemPanel(null,null,"速い"));
-        panel.add(veryFastLabel = new GeneralItemPanel(null,null,"とても速い"));
+        basePanel.add(verySlowLabel = new GeneralItemPanel(null,null,"とても遅い"));
+        basePanel.add(slowLabel = new GeneralItemPanel(null,null,"遅い"));
+        basePanel.add(normalLabel = new GeneralItemPanel(null,null,"普通"));
+        basePanel.add(fastLabel = new GeneralItemPanel(null,null,"速い"));
+        basePanel.add(veryFastLabel = new GeneralItemPanel(null,null,"とても速い"));
 
         verySlowLabel.addMouseListener(this);
         slowLabel.addMouseListener(this);
@@ -142,67 +143,15 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
         });
 
         /** 確定ボタン */
-        speedConfirmLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                /** リスト設定 */
-                if (speedRadioButton1.isSelected()) {
-                    getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().setText(speedMode);
-                    getFrame().getBasePanel().getMainExecutePanel().setSpeedMode(speedMode);
-                    getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().repaint();
-                    /* 速度変化を適用 */
-                    switch (speedMode) {
-                        case "とても遅い":
-                            getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(500);
-                            break;
-                        case "遅い":
-                            getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(200);
-                            break;
-                        case "普通":
-                            getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(100);
-                            break;
-                        case "速い":
-                            getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(10);
-                            break;
-                        case "とても速い":
-                            getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(5);
-                            break;
-                    }
-                    dispose();
-                }
-                /** カスタム設定 */
-                else {
-                    /** カスタム設定フィールドが1-100の範囲で設定されているか */
-                    try {
-                        int input = Integer.parseInt(speedCustomText.getText());
-                        if (1<=input && input<=100) {
-                            getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().setText("カスタム設定:" + speedCustomText.getText());
-                            getFrame().getBasePanel().getMainExecutePanel().setSpeedMode(speedCustomText.getText());
-                            getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().repaint();
-                            /* 速度変化を適用 */
-                            getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(input);
-                            dispose();
-                        }else {
-                            throw new Exception();
-                        }
-                    }catch (Exception e1) {
-                        JLabel label = new JLabel("1～100の整数で入力してください。");
-                        JOptionPane.showMessageDialog(speedConfirmLabel,label);
-                    }
-                }
-                speedCustomText.setText("");
-            }
+        speedConfirmLabel.addMouseListener(this);
 
-        });
-
-        add(panel);
+        add(basePanel);
 
         /** 現在の実行速度を取得し
          *  数値ならカスタム設定
          *  文字ならリスト設定と判定し初期化する */
         try {
-            Integer.parseInt(getFrame().getBasePanel().getMainExecutePanel().getSpeedMode());
+             customSpeed = Integer.parseInt(getFrame().getBasePanel().getMainExecutePanel().getSpeedMode());
             speedRadioButton2.setSelected(true);
             /** ラジオボタンの背景 */
             speedRadioButton1.setBackground(ColorMaster.getNotSelectedColor());
@@ -227,7 +176,7 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
             speedCustomText.setBackground(Color.WHITE);
 
             /** 現在のカスタム設定を格納 */
-            speedCustomText.setText(getFrame().getBasePanel().getMainExecutePanel().getSpeedMode());
+            speedCustomText.setText(String.valueOf(customSpeed));
         }catch (Exception e1) {
             /** ラジオボタンの背景 */
             speedRadioButton1.setBackground(ColorMaster.getSelectedColor());
@@ -294,6 +243,53 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
                     speedMode = "速い";
                 } else if (panel == veryFastLabel) {
                     speedMode = "とても速い";
+                } else if (panel == speedConfirmLabel){
+                    /** リスト設定 */
+                    if (speedRadioButton1.isSelected()) {
+                        getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().setText(speedMode);
+                        getFrame().getBasePanel().getMainExecutePanel().setSpeedMode(speedMode);
+                        getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().repaint();
+                    /* 速度変化を適用 */
+                        switch (speedMode) {
+                            case "とても遅い":
+                                getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(500);
+                                break;
+                            case "遅い":
+                                getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(200);
+                                break;
+                            case "普通":
+                                getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(100);
+                                break;
+                            case "速い":
+                                getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(10);
+                                break;
+                            case "とても速い":
+                                getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(5);
+                                break;
+                        }
+                        dispose();
+                    }
+                    /** カスタム設定 */
+                    else {
+                        /** カスタム設定フィールドが1-100の範囲で設定されているか */
+                        try {
+                            int input = Integer.parseInt(speedCustomText.getText());
+                            if (1<=input && input<=100) {
+                                getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().setText("カスタム設定:" + speedCustomText.getText());
+                                getFrame().getBasePanel().getMainExecutePanel().setSpeedMode(speedCustomText.getText());
+                                getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().repaint();
+                            /* 速度変化を適用 */
+                                getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(input);
+                                dispose();
+                            }else {
+                                throw new Exception();
+                            }
+                        }catch (Exception e1) {
+                            JLabel label = new JLabel("1～100の整数で入力してください。");
+                            JOptionPane.showMessageDialog(speedConfirmLabel,label);
+                        }
+                    }
+                    speedCustomText.setText("");
                 }
             }
         }
@@ -308,6 +304,8 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
             normalLabel.setBackground(ColorMaster.getNotSelectedColor());
             fastLabel.setBackground(ColorMaster.getNotSelectedColor());
             veryFastLabel.setBackground(ColorMaster.getNotSelectedColor());
+        } else {
+            JPanel panel = (JPanel) e.getSource();
         }
     }
     @Override

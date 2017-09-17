@@ -102,16 +102,16 @@ public class IfDialog extends NewJDialog implements ItemListener{
                 if (base!=null && adder!=null) {
                     if (mode == DialogOpenMode.ADD) {
                         getFrame().getMasterTerminal().addOrder(functionName, lineNumber, new Syntax(new Evaluation(Syntax.S_TYPE.IF, base, compares, adder)));
+                        getFrame().getBasePanel().getEditOrderPanel().setLineNumber(lineNumber + 2);
                     }else {
                         getFrame().getMasterTerminal().setOrder(functionName, lineNumber, new Syntax(new Evaluation(Syntax.S_TYPE.IF, base, compares, adder)));
+                        getFrame().getBasePanel().getEditOrderPanel().setLineNumber(lineNumber + 2);
                         dispose();
                     }
-                    getFrame().getBasePanel().getEditOrderPanel().setLineNumber(lineNumber + 1);
                     getFrame().updateOrderPanel(false);
                 }
             }
         });
-
 
         /** 編集モードで開かれた場合、内容を格納する */
         if (mode == DialogOpenMode.EDIT) {
@@ -256,7 +256,7 @@ public class IfDialog extends NewJDialog implements ItemListener{
             updateOrderIndicateLabel();
         }
 
-        setBounds(e.getXOnScreen() - 430, e.getYOnScreen() - 350, 860, 300);
+        setBounds(e.getXOnScreen() - 305, e.getYOnScreen() - 350, 610, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -292,19 +292,17 @@ public class IfDialog extends NewJDialog implements ItemListener{
 
             /** 下の空欄の幅/高さ */
             int partsHeight = panel.getHeight() - 30;
-            /** コンポーネント１つの基準幅 */
-            int partsWidth = 85;
 
-            firstSelectPinVariableTitleLabel.setBounds(0, 0, partsWidth*4, 20);
-            firstSelectPinVariablePanel.setBounds(0, 20, partsWidth*4, partsHeight);
-            firstSelectPinVariablePanel.handResize(partsWidth*4, partsHeight);
+            firstSelectPinVariableTitleLabel.setBounds(0, 0, 270, 20);
+            firstSelectPinVariablePanel.setBounds(0, 20, 270, partsHeight);
+            firstSelectPinVariablePanel.handResize(270, partsHeight);
 
-            conditionBoxTitleLabel.setBounds(partsWidth*4, 0, partsWidth, 20);
-            conditionBox.setBounds(partsWidth*4, partsHeight/3 + 20, partsWidth, partsHeight/3);
+            conditionBoxTitleLabel.setBounds(270, 0, 70, 20);
+            conditionBox.setBounds(270, partsHeight/3 + 20, 70, partsHeight/3);
 
-            secondSelectConstantVariableTitleLabel.setBounds(partsWidth*5, 0, basePanel.getWidth() - partsWidth*5, 20);
-            secondSelectConstantVariablePanel.setBounds(partsWidth*5, 20, basePanel.getWidth() - partsWidth*5, partsHeight);
-            secondSelectConstantVariablePanel.handResize(basePanel.getWidth() - partsWidth*5, partsHeight);
+            secondSelectConstantVariableTitleLabel.setBounds(340, 0, 270, 20);
+            secondSelectConstantVariablePanel.setBounds(340, 20, 270, partsHeight);
+            secondSelectConstantVariablePanel.handResize(270, partsHeight);
         }
 
         @Override

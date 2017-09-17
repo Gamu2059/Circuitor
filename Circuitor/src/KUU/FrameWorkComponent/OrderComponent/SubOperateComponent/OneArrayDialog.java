@@ -126,11 +126,14 @@ public class OneArrayDialog extends NewJDialog implements MouseListener{
                 } else if (openMode == DialogOpenMode.ADD){
                     getFrame().getMasterTerminal().generateNewVariable("配列", new SingleArray(type, oneArrayTextField.getText(), index));
                     getFrame().updateOrderPanel(false);
-                    dispose();
+                    oneArrayTextField.setText("");
+                    indexTextField.setText("");
+                    getFrame().getHelpLabel().setText("");
                 } else {
                     getFrame().getMasterTerminal().renameVariable("配列", oldVariableName, oneArrayTitleLabel.getText());
                     getFrame().updateOrderPanel(false);
                     dispose();
+                    getFrame().getHelpLabel().setText("");
                 }
             }catch (Exception e1) {
                 JOptionPane.showMessageDialog(this, "添え字は正の整数で入力してください。");
@@ -167,7 +170,7 @@ public class OneArrayDialog extends NewJDialog implements MouseListener{
         public void handResize(int width, int height) {
             int partsWidth = width/13;
             /** 上下端を除いた高さ */
-            int partsHeight = height - 50;
+            int partsHeight = height - 45;
 
             buttonTitleLabel.setBounds(0, 0, partsWidth*4, 20);
             oneArrayTitleLabel.setBounds(partsWidth*4, 0, partsWidth*6, 20);
@@ -179,7 +182,7 @@ public class OneArrayDialog extends NewJDialog implements MouseListener{
             oneArrayTextField.setBounds(partsWidth*4, 0, partsWidth*6, partsHeight);
             indexTextField.setBounds(partsWidth*10, 0, width - partsWidth*10, partsHeight);
 
-            confirmLabel.setBounds(0, height - 30, width, 30);
+            confirmLabel.setBounds(0, height - 25, width, 25);
         }
 
         @Override
