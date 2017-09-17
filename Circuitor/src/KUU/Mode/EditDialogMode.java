@@ -9,5 +9,5 @@ public enum EditDialogMode {
     IF,
     FOR,
     WHILE,
-    FUNCTION,
+    LOADFUNCTION,
 }

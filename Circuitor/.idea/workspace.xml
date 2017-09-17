@@ -18,8 +18,66 @@
       <file leaf-file-name="Supervisor.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/KUU/Supervisor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="25" column="56" lean-forward="true" selection-start-line="25" selection-start-column="56" selection-end-line="25" selection-end-column="56" />
+            <state relative-caret-position="425">
+              <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SelectOrderPanel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/OrderComponent/EditComponent/SelectOrderPanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="687">
+              <caret line="332" column="77" lean-forward="false" selection-start-line="332" selection-start-column="77" selection-end-line="332" selection-end-column="77" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BaseFrame.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/KUU/BaseComponent/BaseFrame.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="109" column="58" lean-forward="true" selection-start-line="109" selection-start-column="58" selection-end-line="109" selection-end-column="58" />
+              <folding>
+                <marker date="1505671797027" expanded="false" signature="3747:3758" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="3775:3781" ph=" }" />
+                <marker date="1505671797027" expanded="false" signature="3818:3829" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="3846:3852" ph=" }" />
+                <marker date="1505671797027" expanded="false" signature="3893:3904" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="3923:3929" ph=" }" />
+                <marker date="1505671797027" expanded="false" signature="3966:3977" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="3994:4000" ph=" }" />
+                <marker date="1505671797027" expanded="false" signature="4047:4058" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="4080:4086" ph=" }" />
+                <marker date="1505671797027" expanded="false" signature="4747:4758" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="4781:4787" ph=" }" />
+                <marker date="1505671797027" expanded="false" signature="5276:5287" ph=" { " />
+                <marker date="1505671797027" expanded="false" signature="5306:5312" ph=" }" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BasePanel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/KUU/BaseComponent/BasePanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="226" column="20" lean-forward="false" selection-start-line="226" selection-start-column="20" selection-end-line="226" selection-end-column="20" />
+              <folding>
+                <element signature="e#7930#7931#0" expanded="true" />
+                <element signature="e#7969#7970#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainExecutePanel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/ExecuteComponent/MainExecutePanel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="731">
+              <caret line="70" column="96" lean-forward="true" selection-start-line="70" selection-start-column="96" selection-end-line="70" selection-end-column="96" />
               <folding />
             </state>
           </provider>
@@ -50,6 +108,8 @@
         <option value="$PROJECT_DIR$/src/KUU/FrameWorkComponent/OrderComponent/InputOrderPanel/CalcDialog.java" />
         <option value="$PROJECT_DIR$/src/DataIO/DataIO.java" />
         <option value="$PROJECT_DIR$/src/KUU/Supervisor.java" />
+        <option value="$PROJECT_DIR$/src/KUU/Mode/EditDialogMode.java" />
+        <option value="$PROJECT_DIR$/src/KUU/FrameWorkComponent/ExecuteComponent/MainOperateComponent/OptionChangeDialog.java" />
       </list>
     </option>
   </component>
@@ -59,11 +119,11 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="147" />
-    <option name="y" value="-15" />
-    <option name="width" value="1552" />
-    <option name="height" value="840" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -94,6 +154,36 @@
               <item name="Circuitor" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Circuitor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Circuitor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="KUU" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Circuitor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Circuitor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="KUU" type="462c0819:PsiDirectoryNode" />
+              <item name="FrameWorkComponent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Circuitor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Circuitor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="KUU" type="462c0819:PsiDirectoryNode" />
+              <item name="FrameWorkComponent" type="462c0819:PsiDirectoryNode" />
+              <item name="ExecuteComponent" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Circuitor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Circuitor" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="KUU" type="462c0819:PsiDirectoryNode" />
+              <item name="FrameWorkComponent" type="462c0819:PsiDirectoryNode" />
+              <item name="ExecuteComponent" type="462c0819:PsiDirectoryNode" />
+              <item name="MainOperateComponent" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -111,7 +201,7 @@
     <property name="nodejs_interpreter_path" value="C:/Program Files (x86)/nodejs/node" />
     <property name="js.eslint.eslintPackage" value="" />
     <property name="js-jscs-nodeInterpreter" value="C:\Program Files (x86)\nodejs\node.exe" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Output" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../ダウンロード/Circuitor/Circuitor" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -518,20 +608,20 @@
       <workItem from="1505656475578" duration="2376000" />
       <workItem from="1505660607549" duration="574000" />
       <workItem from="1505664615482" duration="28000" />
-      <workItem from="1505664995955" duration="1032000" />
+      <workItem from="1505664995955" duration="3881000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4312000" />
+    <option name="totallyTimeSpent" value="7161000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32979852" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.51537645" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -651,10 +741,92 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/OrderComponent/EditOrderPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="155" column="48" lean-forward="true" selection-start-line="155" selection-start-column="48" selection-end-line="155" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/OrderComponent/SubOrderPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="211" column="22" lean-forward="false" selection-start-line="211" selection-start-column="22" selection-end-line="211" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/Mode/EditDialogMode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="9" lean-forward="false" selection-start-line="11" selection-start-column="9" selection-end-line="11" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/BaseComponent/BasePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="226" column="20" lean-forward="false" selection-start-line="226" selection-start-column="20" selection-end-line="226" selection-end-column="20" />
+          <folding>
+            <element signature="e#7930#7931#0" expanded="true" />
+            <element signature="e#7969#7970#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/ExecuteComponent/MainExecutePanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="70" column="96" lean-forward="true" selection-start-line="70" selection-start-column="96" selection-end-line="70" selection-end-column="96" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/OrderComponent/EditComponent/SelectOrderPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="687">
+          <caret line="332" column="77" lean-forward="false" selection-start-line="332" selection-start-column="77" selection-end-line="332" selection-end-column="77" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/BaseComponent/BaseFrame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="109" column="58" lean-forward="true" selection-start-line="109" selection-start-column="58" selection-end-line="109" selection-end-column="58" />
+          <folding>
+            <marker date="1505671797027" expanded="false" signature="3747:3758" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="3775:3781" ph=" }" />
+            <marker date="1505671797027" expanded="false" signature="3818:3829" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="3846:3852" ph=" }" />
+            <marker date="1505671797027" expanded="false" signature="3893:3904" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="3923:3929" ph=" }" />
+            <marker date="1505671797027" expanded="false" signature="3966:3977" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="3994:4000" ph=" }" />
+            <marker date="1505671797027" expanded="false" signature="4047:4058" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="4080:4086" ph=" }" />
+            <marker date="1505671797027" expanded="false" signature="4747:4758" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="4781:4787" ph=" }" />
+            <marker date="1505671797027" expanded="false" signature="5276:5287" ph=" { " />
+            <marker date="1505671797027" expanded="false" signature="5306:5312" ph=" }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/KUU/FrameWorkComponent/ExecuteComponent/MainOperateComponent/OptionChangeDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="16" column="13" lean-forward="false" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/KUU/Supervisor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="25" column="56" lean-forward="true" selection-start-line="25" selection-start-column="56" selection-end-line="25" selection-end-column="56" />
+        <state relative-caret-position="425">
+          <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding />
         </state>
       </provider>
