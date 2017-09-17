@@ -1,7 +1,6 @@
 package KUU.BaseComponent;
 
 import KUU.Mode.MainOrderVariableMode;
-import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import ProcessTerminal.MasterTerminal;
 import Sho.CircuitObject.DataIO.CircuitIO;
@@ -107,8 +106,16 @@ public class BaseFrame extends JFrame implements ComponentListener,WindowStateLi
         if ((basePanel.getMainOrderPanel().getVariableMode() != MainOrderVariableMode.FUNCTION) || flg) {
             basePanel.getSubOrderPanel().updateVariableList();
         }
-        basePanel.getEditOrderPanel().updateNowFunctionName();
+        basePanel.getEditOrderPanel().setNowFunctionName();
         basePanel.getEditOrderPanel().updateProgramList();
+        basePanel.getSubOrderPanel().setLineNumber(-1);
+    }
+
+    /** 編集パネル、削除パネル、命令挿入パネルがクリックできるようにするかを設定する */
+    public void setOrderPanelCanClick(boolean variableFlg, boolean programFlg, boolean addFlg){
+        basePanel.getSubOrderPanel().setVariableEditDeleteCanClick(variableFlg);
+        basePanel.getEditOrderPanel().setProgramEditDeleteCanClick(programFlg);
+        basePanel.getEditOrderPanel().getSelectOrderPanel().setAddCanClick(addFlg);
     }
 
     /**
