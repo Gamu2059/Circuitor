@@ -97,6 +97,7 @@ public class MainOrderPanel extends NewJPanel implements MouseListener{
     }
     @Override
     public void mouseClicked(MouseEvent e) {
+        getFrame().setOrderPanelCanClick(false, false, true);
         JPanel panel = (JPanel) e.getSource();
         if (panel == executeStartLabel) {
             getFrame().getBasePanel().runExecuteMode();
@@ -106,14 +107,19 @@ public class MainOrderPanel extends NewJPanel implements MouseListener{
             oneDimensionArrayLabel.setBackground(ColorMaster.getNotSelectedColor());
             twoDimensionArrayLabel.setBackground(ColorMaster.getNotSelectedColor());
             panel.setBackground(ColorMaster.getSelectedColor());
+            String message = "";
             if (panel == functionLabel) {
                 variableMode = MainOrderVariableMode.FUNCTION;
+                getFrame().getHelpLabel().setText("関数モード：サブ操作パネルから編集できます。");
             } else if (panel == variableLabel) {
                 variableMode = MainOrderVariableMode.VARIABLE;
+                getFrame().getHelpLabel().setText("変数モード：サブ操作パネルから編集できます。");
             } else if (panel == oneDimensionArrayLabel) {
                 variableMode = MainOrderVariableMode.ARRAY;
+                getFrame().getHelpLabel().setText("一次元配列モード：サブ操作パネルから編集できます。");
             } else if (panel == twoDimensionArrayLabel) {
                 variableMode = MainOrderVariableMode.SQUARE;
+                getFrame().getHelpLabel().setText("二次元配列モード：サブ操作パネルから編集できます。");
             }
             getFrame().updateOrderPanel(true);
         }

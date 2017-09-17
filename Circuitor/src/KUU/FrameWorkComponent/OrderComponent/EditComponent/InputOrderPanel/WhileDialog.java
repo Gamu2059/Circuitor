@@ -27,7 +27,7 @@ public class WhileDialog extends NewJDialog implements ItemListener{
     private GeneralItemPanel confirmLabel;
 
     private SelectPinVariablePanel firstSelectPinVariablePanel;
-    private GeneralItemPanel       firstSelectVariableTitleLabel;
+    private GeneralItemPanel firstSelectPinVariableTitleLabel;
     private String                 firstSelectVariableString;
     private JComboBox        conditionBox;
     private GeneralItemPanel conditionBoxTitleLabel;
@@ -52,7 +52,7 @@ public class WhileDialog extends NewJDialog implements ItemListener{
         panel = new JPanel();
         panel.setLayout(null);
         panel.add(firstSelectPinVariablePanel = new SelectPinVariablePanel(frame));
-        panel.add(firstSelectVariableTitleLabel = new GeneralItemPanel(null,null,"比べられる数"));
+        panel.add(firstSelectPinVariableTitleLabel = new GeneralItemPanel(null,null,"比べられる数"));
         panel.add(conditionBox = new JComboBox<>(conditionStrings));
         panel.add(conditionBoxTitleLabel = new GeneralItemPanel(null,null,"演算子"));
         panel.add(secondSelectConstantPinVariablePanel = new SelectConstantPinVariablePanel(frame));
@@ -255,7 +255,7 @@ public class WhileDialog extends NewJDialog implements ItemListener{
             updateOrderIndicateLabel();
         }
 
-        setBounds(e.getXOnScreen() - 430, e.getYOnScreen() - 350, 860, 300);
+        setBounds(e.getXOnScreen() - 330, e.getYOnScreen() - 350, 660, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -291,19 +291,17 @@ public class WhileDialog extends NewJDialog implements ItemListener{
 
             /** 下の空欄の幅/高さ */
             int partsHeight = panel.getHeight() - 30;
-            /** コンポーネント１つの基準幅 */
-            int partsWidth = 85;
 
-            firstSelectVariableTitleLabel.setBounds(0, 0, partsWidth*4, 20);
-            firstSelectPinVariablePanel.setBounds(0, 20, partsWidth*4, partsHeight);
-            firstSelectPinVariablePanel.handResize(partsWidth*4, partsHeight);
+            firstSelectPinVariableTitleLabel.setBounds(0, 0, 270, 20);
+            firstSelectPinVariablePanel.setBounds(0, 20, 270, partsHeight);
+            firstSelectPinVariablePanel.handResize(270, partsHeight);
 
-            conditionBoxTitleLabel.setBounds(partsWidth*4, 0, partsWidth, 20);
-            conditionBox.setBounds(partsWidth*4, partsHeight/3 + 20, partsWidth, partsHeight/3);
+            conditionBoxTitleLabel.setBounds(270, 0, 70, 20);
+            conditionBox.setBounds(270, partsHeight/3 + 20, 70, partsHeight/3);
 
-            secondSelectConstantPinVariableTitleLabel.setBounds(partsWidth*5, 0, basePanel.getWidth() - partsWidth*5, 20);
-            secondSelectConstantPinVariablePanel.setBounds(partsWidth*5, 20, basePanel.getWidth() - partsWidth*5, partsHeight);
-            secondSelectConstantPinVariablePanel.handResize(basePanel.getWidth() - partsWidth*5, partsHeight);
+            secondSelectConstantPinVariableTitleLabel.setBounds(340, 0, 320, 20);
+            secondSelectConstantPinVariablePanel.setBounds(340, 20, 320, partsHeight);
+            secondSelectConstantPinVariablePanel.handResize(340, partsHeight);
         }
 
         @Override

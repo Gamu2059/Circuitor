@@ -13,7 +13,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Objects;
 
 /**
  * 関数を追加するダイアログ
@@ -50,7 +49,7 @@ public class FunctionDialog extends NewJDialog implements MouseListener{
 
         confirmLabel.addMouseListener(this);
 
-        /** 関数名をセット */
+        /** 編集モードのとき関数名をセット */
         if (mode == DialogOpenMode.EDIT) {
             oldFunctionName = getFrame().getBasePanel().getSubOrderPanel().getProgramModel().getElementAt(getFrame().getBasePanel().getSubOrderPanel().getLineNumber());
             functionTextField.setText(oldFunctionName);
@@ -67,14 +66,18 @@ public class FunctionDialog extends NewJDialog implements MouseListener{
         }else if (openMode == DialogOpenMode.ADD){
             getFrame().getMasterTerminal().generateNewFunction(functionTextField.getText());
             getFrame().updateOrderPanel(true);
+            getFrame().getBasePanel().getSubOrderPanel().setFunctionName(getFrame().getBasePanel().getSubOrderPanel().getProgramModel().get(getFrame().getBasePanel().getSubOrderPanel().getProgramList().getLastVisibleIndex()));
+            getFrame().updateOrderPanel(true);
             dispose();
+            getFrame().getHelpLabel().setText("");
         }else {
             getFrame().getMasterTerminal().renameFunction(oldFunctionName, functionTextField.getText());
-            if (Objects.equals(oldFunctionName, getFrame().getBasePanel().getSubOrderPanel().getFunctionName())){
+            if (oldFunctionName.equals(getFrame().getBasePanel().getSubOrderPanel().getFunctionName())){
                 getFrame().getBasePanel().getSubOrderPanel().setFunctionName(functionTextField.getText());
             }
             getFrame().updateOrderPanel(true);
             dispose();
+            getFrame().getHelpLabel().setText("");
         }
     }
     @Override
@@ -105,14 +108,14 @@ public class FunctionDialog extends NewJDialog implements MouseListener{
         @Override
         public void handResize(int width, int height) {
             /** 上下端を除いた高さ */
-            int partsHeight = height - 50;
+            int partsHeight = height - 45;
 
             functionTitleLabel.setBounds(0, 0, width, 20);
 
             panel.setBounds(0, 20, width, partsHeight);
             functionTextField.setBounds(0, 0, width, partsHeight);
 
-            confirmLabel.setBounds(0, height - 30, width, 30);
+            confirmLabel.setBounds(0, height - 25, width, 25);
         }
 
         @Override
