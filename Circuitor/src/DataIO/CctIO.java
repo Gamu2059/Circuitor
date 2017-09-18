@@ -3,6 +3,7 @@ package DataIO;
 import KUU.BaseComponent.BaseFrame;
 import ProcessTerminal.SaveLoadModule.ProgramIO;
 import Sho.CircuitObject.DataIO.CircuitIO;
+import Sho.CircuitObject.DataIO.MiconPinIO;
 
 import java.io.*;
 
@@ -13,11 +14,13 @@ import java.io.*;
 public class CctIO extends DataIO {
     private ProgramIO programIO;
     private CircuitIO circuitIO;
+    private MiconPinIO miconPinIO;
 
     public CctIO(BaseFrame frame) {
         super(frame, new CctFilter(), "cct");
         circuitIO = new CircuitIO(frame);
         programIO = frame.getMasterTerminal().getProgramIO();
+        miconPinIO = new MiconPinIO(frame);
     }
 
     protected void outputter(File f) throws Exception {
@@ -26,6 +29,7 @@ public class CctIO extends DataIO {
         try {
             circuitIO.outputter(printWriter);
             programIO.outputter(printWriter);
+            miconPinIO.outputter(printWriter);
             getFrame().getHelpLabel().setText("データの保存に成功しました。");
         } catch (Exception e) {
             getFrame().getHelpLabel().setText("データの保存に失敗しました。");
@@ -41,6 +45,7 @@ public class CctIO extends DataIO {
         try {
             circuitIO.inputter(reader);
             programIO.inputter(reader);
+            miconPinIO.inputter(reader);
             getFrame().getHelpLabel().setText("データの読込に成功しました。");
         } catch (Exception e) {
             getFrame().getHelpLabel().setText("データの読込に失敗しました。");
