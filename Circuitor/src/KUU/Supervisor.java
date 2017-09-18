@@ -19,11 +19,8 @@ public class Supervisor {
         if (args.length > 0) {
             /* 拡張子の取得 */
             String ext = DataFilter.getExtension(new File(args[0]));
-            if (ext.equals("cctc")) {
-                /* CCTCファイルならば、回路データを読み込む */
-                baseFrame.getCircuitIO().inputData(args[0]);
-            } else if (ext.equals("cctp")) {
-                baseFrame.getMasterTerminal().getProgramIO().inputData(args[0]);
+            if (ext.equals("cct")) {
+                baseFrame.getCctIO().inputData(args[0]);
             }
         }
     }

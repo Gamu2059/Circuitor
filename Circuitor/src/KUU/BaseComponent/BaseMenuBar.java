@@ -3,7 +3,6 @@ package KUU.BaseComponent;
 import Master.ColorMaster.ColorMaster;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,18 +32,10 @@ public class BaseMenuBar extends JMenuBar implements ActionListener {
     private BaseMenuItem itemNewWindow;
 
     /** ファイル > ロード */
-    private BaseMenu menuLoad;
-    /** ファイル > ロード > 回路ファイルを開く */
-    private BaseMenuItem itemLoadCircuit;
-    /** ファイル > ロード > 命令ファイルを開く */
-    private BaseMenuItem itemLoadOrder;
+    private BaseMenuItem itemLoad;
 
-    /** ファイル > モード > セーブ */
-    private BaseMenu menuSave;
-    /** ファイル > モード > 回路ファイルに保存 */
-    private BaseMenuItem itemSaveCircuit;
-    /** ファイル > モード > 命令ファイルに保存 */
-    private BaseMenuItem itemSaveOrder;
+    /** ファイル > セーブ */
+    private BaseMenuItem itemSave;
 
     /** ファイル > 終了 */
     private BaseMenuItem itemProgramEnd;
@@ -74,12 +65,8 @@ public class BaseMenuBar extends JMenuBar implements ActionListener {
 
         /* ファイルメニューの登録 */
         menuFile.add(itemNewWindow = new BaseMenuItem("新規"));
-        menuFile.add(menuLoad = new BaseMenu("開く"));
-        menuLoad.add(itemLoadCircuit = new BaseMenuItem("回路ファイルを開く"));
-        menuLoad.add(itemLoadOrder = new BaseMenuItem("命令ファイルを開く"));
-        menuFile.add(menuSave = new BaseMenu("保存"));
-        menuSave.add(itemSaveCircuit = new BaseMenuItem("回路ファイルを保存"));
-        menuSave.add(itemSaveOrder = new BaseMenuItem("命令ファイルを保存"));
+        menuFile.add(itemLoad = new BaseMenuItem("開く"));
+        menuFile.add(itemSave = new BaseMenuItem("保存"));
         menuFile.add(itemProgramEnd = new BaseMenuItem("終了"));
         /* モードメニューの登録 */
         menuMode.add(itemModeCircuit = new BaseMenuItem("回路モード"));
@@ -92,14 +79,10 @@ public class BaseMenuBar extends JMenuBar implements ActionListener {
         /* リスナの登録 */
         itemNewWindow.addActionListener(this);
         itemNewWindow.setActionCommand("NewWindow");
-        itemLoadCircuit.addActionListener(this);
-        itemLoadCircuit.setActionCommand("LoadCircuit");
-        itemLoadOrder.addActionListener(this);
-        itemLoadOrder.setActionCommand("LoadOrder");
-        itemSaveCircuit.addActionListener(this);
-        itemSaveCircuit.setActionCommand("SaveCircuit");
-        itemSaveOrder.addActionListener(this);
-        itemSaveOrder.setActionCommand("SaveOrder");
+        itemLoad.addActionListener(this);
+        itemLoad.setActionCommand("Load");
+        itemSave.addActionListener(this);
+        itemSave.setActionCommand("Save");
         itemProgramEnd.addActionListener(this);
         itemProgramEnd.setActionCommand("ProgramEnd");
         itemModeCircuit.addActionListener(this);
@@ -120,18 +103,12 @@ public class BaseMenuBar extends JMenuBar implements ActionListener {
             case "NewWindow":
                 new BaseFrame();
                 break;
-            case "LoadCircuit":
-                frame.getCircuitIO().inputData();
-                break;
-            case "LoadOrder":
-                frame.getMasterTerminal().getProgramIO().inputData();
+            case "Load":
+                frame.getCctIO().inputData();
                 frame.updateOrderPanel(true);
                 break;
-            case "SaveCircuit":
-                frame.getCircuitIO().outputData();
-                break;
-            case "SaveOrder":
-                frame.getMasterTerminal().getProgramIO().outputData();
+            case "Save":
+                frame.getCctIO().outputData();
                 break;
             case "ProgramEnd":
                 frame.disposeCircuitor();
@@ -158,12 +135,12 @@ public class BaseMenuBar extends JMenuBar implements ActionListener {
         }
     }
 
-    public BaseMenu getMenuLoad() {
-        return menuLoad;
+    public BaseMenuItem getItemLoad() {
+        return itemLoad;
     }
 
-    public BaseMenu getMenuSave() {
-        return menuSave;
+    public BaseMenuItem getItemSave() {
+        return itemSave;
     }
 
     public BaseMenuItem getItemModeCircuit() {

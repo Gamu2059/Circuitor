@@ -48,7 +48,7 @@ public abstract class DataIO {
         }
         fileChooser.addChoosableFileFilter(filter);
         fileChooser.setAcceptAllFileFilterUsed(false);
-        fileChooser.setSelectedFile(new File("無題." + ext));
+        fileChooser.setSelectedFile(new File("untitled." + ext));
         if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             String name = file.getName();
@@ -63,7 +63,7 @@ public abstract class DataIO {
             } catch (IOException e) {
                 System.out.println("ファイル生成に失敗しました。");
             }
-            /* ファイルに回路データを出力する */
+            /* ファイルにデータを出力する */
             if (file.canWrite()) {
                 try {
                     outputter(file);
@@ -111,7 +111,7 @@ public abstract class DataIO {
         fileChooser.addChoosableFileFilter(filter);
         fileChooser.setAcceptAllFileFilterUsed(false);
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-            /* ファイルから回路データを入力する */
+            /* ファイルからデータを入力する */
             if (fileChooser.getSelectedFile().canRead()) {
                 try {
                     inputter(fileChooser.getSelectedFile());
