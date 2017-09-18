@@ -26,8 +26,8 @@ public class PartsDeletePanel extends NewJPanel implements MouseListener {
         setLayout(null);
         setBackground(ColorMaster.getSubBackColor());
 
-        add(deleteDetail = new GeneralItemPanel(null, ImageMaster.getImageMaster().getPartsDeleteIcon(), "部品の削除（マス単位）"));
         add(deleteCollect = new GeneralItemPanel(null, ImageMaster.getImageMaster().getPartsDeleteIcon(), "部品の削除（導線単位）"));
+        add(deleteDetail = new GeneralItemPanel(null, ImageMaster.getImageMaster().getPartsDeleteIcon(), "部品の削除（マス単位）"));
         add(deleteLabel = new GeneralItemPanel(false, ImageMaster.getImageMaster().getDeleteIcon(), "削除"));
         add(allDeleteLabel = new GeneralItemPanel(true, ImageMaster.getImageMaster().getDeleteIcon(), "全削除"));
 
@@ -73,8 +73,8 @@ public class PartsDeletePanel extends NewJPanel implements MouseListener {
         if (getFrame().getBasePanel() != null) {
             int partsh = getFrame().getBasePanel().getMainCircuitPanel().getPartsAddLabel().getHeight();
 
-            deleteDetail.setBounds(0, 0, w, partsh);
-            deleteCollect.setBounds(0, partsh, w, partsh);
+            deleteCollect.setBounds(0, 0, w, partsh);
+            deleteDetail.setBounds(0, partsh, w, partsh);
             deleteLabel.setBounds(0, h - partsh * 2, w, partsh);
             allDeleteLabel.setBounds(0, h - partsh, w, partsh);
         }
@@ -85,9 +85,9 @@ public class PartsDeletePanel extends NewJPanel implements MouseListener {
      * モード切替が発生したらサブ操作パネルの一番上にある操作がデフォルトになる。
      */
     public void resetCommand() {
-        deleteDetail.setBackground(ColorMaster.getSelectedColor());
-        deleteCollect.setBackground(ColorMaster.getNotSelectedColor());
-        getFrame().getBasePanel().getEditCircuitPanel().getCircuitUnit().getCommand().setCommand(Command.DELETE_DETAIL);
+        deleteCollect.setBackground(ColorMaster.getSelectedColor());
+        deleteDetail.setBackground(ColorMaster.getNotSelectedColor());
+        getFrame().getBasePanel().getEditCircuitPanel().getCircuitUnit().getCommand().setCommand(Command.DELETE_COLLECT);
     }
 
     @Override

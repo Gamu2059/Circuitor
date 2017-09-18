@@ -31,15 +31,15 @@ public class ForDialog extends NewJDialog implements ItemListener{
     private String                      secondSelectConstantVariableString;
     private JComboBox        conditionBox;
     private GeneralItemPanel conditionBoxTitleLabel;
-    private String[]  conditionStrings = {">=",">","<=","<"};
-    private String    conditionString;
+    private String[]         conditionStrings = {">=",">","<=","<"};
+    private String           conditionString;
     private SelectConstantVariablePanel thirdSelectConstantVariablePanel;
     private GeneralItemPanel            thirdSelectConstantVariableTitleLabel;
     private String                      thirdSelectConstantVariableString;
     private JComboBox        incrementBox;
     private GeneralItemPanel incrementBoxTitleLabel;
-    private String[]  incrementStrings = {"+","-"};
-    private String    incrementString;
+    private String[]         incrementStrings = {"+","-"};
+    private String           incrementString;
     private SelectConstantVariablePanel fourthSelectConstantVariablePanel;
     private GeneralItemPanel            fourthSelectConstantVariableTitleLabel;
     private String                      fourthSelectConstantVariableString;
@@ -398,7 +398,7 @@ public class ForDialog extends NewJDialog implements ItemListener{
             updateOrderIndicateLabel();
         }
 
-        setBounds(e.getXOnScreen() - 740, e.getYOnScreen() - 350, 1480, 300);
+        setBounds(getFrame().getWidth()/2 - 585, e.getYOnScreen() - 350, 1170, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -440,34 +440,29 @@ public class ForDialog extends NewJDialog implements ItemListener{
 
             /** 下の空欄の幅/高さ */
             int partsHeight = panel.getHeight() - 30;
-            /** コンポーネント１つの基準幅 */
-            int partsWidth = 85;
 
             /** 表示幅の関係で数値を微調整している */
-            firstSelectVariableTitleLabel.setBounds(0, 0, partsWidth*3 + 25, 20);
-            firstSelectVariablePanel.setBounds(0, 20, partsWidth*3 + 25, partsHeight);
-            firstSelectVariablePanel.handResize(partsWidth*3 + 25, partsHeight);
+            firstSelectVariableTitleLabel.setBounds(0, 0, 220, 20);
+            firstSelectVariablePanel.setBounds(0, 20, 220, partsHeight);
+            firstSelectVariablePanel.handResize(220, partsHeight);
 
-            secondSelectConstantVariableTitleLabel.setBounds(partsWidth*3 + 25, 0, partsWidth*4, 20);
-            secondSelectConstantVariablePanel.setBounds(partsWidth*3 + 25, 20, partsWidth*4, partsHeight);
-            secondSelectConstantVariablePanel.handResize(partsWidth*4, partsHeight);
+            secondSelectConstantVariableTitleLabel.setBounds(220, 0, 270, 20);
+            secondSelectConstantVariablePanel.setBounds(220, 20, 270, partsHeight);
+            secondSelectConstantVariablePanel.handResize(270, partsHeight);
 
-            conditionBoxTitleLabel.setBounds(partsWidth*7 + 25, 0, partsWidth, 20);
-            conditionBox.setBounds(partsWidth*7 + 25, partsHeight/3 + 20, partsWidth, partsHeight/3);
+            conditionBoxTitleLabel.setBounds(490, 0, 70, 20);
+            conditionBox.setBounds(490, partsHeight/3 + 20, 70, partsHeight/3);
 
-            thirdSelectConstantVariableTitleLabel.setBounds(partsWidth*8 + 25, 0, partsWidth*4, 20);
-            thirdSelectConstantVariablePanel.setBounds(partsWidth*8 + 25, 20, partsWidth*4, partsHeight);
-            thirdSelectConstantVariablePanel.handResize(partsWidth*4, partsHeight);
+            thirdSelectConstantVariableTitleLabel.setBounds(560, 0, 270, 20);
+            thirdSelectConstantVariablePanel.setBounds(560, 20, 270, partsHeight);
+            thirdSelectConstantVariablePanel.handResize(270, partsHeight);
 
-            incrementBoxTitleLabel.setBounds(partsWidth*12 + 25, 0, partsWidth, 20);
-            incrementBox.setBounds(partsWidth*12 + 25, partsHeight/3 + 20, partsWidth, partsHeight/3);
+            incrementBoxTitleLabel.setBounds(830, 0, 70, 20);
+            incrementBox.setBounds(830, partsHeight/3 + 20, 70, partsHeight/3);
 
-            fourthSelectConstantVariableTitleLabel.setBounds(partsWidth*13 + 25, 0, basePanel.getWidth() - partsWidth*13 - 25, 20);
-            fourthSelectConstantVariablePanel.setBounds(partsWidth*13 + 25, 20, basePanel.getWidth() - partsWidth*13 - 25, partsHeight);
-            fourthSelectConstantVariablePanel.handResize(basePanel.getWidth() - partsWidth*13 - 25, partsHeight);
-
-            System.out.println(thirdSelectConstantVariablePanel.getBounds());
-            System.out.println(fourthSelectConstantVariablePanel.getBounds());
+            fourthSelectConstantVariableTitleLabel.setBounds(900, 0, 270, 20);
+            fourthSelectConstantVariablePanel.setBounds(900, 20, 270, partsHeight);
+            fourthSelectConstantVariablePanel.handResize(270, partsHeight);
         }
 
         @Override

@@ -135,11 +135,15 @@ public class TwoArrayDialog extends NewJDialog implements MouseListener{
                 } else if(openMode == DialogOpenMode.ADD){
                     getFrame().getMasterTerminal().generateNewVariable("2次元配列", new DoubleArray(type, twoArrayTextField.getText(), index1, index2));
                     getFrame().updateOrderPanel(false);
-                    dispose();
+                    twoArrayTextField.setText("");
+                    indexTextField1.setText("");
+                    indexTextField2.setText("");
+                    getFrame().getHelpLabel().setText("");
                 } else {
                     getFrame().getMasterTerminal().renameVariable("2次元配列", oldVariableName, twoArrayTextField.getText());
                     getFrame().updateOrderPanel(false);
                     dispose();
+                    getFrame().getHelpLabel().setText("");
                 }
             }catch (Exception e1) {
                 JOptionPane.showMessageDialog(this, "添え字は正の整数で入力してください。");
@@ -178,7 +182,7 @@ public class TwoArrayDialog extends NewJDialog implements MouseListener{
         public void handResize(int width, int height) {
             int partsWidth = width/16;
             /** 上下端を除いた高さ */
-            int partsHeight = height - 50;
+            int partsHeight = height - 45;
 
             buttonTitleLabel.setBounds(0, 0, partsWidth*4, 20);
             twoArrayTitleLabel.setBounds(partsWidth*4, 0, partsWidth*6, 20);
@@ -192,7 +196,7 @@ public class TwoArrayDialog extends NewJDialog implements MouseListener{
             indexTextField1.setBounds(partsWidth*10, 0, partsWidth*3, partsHeight);
             indexTextField2.setBounds(partsWidth*13, 0, width - partsWidth*13, partsHeight);
 
-            confirmLabel.setBounds(0, height - 30, width, 30);
+            confirmLabel.setBounds(0, height - 25, width, 25);
         }
 
         @Override

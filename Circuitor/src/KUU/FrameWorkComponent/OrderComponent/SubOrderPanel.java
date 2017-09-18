@@ -14,8 +14,10 @@ import Master.ImageMaster.ImageMaster;
 import Sho.CircuitObject.UnitPanel.OrderUnitPanel;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 /**
@@ -30,15 +32,16 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
     private GeneralItemPanel addLabel;
     private GeneralItemPanel editLabel;
     private GeneralItemPanel deleteLabel;
-    private OrderUnitPanel   orderUnitPanel;
     /** ダイアログ */
     private FunctionDialog functionDialog;
     private VariableDialog variableDialog;
     private OneArrayDialog oneArrayDialog;
     private TwoArrayDialog twoArrayDialog;
 
-    private int lineNumber;
+    private OrderUnitPanel   orderUnitPanel;
 
+    private boolean clickFlg;
+    private int lineNumber;
     private String functionName;
 
     public SubOrderPanel(BaseFrame frame) {
@@ -50,17 +53,18 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
         programList  = new JList<>(programModel);
         add(programScroll  = new JScrollPane(programList));
         add(addLabel       = new GeneralItemPanel(true, ImageMaster.getImageMaster().getAddIcon(),"追加"));
-        add(editLabel      = new GeneralItemPanel(true, ImageMaster.getImageMaster().getEditIcon(),"編集"));
-        add(deleteLabel    = new GeneralItemPanel(true, ImageMaster.getImageMaster().getDeleteIcon(),"削除"));
+        add(editLabel      = new GeneralItemPanel(false, ImageMaster.getImageMaster().getEditIcon(),"編集"));
+        add(deleteLabel    = new GeneralItemPanel(false, ImageMaster.getImageMaster().getDeleteIcon(),"削除"));
         add(orderUnitPanel = new OrderUnitPanel(frame));
 
         programList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         programList.addMouseListener(this);
-
         addLabel.addMouseListener(this);
         editLabel.addMouseListener(this);
         deleteLabel.addMouseListener(this);
 
+        clickFlg = false;
+        lineNumber = 0;
         functionName = "MAIN";
     }
 
@@ -75,6 +79,21 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
         orderUnitPanel.setBounds(0, partsHeight*9 + 20*9, width, height - (partsHeight*9 + 20*9));
     }
 
+
+    /** 編集/削除パネルがクリックできるかを設定する */
+    public void setVariableEditDeleteCanClick(boolean flg) {
+        if (flg) {
+            clickFlg = true;
+            editLabel.setBackground(ColorMaster.getSelectableColor());
+            deleteLabel.setBackground(ColorMaster.getSelectableColor());
+        }else {
+            clickFlg = false;
+            editLabel.setBackground(ColorMaster.getBackColor());
+            deleteLabel.setBackground(ColorMaster.getBackColor());
+        }
+    }
+
+    /** 変数リストを更新する */
     public void updateVariableList() {
         programModel.removeAllElements();
         switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
@@ -103,7 +122,7 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        /** panel */
+        /** JPanel */
         if (e.getSource() instanceof  JPanel) {
             JPanel panel = (JPanel) e.getSource();
             if (panel == addLabel) {
@@ -126,46 +145,31 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
                         twoArrayDialog.setVisible(true);
                         break;
                 }
-            } else if (panel == editLabel) {
+            } else if (panel == editLabel && clickFlg) {
                 /** 編集ボタン */
-                if (lineNumber != -1) {
-                    switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
-                        case FUNCTION:
-                            String selectVariable = programList.getSelectedValue();
-                            switch (selectVariable) {
-                                case "SETUP":
-                                    JOptionPane.showMessageDialog(this, "SETUP関数の名前の編集は出来ません。");
-                                    break;
-                                case "MAIN":
-                                    JOptionPane.showMessageDialog(this, "MAIN関数の名前の編集は出来ません。");
-                                    break;
-                                default:
-                                    functionDialog = new FunctionDialog(getFrame(), DialogOpenMode.EDIT, e);
-                                    functionDialog.setVisible(true);
-                                    break;
-                            }
-                            break;
-                        case VARIABLE:
-                            variableDialog = new VariableDialog(getFrame(), DialogOpenMode.EDIT, e);
-                            variableDialog.setVisible(true);
-                            break;
-                        case ARRAY:
-                            oneArrayDialog = new OneArrayDialog(getFrame(), DialogOpenMode.EDIT, e);
-                            oneArrayDialog.setVisible(true);
-                            break;
-                        case SQUARE:
-                            twoArrayDialog = new TwoArrayDialog(getFrame(), DialogOpenMode.EDIT, e);
-                            twoArrayDialog.setVisible(true);
-                            break;
-                    }
-                }else {
-                    if (getFrame().getBasePanel().getMainOrderPanel().getVariableMode() == MainOrderVariableMode.FUNCTION){
-                        JOptionPane.showMessageDialog(this, "関数を選択してください。");
-                    }else {
-                        JOptionPane.showMessageDialog(this, "変数を選択してください。");
-                    }
+                switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
+                    case FUNCTION:
+                        getFrame().getHelpLabel().setText("関数名の編集を行います。");
+                        functionDialog = new FunctionDialog(getFrame(), DialogOpenMode.EDIT, e);
+                        functionDialog.setVisible(true);
+                        break;
+                    case VARIABLE:
+                        getFrame().getHelpLabel().setText("変数名の編集を行います。");
+                        variableDialog = new VariableDialog(getFrame(), DialogOpenMode.EDIT, e);
+                        variableDialog.setVisible(true);
+                        break;
+                    case ARRAY:
+                        getFrame().getHelpLabel().setText("変数名の編集を行います。");
+                        oneArrayDialog = new OneArrayDialog(getFrame(), DialogOpenMode.EDIT, e);
+                        oneArrayDialog.setVisible(true);
+                        break;
+                    case SQUARE:
+                        getFrame().getHelpLabel().setText("変数名の編集を行います。");
+                        twoArrayDialog = new TwoArrayDialog(getFrame(), DialogOpenMode.EDIT, e);
+                        twoArrayDialog.setVisible(true);
+                        break;
                 }
-            } else if (panel == deleteLabel) {
+            } else if (panel == deleteLabel && clickFlg) {
                 /**
                  * 削除ボタン
                  * メイン操作パネルからリストの種類を判定し
@@ -175,60 +179,50 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
                 String selectVariable;
                 switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
                     case FUNCTION:
-                        try {
-                            selectVariable = programList.getSelectedValue();
-                            switch (selectVariable) {
-                                case "SETUP":
-                                    JOptionPane.showMessageDialog(this, "SETUP関数は削除出来ません。");
-                                    break;
-                                case "MAIN":
-                                    JOptionPane.showMessageDialog(this, "MAIN関数は削除出来ません。");
-                                    break;
-                                default:
-                                    if (JOptionPane.showConfirmDialog(this, selectVariable + "を削除しますか？", "関数削除の確認", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                                        getFrame().getMasterTerminal().deleteFunction(selectVariable);
-                                    }
-                                    break;
+                        selectVariable = programList.getSelectedValue();
+                        if (JOptionPane.showConfirmDialog(this, selectVariable + "を削除しますか？", "関数削除の確認", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            getFrame().getMasterTerminal().deleteFunction(selectVariable);
+                            if (functionName.equals(selectVariable)) {
+                                functionName = "MAIN";
                             }
-                        } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(this, "関数を選択してください。");
                         }
+                        getFrame().getHelpLabel().setText("");
                         break;
                     case VARIABLE:
                         arrayList = getFrame().getMasterTerminal().getVariableStringList("変数");
-                        try {
-                            selectVariable = (String) arrayList.get(lineNumber);
-                            getFrame().getMasterTerminal().deleteVariable("変数", selectVariable);
-                        } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(this, "変数を選択してください。");
-                        }
+                        selectVariable = (String) arrayList.get(lineNumber);
+                        getFrame().getMasterTerminal().deleteVariable("変数", selectVariable);
+                        getFrame().getHelpLabel().setText("");
                         break;
                     case ARRAY:
                         arrayList = getFrame().getMasterTerminal().getVariableStringList("配列");
-                        try {
-                            selectVariable = (String) arrayList.get(lineNumber);
-                            getFrame().getMasterTerminal().deleteVariable("配列", selectVariable);
-                        } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(this, "変数を選択してください。");
-                        }
+                        selectVariable = (String) arrayList.get(lineNumber);
+                        getFrame().getMasterTerminal().deleteVariable("配列", selectVariable);
+                        getFrame().getHelpLabel().setText("");
                         break;
                     case SQUARE:
                         arrayList = getFrame().getMasterTerminal().getVariableStringList("2次元配列");
-                        try {
-                            selectVariable = (String) arrayList.get(lineNumber);
-                            getFrame().getMasterTerminal().deleteVariable("2次元配列", selectVariable);
-                        } catch (Exception e1) {
-                            JOptionPane.showMessageDialog(this, "変数を選択してください。");
-                        }
+                        selectVariable = (String) arrayList.get(lineNumber);
+                        getFrame().getMasterTerminal().deleteVariable("2次元配列", selectVariable);
+                        getFrame().getHelpLabel().setText("");
                         break;
                 }
-                functionName = "MAIN";
                 getFrame().updateOrderPanel(true);
             }
+            getFrame().setOrderPanelCanClick(false, false, true);
         }
 
-        /** programList */
+        /** 変数リスト*/
         if (e.getSource() instanceof JList) {
+            /** SETUP関数とMAIN関数以外を選択すると編集/削除パネルがクリックできるようになる */
+            if (!programList.getSelectedValue().equals("SETUP") &&
+                !programList.getSelectedValue().equals("MAIN")) {
+                getFrame().setOrderPanelCanClick(true, false, true);
+            }else {
+                getFrame().setOrderPanelCanClick(false, false, true);
+            }
+            /** SelectOrderPanelのVisible設定 */
+            getFrame().getBasePanel().getEditOrderPanel().getSelectOrderPanel().setPanelVisible(programList.getSelectedValue());
             lineNumber = programList.getSelectedIndex();
             if (getFrame().getBasePanel().getMainOrderPanel().getVariableMode() == MainOrderVariableMode.FUNCTION) {
                 /**
@@ -238,21 +232,125 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
                  */
                 functionName = programList.getSelectedValue();
                 getFrame().updateOrderPanel(false);
+                lineNumber = programList.getSelectedIndex();
                 getFrame().getBasePanel().getEditOrderPanel().setLineNumber(getFrame().getBasePanel().getEditOrderPanel().getProgramModel().getSize() - 1);
             }
         }
     }
+    /** クリック時パネルが有効なら色変更 */
     @Override
     public void mousePressed(MouseEvent e) {
+        if (e.getSource()instanceof JPanel && clickFlg) {
+            JPanel panel = (JPanel) e.getSource();
+            if (panel != addLabel) {
+                panel.setBackground(ColorMaster.getClickedColor());
+            }
+        }
     }
+    /** クリック終了時パネルの有効無効にあわせ色変更 */
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (e.getSource()instanceof JPanel) {
+            JPanel panel = (JPanel) e.getSource();
+            if (panel != addLabel) {
+                if (clickFlg) {
+                    panel.setBackground(ColorMaster.getSelectableColor());
+                } else {
+                    panel.setBackground(ColorMaster.getBackColor());
+                }
+            }
+        }
     }
+    /** マウスオーバー時のヘルプラベルの表示変更 */
     @Override
     public void mouseEntered(MouseEvent e) {
+        /** JPanel */
+        if (e.getSource() instanceof  JPanel) {
+            JPanel panel = (JPanel) e.getSource();
+            if (panel == addLabel) {
+                /** 追加ボタン */
+                switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
+                    case FUNCTION:
+                        getFrame().getHelpLabel().setText("関数の追加を行います。");
+                        break;
+                    case VARIABLE:
+                        getFrame().getHelpLabel().setText("変数の追加を行います。");
+                        break;
+                    case ARRAY:
+                        getFrame().getHelpLabel().setText("一次元配列の追加を行います。");
+                        break;
+                    case SQUARE:
+                        getFrame().getHelpLabel().setText("二次元配列の追加を行います。");
+                        break;
+                }
+            } else if (panel == editLabel && clickFlg) {
+                /** 編集ボタン */
+
+                switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
+                    case FUNCTION:
+                        String selectVariable = programList.getSelectedValue();
+                        switch (selectVariable) {
+                            case "SETUP":
+                                getFrame().getHelpLabel().setText("関数名の編集を行います。SETUP関数の名前の編集は出来ません。");
+                                break;
+                            case "MAIN":
+                                getFrame().getHelpLabel().setText("関数名の編集を行います。MAIN関数の名前の編集は出来ません。");
+                                break;
+                            default:
+                                getFrame().getHelpLabel().setText("関数名の編集を行います。");
+                                break;
+                        }
+                        break;
+                    case VARIABLE:
+                        getFrame().getHelpLabel().setText("変数名の編集を行います。");
+                        break;
+                    case ARRAY:
+                        getFrame().getHelpLabel().setText("変数名の編集を行います。");
+                        break;
+                    case SQUARE:
+                        getFrame().getHelpLabel().setText("変数名の編集を行います。");
+                        break;
+                }
+            } else if (panel == deleteLabel && clickFlg) {
+                /** 削除ボタン */
+                ArrayList arrayList;
+                String selectVariable="";
+                switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
+                    case FUNCTION:
+                        selectVariable = programList.getSelectedValue();
+                        break;
+                    case VARIABLE:
+                        arrayList = getFrame().getMasterTerminal().getVariableStringList("変数");
+                        selectVariable = (String) arrayList.get(lineNumber);
+                        break;
+                    case ARRAY:
+                        arrayList = getFrame().getMasterTerminal().getVariableStringList("配列");
+                        selectVariable = (String) arrayList.get(lineNumber);
+                        break;
+                    case SQUARE:
+                        arrayList = getFrame().getMasterTerminal().getVariableStringList("2次元配列");
+                        selectVariable = (String) arrayList.get(lineNumber);
+                        break;
+                }
+                getFrame().getHelpLabel().setText(selectVariable + "を削除します。");
+            }
+        }
     }
+
+    /** パネルからマウスが離れたらヘルプラベルを空白に戻す */
     @Override
     public void mouseExited(MouseEvent e) {
+        /** JPanel */
+        if (e.getSource() instanceof  JPanel) {
+            JPanel panel = (JPanel) e.getSource();
+            if (panel == addLabel) {
+                getFrame().getHelpLabel().setText("");
+            } else if (panel == editLabel && clickFlg) {
+                getFrame().getHelpLabel().setText("");
+            } else if (panel == deleteLabel && clickFlg) {
+                getFrame().getHelpLabel().setText("");
+            }
+        }
     }
 
     public OrderUnitPanel getOrderUnitPanel() {
@@ -275,27 +373,11 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
         return programList;
     }
 
-    public JScrollPane getProgramScroll() {
-        return programScroll;
-    }
-
-    public FunctionDialog getFunctionDialog() {
-        return functionDialog;
-    }
-
-    public VariableDialog getVariableDialog() {
-        return variableDialog;
-    }
-
-    public OneArrayDialog getOneArrayDialog() {
-        return oneArrayDialog;
-    }
-
-    public TwoArrayDialog getTwoArrayDialog() {
-        return twoArrayDialog;
-    }
-
     public int getLineNumber() {
         return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 }

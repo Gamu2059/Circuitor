@@ -69,18 +69,16 @@ public class SelectPinVariablePanel extends NewJPanel implements MouseListener{
     }
 
 
-    /** handResizeではpartsWidth*2(ピン/変数)または
-     *  partsWidth*4(一次元配列/二次元配列)の横幅を持つ。 */
+    /** handResizeでは270の横幅を持つ。 */
     @Override
     public void handResize(int width, int height) {
-        int partsWidth = width/4;
         int partsHeight = height/6;
 
         /** 変数選択パネル */
-        pinLabel.setBounds(0, 0, partsWidth, partsHeight);
-        variableLabel.setBounds(partsWidth, 0, partsWidth, partsHeight);
-        oneArrayLabel.setBounds(partsWidth*2, 0, partsWidth, partsHeight);
-        twoArrayLabel.setBounds(partsWidth*3, 0, width - partsWidth*3, partsHeight);
+        pinLabel.setBounds(0, 0, 50, partsHeight);
+        variableLabel.setBounds(50, 0, 50, partsHeight);
+        oneArrayLabel.setBounds(100, 0, 85, partsHeight);
+        twoArrayLabel.setBounds(185, 0, 85, partsHeight);
 
         /** 変数ごとの詳細ラベル */
         pinPanel.setBounds(0, partsHeight, width, height - partsHeight);

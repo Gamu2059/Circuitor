@@ -331,7 +331,7 @@ public class CalcDialog extends NewJDialog implements ItemListener{
             }
         });
 
-        setBounds(e.getXOnScreen() - 685, e.getYOnScreen() - 350, 1370, 300);
+        setBounds(e.getXOnScreen() - 525, e.getYOnScreen() - 350, 1050, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -368,25 +368,23 @@ public class CalcDialog extends NewJDialog implements ItemListener{
 
             /** 下の空欄の幅/高さ */
             int partsHeight = panel.getHeight() - 30;
-            /** コンポーネント１つの基準幅 */
-            int partsWidth = 85;
 
-            firstSelectPinVariableTitleLabel.setBounds(0, 0, partsWidth*4, 20);
-            firstSelectPinVariablePanel.setBounds(0, 20, partsWidth*4, partsHeight);
-            firstSelectPinVariablePanel.handResize(partsWidth*4, partsHeight);
+            firstSelectPinVariableTitleLabel.setBounds(0, 0, 270, 20);
+            firstSelectPinVariablePanel.setBounds(0, 20, 270, partsHeight);
+            firstSelectPinVariablePanel.handResize(270, partsHeight);
 
-            equalsLabel.setBounds(partsWidth*4, 0, partsWidth, partsHeight + 20);
+            equalsLabel.setBounds(270, 0, 70, partsHeight + 20);
 
-            secondSelectConstantPinVariableTitleLabel.setBounds(partsWidth*5, 0, partsWidth*5, 20);
-            secondSelectConstantPinVariablePanel.setBounds(partsWidth*5, 20, partsWidth*5, partsHeight);
-            secondSelectConstantPinVariablePanel.handResize(partsWidth*5, partsHeight);
+            secondSelectConstantPinVariableTitleLabel.setBounds(340, 0, 320, 20);
+            secondSelectConstantPinVariablePanel.setBounds(340, 20, 320, partsHeight);
+            secondSelectConstantPinVariablePanel.handResize(320, partsHeight);
 
-            operateBoxTitleLabel.setBounds(partsWidth*10, 0, partsWidth, 20);
-            operateBox.setBounds(partsWidth*10, partsHeight/3 + 20, partsWidth, partsHeight/3);
+            operateBoxTitleLabel.setBounds(660, 0, 70, 20);
+            operateBox.setBounds(660, partsHeight/3 + 20, 70, partsHeight/3);
 
-            thirdSelectConstantPinVariableTitleLabel.setBounds(partsWidth*11, 0, basePanel.getWidth() - partsWidth*11, 20);
-            thirdSelectConstantPinVariablePanel.setBounds(partsWidth*11, 20, basePanel.getWidth() - partsWidth*11, partsHeight);
-            thirdSelectConstantPinVariablePanel.handResize(basePanel.getWidth() - partsWidth*11, partsHeight);
+            thirdSelectConstantPinVariableTitleLabel.setBounds(730, 0, 320, 20);
+            thirdSelectConstantPinVariablePanel.setBounds(730, 20, 320, partsHeight);
+            thirdSelectConstantPinVariablePanel.handResize(270, partsHeight);
         }
 
         @Override

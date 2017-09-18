@@ -6,6 +6,7 @@ import KUU.GeneralComponent.GeneralItemPanel;
 import KUU.Mode.DialogOpenMode;
 import KUU.Mode.EditDialogMode;
 import KUU.NewComponent.NewJPanel;
+import Master.ColorMaster.ColorMaster;
 import ProcessTerminal.SyntaxSettings.Command;
 import ProcessTerminal.SyntaxSettings.Syntax;
 
@@ -36,18 +37,19 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
     private LoadFunctionDialog loadFunctionDialog;
 
     private EditDialogMode orderMode;
+    private boolean clickAddFlg;
 
     public SelectOrderPanel(BaseFrame frame){
         super(frame);
         setLayout(null);
 
         /** 命令選択ラベル */
-        add(substitutionLabel = new GeneralItemPanel(true,null,"代入"));
-        add(calcLabel         = new GeneralItemPanel(true,null,"計算"));
-        add(ifLabel           = new GeneralItemPanel(true,null,"if文"));
-        add(forLabel          = new GeneralItemPanel(true,null,"for文"));
-        add(whileLabel        = new GeneralItemPanel(true,null,"while文"));
-        add(functionLabel     = new GeneralItemPanel(true,null,"関数の呼び出し"));
+        add(substitutionLabel = new GeneralItemPanel(false,null,"代入"));
+        add(calcLabel         = new GeneralItemPanel(false,null,"計算"));
+        add(ifLabel           = new GeneralItemPanel(false,null,"if文"));
+        add(forLabel          = new GeneralItemPanel(false,null,"for文"));
+        add(whileLabel        = new GeneralItemPanel(false,null,"while文"));
+        add(functionLabel     = new GeneralItemPanel(false,null,"関数の呼び出し"));
 //        add(breakLabel        = new GeneralItemPanel(true,null,"break文"));
 //        add(continueLabel     = new GeneralItemPanel(true,null,"continue文"));
 
@@ -59,6 +61,8 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
         functionLabel.addMouseListener(this);
 //        breakLabel.addMouseListener(this);
 //        continueLabel.addMouseListener(this);
+
+        clickAddFlg = true;
     }
 
     @Override
@@ -113,53 +117,29 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
             case WHILE:
                 whileDialog.updateOrderIndicateLabel();
                 break;
-            case FUNCTION:
+            case LOADFUNCTION:
                 loadFunctionDialog.updateOrderIndicateLabel();
                 break;
         }
     }
 
-    public SubstitutionDialog getSubstitutionDialog() {
-        return substitutionDialog;
-    }
-
-    public CalcDialog getCalcDialog() {
-        return calcDialog;
-    }
-
-    public IfDialog getIfDialog() {
-        return ifDialog;
-    }
-
-    public ForDialog getForDialog() {
-        return forDialog;
-    }
-
-    public WhileDialog getWhileDialog() {
-        return whileDialog;
-    }
-
-    public LoadFunctionDialog getLoadFunctionDialog() {
-        return loadFunctionDialog;
-    }
-
-    public EditDialogMode getOrderMode() {
-        return orderMode;
-    }
-
-    /** 命令文の編集　ADDで空のウィンドウを生成することでNullPointerを回避する */
+    /** 命令文の編集 */
     public void openEditDialog(Command.C_TYPE cType, MouseEvent e){
         switch (cType){
             case RET:
                 orderMode = EditDialogMode.SUBSTITUTION;
-                substitutionDialog = new SubstitutionDialog(getFrame(), DialogOpenMode.ADD, e);
+                if (substitutionDialog == null) {
+                    substitutionDialog = new SubstitutionDialog(getFrame(), DialogOpenMode.ADD, e);
+                }
                 substitutionDialog = new SubstitutionDialog(getFrame(), DialogOpenMode.EDIT, e);
                 updateOrderIndicateLabel();
                 substitutionDialog.setVisible(true);
                 break;
             case CALC:
                 orderMode = EditDialogMode.CALC;
-                calcDialog = new CalcDialog(getFrame(), DialogOpenMode.ADD, e);
+                if (calcDialog == null) {
+                    calcDialog = new CalcDialog(getFrame(), DialogOpenMode.ADD, e);
+                }
                 calcDialog = new CalcDialog(getFrame(), DialogOpenMode.EDIT, e);
                 updateOrderIndicateLabel();
                 calcDialog.setVisible(true);
@@ -169,33 +149,41 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
         }
     }
 
-    /** 構文の編集　ADDで空のウィンドウを生成することでNullPointerを回避する */
+    /** 構文の編集 */
     public void openEditDialog(Syntax.S_TYPE sType, MouseEvent e){
         switch (sType) {
             case IF:
                 orderMode = EditDialogMode.IF;
-                ifDialog = new IfDialog(getFrame(), DialogOpenMode.ADD, e);
+                if (ifDialog == null) {
+                    ifDialog = new IfDialog(getFrame(), DialogOpenMode.ADD, e);
+                }
                 ifDialog = new IfDialog(getFrame(), DialogOpenMode.EDIT, e);
                 updateOrderIndicateLabel();
                 ifDialog.setVisible(true);
                 break;
             case WHILE:
                 orderMode = EditDialogMode.WHILE;
-                whileDialog = new WhileDialog(getFrame(), DialogOpenMode.ADD, e);
+                if (whileDialog == null) {
+                    whileDialog = new WhileDialog(getFrame(), DialogOpenMode.ADD, e);
+                }
                 whileDialog = new WhileDialog(getFrame(), DialogOpenMode.EDIT, e);
                 updateOrderIndicateLabel();
                 whileDialog.setVisible(true);
                 break;
             case FOR:
                 orderMode = EditDialogMode.FOR;
-                forDialog = new ForDialog(getFrame(), DialogOpenMode.ADD, e);
+                if (forDialog == null) {
+                    forDialog = new ForDialog(getFrame(), DialogOpenMode.ADD, e);
+                }
                 forDialog = new ForDialog(getFrame(), DialogOpenMode.EDIT, e);
                 updateOrderIndicateLabel();
                 forDialog.setVisible(true);
                 break;
             case FUNCTION:
-                orderMode = EditDialogMode.FUNCTION;
-                loadFunctionDialog = new LoadFunctionDialog(getFrame(), DialogOpenMode.ADD, e);
+                orderMode = EditDialogMode.LOADFUNCTION;
+                if (loadFunctionDialog == null) {
+                    loadFunctionDialog = new LoadFunctionDialog(getFrame(), DialogOpenMode.ADD, e);
+                }
                 loadFunctionDialog = new LoadFunctionDialog(getFrame(), DialogOpenMode.EDIT, e);
                 updateOrderIndicateLabel();
                 loadFunctionDialog.setVisible(true);
@@ -203,26 +191,66 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
         }
     }
 
+    /** SETUP時に選べなくする命令の設定 */
+    public void setPanelVisible(String str){
+        if (str.equals("SETUP")){
+//            substitutionLabel.setVisible(false);
+//            calcLabel.setVisible(false);
+//            ifLabel.setVisible(false);
+//            forLabel.setVisible(false);
+//            whileLabel.setVisible(false);
+            functionLabel.setVisible(false);
+        }else {
+//            substitutionLabel.setVisible(true);
+//            calcLabel.setVisible(true);
+//            ifLabel.setVisible(true);
+//            forLabel.setVisible(true);
+//            whileLabel.setVisible(true);
+            functionLabel.setVisible(true);
+        }
+    }
+
+    /** 命令挿入パネルがクリックできるかを設定する */
+    public void setAddCanClick(boolean flg){
+        if (flg){
+            clickAddFlg = true;
+            substitutionLabel.setBackground(ColorMaster.getSelectableColor());
+            calcLabel.setBackground(ColorMaster.getSelectableColor());
+            ifLabel.setBackground(ColorMaster.getSelectableColor());
+            forLabel.setBackground(ColorMaster.getSelectableColor());
+            whileLabel.setBackground(ColorMaster.getSelectableColor());
+            functionLabel.setBackground(ColorMaster.getSelectableColor());
+        }else {
+            clickAddFlg = false;
+            substitutionLabel.setBackground(ColorMaster.getBackColor());
+            calcLabel.setBackground(ColorMaster.getBackColor());
+            ifLabel.setBackground(ColorMaster.getBackColor());
+            forLabel.setBackground(ColorMaster.getBackColor());
+            whileLabel.setBackground(ColorMaster.getBackColor());
+            functionLabel.setBackground(ColorMaster.getBackColor());
+        }
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         /** 選択された変数のダイアログを有効にする */
         JPanel panel = (JPanel) e.getSource();
-        if (panel == substitutionLabel) {
+        if (panel == substitutionLabel && clickAddFlg) {
             orderMode = EditDialogMode.SUBSTITUTION;
             substitutionDialog = new SubstitutionDialog(getFrame(), DialogOpenMode.ADD, e);
             updateOrderIndicateLabel();
             substitutionDialog.setVisible(true);
-        } else if (panel == calcLabel) {
+        } else if (panel == calcLabel && clickAddFlg) {
             orderMode = EditDialogMode.CALC;
             calcDialog = new CalcDialog(getFrame(), DialogOpenMode.ADD, e);
             updateOrderIndicateLabel();
             calcDialog.setVisible(true);
-        } else if (panel == ifLabel) {
+        } else if (panel == ifLabel && clickAddFlg) {
             orderMode = EditDialogMode.IF;
             ifDialog = new IfDialog(getFrame(), DialogOpenMode.ADD, e);
             updateOrderIndicateLabel();
             ifDialog.setVisible(true);
-        } else if (panel == forLabel) {
+        } else if (panel == forLabel && clickAddFlg) {
             orderMode = EditDialogMode.FOR;
             if (!getFrame().getMasterTerminal().getVariableStringList("変数").equals(new ArrayList<>()) ||
                 !getFrame().getMasterTerminal().getVariableStringList("配列").equals(new ArrayList<>()) ||
@@ -231,21 +259,21 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
                 updateOrderIndicateLabel();
                 forDialog.setVisible(true);
             }else {
-                JOptionPane.showMessageDialog(forLabel, "使用できる変数がありません！\nまずは変数の作成を行ってください。");
+                JOptionPane.showMessageDialog(calcLabel, "カウント変数が必要です！\n変数の作成を行ってください。");
             }
-        } else if (panel == whileLabel) {
+        } else if (panel == whileLabel && clickAddFlg) {
             orderMode = EditDialogMode.WHILE;
             whileDialog = new WhileDialog(getFrame(), DialogOpenMode.ADD, e);
             updateOrderIndicateLabel();
             whileDialog.setVisible(true);
-        } else if(panel == functionLabel){
+        } else if(panel == functionLabel && clickAddFlg){
             if (getFrame().getBasePanel().getSubOrderPanel().getProgramModel().getSize() >= 3){
-                orderMode = EditDialogMode.FUNCTION;
+                orderMode = EditDialogMode.LOADFUNCTION;
                 loadFunctionDialog = new LoadFunctionDialog(getFrame(), DialogOpenMode.ADD, e);
                 updateOrderIndicateLabel();
                 loadFunctionDialog.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(this, "SETUP、MAIN以外の関数があるとき使用できます。");
+                JOptionPane.showMessageDialog(calcLabel, "呼び出す関数が必要です！\nSETUP、MAIN以外の関数を作成してください。");
             }
         }
         /** 後回し */
@@ -270,21 +298,60 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
 //                JOptionPane.showMessageDialog(this, label);
 //            }
 //        }
+        getFrame().setOrderPanelCanClick(false, false, clickAddFlg);
     }
+    /** クリック時パネルが有効なら色変更 */
     @Override
     public void mousePressed(MouseEvent e) {
-
+        JPanel panel = (JPanel)e.getSource();
+        if (clickAddFlg) {
+            panel.setBackground(ColorMaster.getClickedColor());
+        }
     }
+    /** クリック終了時パネルの有効無効にあわせ色変更 */
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        JPanel panel = (JPanel)e.getSource();
+        if (clickAddFlg){
+            panel.setBackground(ColorMaster.getSelectableColor());
+        }else {
+            panel.setBackground(ColorMaster.getBackColor());
+        }
     }
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        JPanel panel = (JPanel) e.getSource();
+        if (panel == substitutionLabel && clickAddFlg) {
+            getFrame().getHelpLabel().setText("代入文を作成します。");
+        } else if (panel == calcLabel && clickAddFlg) {
+            getFrame().getHelpLabel().setText("計算文を作成します。");
+        } else if (panel == ifLabel && clickAddFlg) {
+            getFrame().getHelpLabel().setText("if文を作成します。");
+        } else if (panel == forLabel && clickAddFlg) {
+            String str = "for文を作成します。";
+            if (!getFrame().getMasterTerminal().getVariableStringList("変数").equals(new ArrayList<>()) ||
+                    !getFrame().getMasterTerminal().getVariableStringList("配列").equals(new ArrayList<>()) ||
+                    !getFrame().getMasterTerminal().getVariableStringList("2次元配列").equals(new ArrayList<>())){
+            }else {
+                str = str + "変数が必要です。左のパネルで変数の作成を行ってください。";
+            }
+            getFrame().getHelpLabel().setText(str);
+        } else if (panel == whileLabel && clickAddFlg) {
+            getFrame().getHelpLabel().setText("while文を作成します。");
+        } else if(panel == functionLabel && clickAddFlg){
+            String str = "関数を挿入します。";
+            if (getFrame().getBasePanel().getSubOrderPanel().getProgramModel().getSize() < 3){
+                str += "呼び出す関数が必要です。左のパネルで関数を作成してください。";
+            }
+            getFrame().getHelpLabel().setText(str);
+        }
     }
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public boolean getClickAddFlg() {
+        return clickAddFlg;
     }
 }

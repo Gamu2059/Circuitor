@@ -86,7 +86,7 @@ public abstract class DataIO {
      * データファイルから起動した際の書き込み用メソッド。
      * ファイル起動の場合に用いる。
      */
-    public final void inoutData(String path) {
+    public final void inputData(String path) {
         File file = new File(path);
         if (file.canRead()) {
             try {

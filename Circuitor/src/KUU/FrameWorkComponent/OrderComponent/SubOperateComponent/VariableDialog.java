@@ -115,11 +115,13 @@ public class VariableDialog extends NewJDialog implements MouseListener{
             }else if (openMode == DialogOpenMode.ADD){
                 getFrame().getMasterTerminal().generateNewVariable("変数", new Variable(type, variableTextField.getText()));
                 getFrame().updateOrderPanel(false);
-                dispose();
+                variableTextField.setText("");
+                getFrame().getHelpLabel().setText("");
             }else {
                 getFrame().getMasterTerminal().renameVariable("変数", oldVariableName, variableTextField.getText());
                 getFrame().updateOrderPanel(false);
                 dispose();
+                getFrame().getHelpLabel().setText("");
             }
         }
     }
@@ -156,7 +158,7 @@ public class VariableDialog extends NewJDialog implements MouseListener{
         public void handResize(int width, int height) {
             int partsWidth = width/5;
             /** 上下端を除いた高さ */
-            int partsHeight = height - 50;
+            int partsHeight = height - 45;
 
             buttonTitleLabel.setBounds(0, 0, partsWidth*2, 20);
             variableTitleLabel.setBounds(partsWidth*2, 0, width - partsWidth*2, 20);
@@ -166,7 +168,7 @@ public class VariableDialog extends NewJDialog implements MouseListener{
             boolButton.setBounds(0, partsHeight/2, partsWidth*2, partsHeight - partsHeight/2);
             variableTextField.setBounds(partsWidth*2, 0, width - partsWidth*2, partsHeight);
 
-            confirmLabel.setBounds(0, height - 30, width, 30);
+            confirmLabel.setBounds(0, height - 25, width, 25);
         }
 
         @Override
