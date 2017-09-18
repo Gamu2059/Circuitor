@@ -94,7 +94,7 @@ public class MiconLabel extends NewJLabel implements MouseListener {
     /**
      * miconPinに保持された値と対応する文字列を返す。
      */
-    private String getCorrespondText(TerminalDirection t) {
+    public static String getCorrespondText(TerminalDirection t) {
         switch (t) {
             case OUT:
                 return "出力";

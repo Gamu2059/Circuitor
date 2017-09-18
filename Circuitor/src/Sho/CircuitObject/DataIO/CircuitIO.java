@@ -1,6 +1,5 @@
 package Sho.CircuitObject.DataIO;
 
-import DataIO.DataIO;
 import KUU.BaseComponent.BaseFrame;
 import Master.ImageMaster.PartsDirections;
 import Master.ImageMaster.PartsStandards;
@@ -16,8 +15,8 @@ import java.io.*;
  * 回路側のデータ入出力をまとめたクラス。
  */
 public class CircuitIO {
-    public static final String START = "_____START CIRCUIT DATA_____";
-    public static final String END = "_____END CIRCUIT DATA_____";
+    private static final String START = "_____START CIRCUIT DATA_____";
+    private static final String END = "_____END CIRCUIT DATA_____";
 
     private BaseFrame frame;
 

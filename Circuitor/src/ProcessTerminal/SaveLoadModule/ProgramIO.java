@@ -13,8 +13,8 @@ import javax.swing.*;
 import java.io.*;
 
 public class ProgramIO {
-    public static final String START = "_____START PROGRAM DATA_____";
-    public static final String END = "_____END PROGRAM DATA_____";
+    private static final String START = "_____START PROGRAM DATA_____";
+    private static final String END = "_____END PROGRAM DATA_____";
 
     private DelegateData data;
     private String nowLoadingFunction;
