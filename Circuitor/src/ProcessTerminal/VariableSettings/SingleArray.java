@@ -28,12 +28,7 @@ public class SingleArray extends Variable {
 
     @Override
     public void resetValue() {
-        for (Variable variable : arrays)
+        for(Variable variable:arrays)
             variable.resetValue();
-    }
-
-    @Override
-    public int getArraySize() {
-        return arrays.length;
     }
 }

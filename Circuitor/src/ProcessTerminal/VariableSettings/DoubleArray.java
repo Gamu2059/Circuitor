@@ -34,14 +34,4 @@ public class DoubleArray extends Variable {
             for (Variable variable : list)
                 variable.resetValue();
     }
-
-    @Override
-    public int getArraySize(){
-        return arrays.length;
-    }
-
-    @Override
-    public int getArraySizeHorizontal(){
-        return arrays[0].length;
-    }
 }
