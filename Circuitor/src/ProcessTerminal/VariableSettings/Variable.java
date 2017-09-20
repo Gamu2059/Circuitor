@@ -61,4 +61,12 @@ public class Variable {
     public Variable get(int index1, int index2) {
         return this;
     }
+
+    public int getArraySize(){
+        return 1;
+    }
+
+    public int getArraySizeHorizontal(){
+        return 0;
+    }
 }
