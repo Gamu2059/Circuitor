@@ -18,7 +18,7 @@ public class ElecomInfo implements CopyTo {
     private PartsStandards partsStandards;
     private PartsStates partsStates;
     private PartsDirections partsDirections;
-    private int etcStatus;
+    private double etcStatus;
     private IntegerDimension size;
     private int highLevelConnectSize;
     private ArrayList<CircuitLinkInfo> linkedTerminal;
@@ -70,11 +70,11 @@ public class ElecomInfo implements CopyTo {
         this.partsDirections = partsDirections;
     }
 
-    public int getEtcStatus() {
+    public double getEtcStatus() {
         return etcStatus;
     }
 
-    public void setEtcStatus(int etcStatus) {
+    public void setEtcStatus(double etcStatus) {
         this.etcStatus = etcStatus;
     }
 

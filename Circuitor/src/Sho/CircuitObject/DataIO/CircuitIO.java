@@ -65,7 +65,8 @@ public class CircuitIO {
         /* すでに存在している回路を削除する */
         panel.getOperateOperate().allDelete(panel);
         CircuitBlock b;
-        int y,x, status;
+        int y,x;
+        double status;
 
         // STARTの文字列が出現するまで読み飛ばし
         line = r.readLine();
@@ -80,7 +81,7 @@ public class CircuitIO {
             /* 読み込んだ情報を追加していく */
             y = Integer.parseInt(data[3]);
             x = Integer.parseInt(data[4]);
-            status = Integer.parseInt(data[5]);
+            status = Double.parseDouble(data[5]);
             /* ブロックを生成し、情報を書き込む */
             b = new CircuitBlock(y, x);
             b.getCircuitInfo().setReco(new IntegerDimension());
