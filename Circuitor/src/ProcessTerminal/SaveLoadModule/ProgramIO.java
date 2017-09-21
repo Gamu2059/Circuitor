@@ -9,60 +9,65 @@ import ProcessTerminal.VariableSettings.DoubleArray;
 import ProcessTerminal.VariableSettings.SingleArray;
 import ProcessTerminal.VariableSettings.Variable;
 
+import javax.swing.*;
 import java.io.*;
 
-public class ProgramIO extends DataIO {
+public class ProgramIO {
+    private static final String START = "_____START PROGRAM DATA_____";
+    private static final String END = "_____END PROGRAM DATA_____";
+
     private DelegateData data;
     private String nowLoadingFunction;
 
-    public ProgramIO(BaseFrame frame,DelegateData data){
-        super(frame,new ProgramFilter(),"cctp");
+    public ProgramIO(DelegateData data) {
         this.data=data;
     }
 
-    protected void outputter(File file) throws Exception {
+    public void outputter(PrintWriter w) throws Exception {
+        if (w == null) {
+            throw new Exception("PrintWriter is null");
+        }
         data.getFunctionGroup().updateFactor(data);
-        PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
+        w.println(START);
         // 変数リスト書き出し
-        printWriter.println("HEADER,,,");
         for (Variable variable : data.getVariableGroup().searchVariableList("変数").getVariableList()) {
-            printWriter.println("VARIABLE,VARIABLE," + variable.getType() + "," + variable.getName() + ",");
+            w.println("VARIABLE,VARIABLE," + variable.getType() + "," + variable.getName() + ",");
         }
         for (Variable variable : data.getVariableGroup().searchVariableList("配列").getVariableList()) {
             if (variable instanceof SingleArray) {
-                printWriter.println("VARIABLE,ARRAY," + variable.getType() + "," + variable.getName() + "," + ((SingleArray) variable).getArrays().length + ",");
+                w.println("VARIABLE,ARRAY," + variable.getType() + "," + variable.getName() + "," + ((SingleArray) variable).getArrays().length + ",");
             }
         }
         for (Variable variable : data.getVariableGroup().searchVariableList("2次元配列").getVariableList()) {
             if (variable instanceof DoubleArray) {
-                printWriter.println("VARIABLE,SQUARE," + variable.getType() + "," + variable.getName() + "," + ((DoubleArray) variable).getArrays().length + "," + ((DoubleArray) variable).getArrays()[0].length + ",");
+                w.println("VARIABLE,SQUARE," + variable.getType() + "," + variable.getName() + "," + ((DoubleArray) variable).getArrays().length + "," + ((DoubleArray) variable).getArrays()[0].length + ",");
             }
         }
 
         for (Function function : data.getFunctionGroup().getFunctionGroup()) {
-            printWriter.println("FUNCTION," + function.getName() + ",");
+            w.println("FUNCTION," + function.getName() + ",");
             for (ListElement element : function.getProgramList()) {
                 if (element instanceof Command) {
                     switch (((Command) element).getType()) {
                         case RET:
-                            printWriter.println("ELEMENT,Command,RET," + ((Command) element).getTarget().getSavingData() + "," + ((Command) element).getEvaluation().getSavingData() + ",");
+                            w.println("ELEMENT,Command,RET," + ((Command) element).getTarget().getSavingData() + "," + ((Command) element).getEvaluation().getSavingData() + ",");
                             break;
                         case CALC:
-                            printWriter.println("ELEMENT,Command,CALC," + ((Command) element).getTarget().getSavingData() + "," + ((Command) element).getEvaluation().getSavingData() + ",");
+                            w.println("ELEMENT,Command,CALC," + ((Command) element).getTarget().getSavingData() + "," + ((Command) element).getEvaluation().getSavingData() + ",");
                             break;
                         case WAIT:
-                            printWriter.println("ELEMENT,Command,WAIT" + ((Command) element).getEvaluation().getValue(data) + ",");
+                            w.println("ELEMENT,Command,WAIT" + ((Command) element).getEvaluation().getValue(data) + ",");
                             break;
                     }
                 } else if (element instanceof Syntax) {
                     switch (((Syntax) element).getsType()) {
                         case IF:
                         case WHILE:
-                            printWriter.println("ELEMENT,Syntax," + ((Syntax) element).getsType().toString() + "," + ((Syntax) element).getEvaluation().getSavingData() + ",");
+                            w.println("ELEMENT,Syntax," + ((Syntax) element).getsType().toString() + "," + ((Syntax) element).getEvaluation().getSavingData() + ",");
                             break;
                         case FOR:
-                            printWriter.println("ELEMENT,Syntax,FOR," + ((Syntax) element).getTarget().getSavingData() + "," + ((Syntax) element).getInitValue().getSavingData() + "," + ((Syntax) element).getEvaluation().getSavingData() + "," +
+                            w.println("ELEMENT,Syntax,FOR," + ((Syntax) element).getTarget().getSavingData() + "," + ((Syntax) element).getInitValue().getSavingData() + "," + ((Syntax) element).getEvaluation().getSavingData() + "," +
                                     ((Syntax) element).getInclementValue().getSavingData() + ",");
                             break;
                         case TRUE:
@@ -70,24 +75,26 @@ public class ProgramIO extends DataIO {
                         case END:
                         case BREAK:
                         case CONTINUE:
-                            printWriter.println("ELEMENT,Syntax," + ((Syntax) element).getsType().toString() + ",");
+                            w.println("ELEMENT,Syntax," + ((Syntax) element).getsType().toString() + ",");
                             break;
                         case FUNCTION:
-                            printWriter.println("ELEMENT,Syntax,FUNCTION," + ((Syntax) element).getFunctionName() + ",");
+                            w.println("ELEMENT,Syntax,FUNCTION," + ((Syntax) element).getFunctionName() + ",");
                             break;
                         default:
                             break;
                     }
                 } else {
-                    printWriter.println("ELEMENT,VOID,");
+                    w.println("ELEMENT,VOID,");
                 }
             }
         }
-        printWriter.close();
+        w.println(END);
     }
 
-    protected void inputter(File file) throws Exception {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+    public void inputter(BufferedReader r) throws Exception {
+        if (r == null) {
+            throw new Exception("BufferedReader is null");
+        }
 
         /** 現在情報の初期化 */
         data.getFunctionGroup().getFunctionGroup().clear();
@@ -95,10 +102,18 @@ public class ProgramIO extends DataIO {
         data.getVariableGroup().searchVariableList("配列").getVariableList().clear();
         data.getVariableGroup().searchVariableList("2次元配列").getVariableList().clear();
 
-        String text = bufferedReader.readLine();
-        while (text != null) {
+        String text;
+
+        // STARTの文字列が出現するまで読み飛ばし
+        text = r.readLine();
+        while (!text.equals(START)) {
+            text = r.readLine();
+        }
+        text = r.readLine();
+
+        while (!text.isEmpty() && !text.equals(END)) {
             analysisText(text);
-            text = bufferedReader.readLine();
+            text = r.readLine();
         }
 
         for(Function function:data.getFunctionGroup().getFunctionGroup()){

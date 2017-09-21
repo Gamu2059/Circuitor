@@ -14,6 +14,8 @@ import java.util.ArrayList;
  * 電源の振る舞いを定義するクラス。
  */
 public class PowerBehavior_ extends ElecomBehavior_ {
+    private double hertz;
+
     public PowerBehavior_(ExecuteUnitPanel exePanel, ElecomInfo info) {
         super(exePanel, info);
     }
@@ -33,7 +35,7 @@ public class PowerBehavior_ extends ElecomBehavior_ {
                         if (connectInfo.getRole() == HighLevelConnectGroup.TERMINAL_BRANCH && connectInfo.getAbcos().get(0).equals(abco.getHeight() + linkInfo.getReco().getHeight(), abco.getWidth() + linkInfo.getReco().getWidth())) {
                             if (connectInfo.getConnectDirection() == j) {
                                 getInfos().set(0, new CorrespondInfo(connectInfo, linkInfo.getTerminalDirection()[j]));
-                                connectInfo.getHighLevelExecuteInfo().setPotential(1.5);
+                                connectInfo.getHighLevelExecuteInfo().setPotential(getElecomInfo().getEtcStatus());
                                 flg = true;
                                 break;
                             }

@@ -104,8 +104,8 @@ public class BasePanel extends NewJPanel {
             miconPanel.setExecuteState(true);
             modeSelectPanel.setExecuteState(true);
 
-            getFrame().getBaseMenuBar().getMenuLoad().setEnabled(false);
-            getFrame().getBaseMenuBar().getMenuSave().setEnabled(false);
+            getFrame().getBaseMenuBar().getItemLoad().setEnabled(false);
+            getFrame().getBaseMenuBar().getItemSave().setEnabled(false);
             getFrame().getBaseMenuBar().getItemModeCircuit().setEnabled(false);
             getFrame().getBaseMenuBar().getItemModeOrder().setEnabled(false);
             getFrame().getBaseMenuBar().getItemExecution().setEnabled(false);
@@ -134,8 +134,8 @@ public class BasePanel extends NewJPanel {
         setDisplay(preMode);
         miconPanel.setExecuteState(false);
         modeSelectPanel.setExecuteState(false);
-        getFrame().getBaseMenuBar().getMenuLoad().setEnabled(true);
-        getFrame().getBaseMenuBar().getMenuSave().setEnabled(true);
+        getFrame().getBaseMenuBar().getItemLoad().setEnabled(true);
+        getFrame().getBaseMenuBar().getItemSave().setEnabled(true);
         getFrame().getBaseMenuBar().getItemModeCircuit().setEnabled(true);
         getFrame().getBaseMenuBar().getItemModeOrder().setEnabled(true);
         getFrame().getBaseMenuBar().getItemExecution().setEnabled(true);

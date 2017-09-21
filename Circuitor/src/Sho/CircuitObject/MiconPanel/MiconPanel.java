@@ -34,14 +34,12 @@ public class MiconPanel extends NewJPanel {
         setLayout(null);
         setBackground(ColorMaster.getBackColor());
         setBorder(BorderMaster.getRegularBorder());
-        /** ピン設定の初期化 */
+
+        /** コンポーネントの登録とピンの初期化 */
         miconPin = new TerminalDirection[18];
-        for (int i = 0; i < miconPin.length; i++) {
-            miconPin[i] = TerminalDirection.OUT;
-        }
-        /** コンポーネントの登録 */
         miconLabel = new MiconLabel[18];
         for (int i = 0; i < 18; i++) {
+            miconPin[i] = TerminalDirection.OUT;
             if (i != 4 && i != 13) {
                 if (i < 9) {
                     add(miconLabel[i] = new MiconLabel(frame, i, "出力"));
@@ -50,8 +48,10 @@ public class MiconPanel extends NewJPanel {
                     add(miconLabel[26 - i] = new MiconLabel(frame, 26 - i, "出力"));
                 }
             } else if (i == 4) {
+                miconPin[i] = TerminalDirection.GND;
                 add(miconLabel[i] = new MiconLabel(frame, i, "接地"));
             } else {
+                miconPin[i] = TerminalDirection.POWER;
                 add(miconLabel[i] = new MiconLabel(frame, i, "電源"));
             }
         }

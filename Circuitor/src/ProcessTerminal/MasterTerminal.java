@@ -57,13 +57,13 @@ public class MasterTerminal {
         prepareTerminal();
         this.baseFrame = baseFrame;
         delegateData = new DelegateData(variableGroup, brakeList, functionGroup,forBootingList);
-        programIO=new ProgramIO(this.baseFrame,delegateData);
+        programIO=new ProgramIO(delegateData);
     }
 
     private MasterTerminal() {
         prepareTerminal();
         delegateData = new DelegateData(variableGroup, brakeList, functionGroup, forBootingList);
-        programIO=new ProgramIO(this.baseFrame,delegateData);
+        programIO=new ProgramIO(delegateData);
     }
 
     private void prepareTerminal(){
@@ -235,14 +235,6 @@ public class MasterTerminal {
         return delegateData.getFunctionGroup().searchFunction(functionName).moveOrder(beforeNumber, afterNumber);
     }
 
-    public void loadProgram() {
-        programIO.inputData();
-    }
-
-    public void saveProgram() {
-        programIO.outputData();
-    }
-
     public String getVariableArray(String groupName, String variableName) {
         return variableName + " = " + variableGroup.searchVariableList(groupName).searchVariable(variableName).getValue();
     }
@@ -306,48 +298,48 @@ public class MasterTerminal {
         return buffer;
     }
 
-    public static void main(String[] args) {
-        MasterTerminal masterTerminal = new MasterTerminal();
-
-        boolean[] pin = new boolean[18];
-        for (int i = 0; i < pin.length; i++) pin[i] = false;
-        pin[17]=true;
-        pin[10]=true;
-
-        masterTerminal.loadProgram();
-
-        for (String text : masterTerminal.getListString("MAIN")) {
-            System.out.println(text);
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        System.out.println(masterTerminal.moveOrder("MAIN",33,28));
-
-        for (String text : masterTerminal.getListString("MAIN")) {
-            System.out.println(text);
-        }
-
-        masterTerminal.initSimulator();
-        for (int i = 0; i < 10; i++) {
-            masterTerminal.bootProgram(pin);
-        }
-
+//    public static void main(String[] args) {
+//        MasterTerminal masterTerminal = new MasterTerminal();
 //
-//        stringBuilder = new StringBuilder();
-//        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("ピン").getVariableList()) {
-//            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
-//        }
-//        System.out.println(stringBuilder.toString());
+//        boolean[] pin = new boolean[18];
+//        for (int i = 0; i < pin.length; i++) pin[i] = false;
+//        pin[17]=true;
+//        pin[10]=true;
 //
-//        stringBuilder = new StringBuilder();
-//        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("出力ピン").getVariableList()) {
-//            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
+//        masterTerminal.loadProgram();
+//
+//        for (String text : masterTerminal.getListString("MAIN")) {
+//            System.out.println(text);
 //        }
 //
-//        System.out.println(stringBuilder.toString());
-
-        System.out.println(Arrays.toString(pin));
-        System.out.println(Arrays.toString(masterTerminal.outputPinList));
-    }
+//        StringBuilder stringBuilder = new StringBuilder();
+//
+//        System.out.println(masterTerminal.moveOrder("MAIN",33,28));
+//
+//        for (String text : masterTerminal.getListString("MAIN")) {
+//            System.out.println(text);
+//        }
+//
+//        masterTerminal.initSimulator();
+//        for (int i = 0; i < 10; i++) {
+//            masterTerminal.bootProgram(pin);
+//        }
+//
+////
+////        stringBuilder = new StringBuilder();
+////        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("ピン").getVariableList()) {
+////            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
+////        }
+////        System.out.println(stringBuilder.toString());
+////
+////        stringBuilder = new StringBuilder();
+////        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("出力ピン").getVariableList()) {
+////            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
+////        }
+////
+////        System.out.println(stringBuilder.toString());
+//
+//        System.out.println(Arrays.toString(pin));
+//        System.out.println(Arrays.toString(masterTerminal.outputPinList));
+//    }
 }
