@@ -40,6 +40,8 @@ public enum PartsStandards {
     /* POWER */
     /** 直流電源 */
     DC,
+    /** 交流電源 */
+    AC,
 
     /* RESISTANCE */
     /** 10Ω */

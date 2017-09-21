@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class PulseBehavior_ extends ElecomBehavior_ {
     /** パルス信号の切り替えを管理するスレッド */
     private PulseGenerate pulseGenerator;
-    private int freq;
+    private double freq;
 
     public PulseBehavior_(ExecuteUnitPanel exePanel, ElecomInfo info) {
         super(exePanel, info);
@@ -83,11 +83,11 @@ public class PulseBehavior_ extends ElecomBehavior_ {
         }
     }
 
-    public int getFreq() {
+    public double getFreq() {
         return freq;
     }
 
-    public void setFreq(int freq) {
+    public void setFreq(double freq) {
         this.freq = freq;
         pulseGenerator.setTiming(freq);
     }
@@ -104,7 +104,7 @@ public class PulseBehavior_ extends ElecomBehavior_ {
          * パルス切り替えタイミング。
          * 例：100Hzの時、この値は5(ms)となる。10(ms)は周期なので注意。
          */
-        private int timing;
+        private double timing;
         /**
          * HighLevelかLowLevelかのフラグ。
          * trueの時High。
@@ -117,7 +117,7 @@ public class PulseBehavior_ extends ElecomBehavior_ {
          */
         private boolean isChanged;
 
-        PulseGenerate(int frequency) {
+        PulseGenerate(double frequency) {
             super();
             runStop = false;
             pulseOutput = false;
@@ -158,7 +158,7 @@ public class PulseBehavior_ extends ElecomBehavior_ {
             this.runStop = runStop;
         }
 
-        public void setTiming(int frequency) {
+        public void setTiming(double frequency) {
             this.timing = 500 / frequency;
         }
 

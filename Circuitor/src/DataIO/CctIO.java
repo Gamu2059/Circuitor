@@ -32,6 +32,7 @@ public class CctIO extends DataIO {
             miconPinIO.outputter(printWriter);
             getFrame().getHelpLabel().setText("データの保存に成功しました。");
         } catch (Exception e) {
+            e.printStackTrace();
             getFrame().getHelpLabel().setText("データの保存に失敗しました。");
         } finally {
             printWriter.close();
@@ -48,6 +49,7 @@ public class CctIO extends DataIO {
             miconPinIO.inputter(reader);
             getFrame().getHelpLabel().setText("データの読込に成功しました。");
         } catch (Exception e) {
+            e.printStackTrace();
             getFrame().getHelpLabel().setText("データの読込に失敗しました。");
         } finally {
             reader.close();

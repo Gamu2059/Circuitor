@@ -15,6 +15,7 @@ import Sho.CircuitObject.Circuit.CircuitOperateMode.*;
 import Sho.CircuitObject.Circuit.CircuitOperateCommand.*;
 import Sho.CircuitObject.Circuit.CircuitOperateBehavior.*;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsAdd.PartsButton;
+import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
 import Sho.IntegerDimension.IntegerDimension;
@@ -329,10 +330,33 @@ public class CircuitUnitPanel extends UnitPanel {
     /**
      * 部品の追加前にするべきことをここで行う。
      * 部品ボタンは追加する時に必ずこれを呼び出さねばならない。
+     *
+     * etcStatusの初期化が必要な場合はここで初期化される。
      */
     public void addPrepare(CircuitBlock b) {
-        getElecomInfoSelector().elecomInfoSelector(b.getElecomInfo());
+        ElecomInfo e = b.getElecomInfo();
+        PartsVarieties v = e.getPartsVarieties();
+        PartsStandards s = e.getPartsStandards();
+
+        getElecomInfoSelector().elecomInfoSelector(e);
         b.getCircuitInfo().setReco(new IntegerDimension());
+
+        switch (v) {
+            case POWER:
+                if (s == PartsStandards.DC) {
+                    e.setEtcStatus(1.5);
+                }
+                break;
+            case RESISTANCE:
+                if (s == PartsStandards._variable) {
+                    e.setEtcStatus(1);
+                }
+                break;
+            case PULSE:
+                e.setEtcStatus(1);
+                break;
+        }
+
         setTmp(b);
     }
 
@@ -964,9 +988,16 @@ public class CircuitUnitPanel extends UnitPanel {
                                     ElecomInfo ele = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth()).getElecomInfo();
                                     int y = c.getAbco().getHeight() - c.getReco().getHeight();
                                     int x = c.getAbco().getWidth() - c.getReco().getWidth();
-                                    if (ele.getPartsVarieties() == PartsVarieties.RESISTANCE && ele.getPartsStandards() == PartsStandards._variable) {
+                                    if (ele.getPartsVarieties() == PartsVarieties.POWER) {
+                                        if (ele.getPartsStandards() == PartsStandards.DC) {
+                                            // 直流電源の電圧値変更
+                                            new VariableDirectPowerDialog(this, getCircuitUnit().getCircuitBlock().getMatrix().get(y).get(x));
+                                        }
+                                    } else if (ele.getPartsVarieties() == PartsVarieties.RESISTANCE && ele.getPartsStandards() == PartsStandards._variable) {
+                                        // 可変抵抗の抵抗値変更
                                         new VariableResistanceDialog(this, getCircuitUnit().getCircuitBlock().getMatrix().get(y).get(x));
                                     } else if (ele.getPartsVarieties() == PartsVarieties.PULSE && ele.getPartsStandards() == PartsStandards.PULSE) {
+                                        // 可変パルス出力器の周波数変更
                                         new VariablePulseDialog(this, getCircuitUnit().getCircuitBlock().getMatrix().get(y).get(x));
                                     }
                                 }

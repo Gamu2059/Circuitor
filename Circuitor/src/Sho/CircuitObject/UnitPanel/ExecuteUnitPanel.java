@@ -12,6 +12,7 @@ import Sho.CircuitObject.HighLevelConnect.HighLevelConnectGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
 import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteInfo;
+import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
 import Sho.Matrix.DoubleMatrix;
@@ -237,7 +238,10 @@ public class ExecuteUnitPanel extends UnitPanel {
                 c1 = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
                 for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
                     if (group.getAbco().equals(c1.getAbco())) {
-                        if (ele.getPartsStandards() == PartsStandards._variable) {
+                        if (ele.getPartsStandards() == PartsStandards.DC) {
+                            /* 直流電源の電圧値を変更する */
+                            new VariableDirectPowerDialog(this, group);
+                        } else if (ele.getPartsStandards() == PartsStandards._variable) {
                             /* 抵抗値を変更する */
                             new VariableResistanceDialog(this, group.getExecuteInfos());
                         } else if (ele.getPartsStandards() == PartsStandards.PULSE) {

@@ -82,7 +82,7 @@ public class PartsButton extends JButton implements MouseListener {
                 title = "マイコン";
                 break;
             case DC:
-                title = "1.5V 直流電源";
+                title = "直流電源";
                 break;
             case _10:
                 title = "10Ω";
