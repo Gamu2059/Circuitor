@@ -37,7 +37,7 @@ public class VariableDirectPowerDialog extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 try {
                     double value = Double.parseDouble(textField.getText());
-                    if (value < 0 || value > 100) {
+                    if (value < 0.001 || value > 100) {
                         throw new Exception();
                     }
                     for (int i = 0; i < b.getElecomInfo().getSize().getHeight(); i++) {
@@ -70,8 +70,8 @@ public class VariableDirectPowerDialog extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    double value = Integer.parseInt(textField.getText());
-                    if (value < 0 || value > 100) {
+                    double value = Double.parseDouble(textField.getText());
+                    if (value < 0.001 || value > 100) {
                         throw new Exception();
                     }
                     he.setPotential(value);
