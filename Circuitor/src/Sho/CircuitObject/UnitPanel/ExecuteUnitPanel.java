@@ -234,7 +234,7 @@ public class ExecuteUnitPanel extends UnitPanel {
                 } else {
                     getOperateOperate().setPartsStates(this, getCursorCo(), PartsStates.ON);
                 }
-            } else if (ele.getPartsVarieties() == PartsVarieties.RESISTANCE || ele.getPartsVarieties() == PartsVarieties.PULSE ||ele.getPartsVarieties() == PartsVarieties.MEASURE) {
+            } else if (isSettablePartsVarieties(ele.getPartsVarieties())) {
                 c1 = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
                 for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
                     if (group.getAbco().equals(c1.getAbco())) {
@@ -263,6 +263,10 @@ public class ExecuteUnitPanel extends UnitPanel {
             }
         }
         reDirection();
+    }
+
+    private boolean isSettablePartsVarieties(PartsVarieties pV) {
+        return pV == PartsVarieties.POWER || pV == PartsVarieties.RESISTANCE || pV == PartsVarieties.PULSE || pV == PartsVarieties.MEASURE;
     }
 
     /**
