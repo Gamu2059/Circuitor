@@ -38,10 +38,10 @@ public class ExeMeasurePanel extends NewJPanel {
     @Override
     public void handResize(int width, int height) {
         indicateLabel.setBounds(0, 0, width, height / 7);
-        titleLabel.setBounds(0, height / 7, (width / 5) * 2, 20);
-        valueIndicateLabel.setBounds((width / 5) * 2, height / 7, width - (width / 5) * 2, 20);
-        valueLinePanel.setBounds(0, (height / 7) + 20, (width / 5) * 2, height - (height / 7) - 50);
-        graphPanel.setBounds((width / 5) * 2, (height / 7) + 20, width - (width / 5) * 2, height - (height / 7) - 50);
+        titleLabel.setBounds(0, height / 7, (width / 3), 20);
+        valueIndicateLabel.setBounds(width / 3, height / 7, width - (width / 3), 20);
+        valueLinePanel.setBounds(0, (height / 7) + 20, (width / 3), height - (height / 7) - 50);
+        graphPanel.setBounds(width / 3, (height / 7) + 20, width - (width / 3), height - (height / 7) - 50);
         rangeChangePanel.setBounds(0,height - 30, width, 30);
     }
 
