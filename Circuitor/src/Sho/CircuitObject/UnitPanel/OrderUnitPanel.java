@@ -10,6 +10,7 @@ import Sho.CircuitObject.Circuit.ElecomInfo;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 
 /**
  * CircuitUnitを内包した命令モード時確認用パネルクラス。
@@ -39,6 +40,10 @@ public class OrderUnitPanel extends UnitPanel {
         CircuitInfo c;
         ElecomInfo e;
 
+        AffineTransform affine = new AffineTransform();
+
+        float baseSize = UNIT_PIXEL * getPaintRatio();
+
         /* 基板の描画 */
         g2.setColor(ColorMaster.getSubstrateColor());
         getPaintRect().setRect(getPaintBaseCo().getWidth(), getPaintBaseCo().getHeight(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getWidth(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getHeight());
@@ -50,15 +55,25 @@ public class OrderUnitPanel extends UnitPanel {
                 e = b.getElecomInfo();
                 c = b.getCircuitInfo();
                 if (b.isExist()) {
+                    affine.translate(baseSize * j + getPaintBaseCo().getWidth(), baseSize * i + getPaintBaseCo().getHeight());
+                    affine.scale(getPaintRatio(), getPaintRatio());
+                    affine.rotate(getRotateNum(e.getPartsDirections()));
                     g2.drawImage(
-                            ImageMaster.getImageMaster().getImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsStates(), e.getPartsDirections(), c.getReco().getHeight(), c.getReco().getWidth()).getImage(),
-                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth(),
-                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            this
+                        ImageMaster.getImageMaster().getImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsStates(), e.getPartsDirections(), c.getReco().getHeight(), c.getReco().getWidth()).getImage(),
+                        affine,
+                        null
                     );
                 }
+//                if (b.isExist()) {
+//                    g2.drawImage(
+//                            ImageMaster.getImageMaster().getImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsStates(), e.getPartsDirections(), c.getReco().getHeight(), c.getReco().getWidth()).getImage(),
+//                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth(),
+//                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight(),
+//                            UNIT_PIXEL * getPaintRatio(),
+//                            UNIT_PIXEL * getPaintRatio(),
+//                            this
+//                    );
+//                }
             }
         }
     }

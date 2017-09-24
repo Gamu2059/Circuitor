@@ -3,6 +3,7 @@ package Sho.CircuitObject.UnitPanel;
 import KUU.BaseComponent.BaseFrame;
 import KUU.NewComponent.NewJPanel;
 import Master.ColorMaster.ColorMaster;
+import Master.ImageMaster.PartsDirections;
 import Sho.CircuitObject.Circuit.CircuitBlock;
 import Sho.CircuitObject.Circuit.CircuitBorder;
 import Sho.CircuitObject.Circuit.CircuitUnit;
@@ -140,6 +141,25 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
         operateDetection = new OperateDetection_(frame);
         operateOperate = new OperateOperate_(frame);
         setBackground(ColorMaster.getBackColor());
+    }
+
+    /**
+     * PartsDirectionから正方向に何回90度回転すれば良いかを返す。
+     * LEFTならば90度回転すれば良いので1、RIGHTならば270度回転すれば良いので3を返す。
+     */
+    protected int getRotateNum(PartsDirections directions) {
+        switch (directions) {
+            case UP:
+                return 0;
+            case LEFT:
+                return 1;
+            case DOWN:
+                return 2;
+            case RIGHT:
+                return 3;
+            default:
+                return 0;
+        }
     }
 
     /**
