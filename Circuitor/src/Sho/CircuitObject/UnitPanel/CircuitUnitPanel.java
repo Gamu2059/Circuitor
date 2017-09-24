@@ -19,11 +19,13 @@ import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerD
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
 import Sho.IntegerDimension.IntegerDimension;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 /**
@@ -167,122 +169,71 @@ public class CircuitUnitPanel extends UnitPanel {
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        CircuitBlock b;
         CircuitInfo c;
         ElecomInfo e;
 
-        /* 基板の描画 */
-        g2.setColor(ColorMaster.getSubstrateColor());
-        getPaintRect().setRect(getPaintBaseCo().getWidth(), getPaintBaseCo().getHeight(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getWidth(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getHeight());
-        g2.fill(getPaintRect());
-        /* ボーダの描画 */
-        for (int i = 0; i < getCircuitSize().getHeight(); i++) {
-            for (int j = 0; j < getCircuitSize().getWidth(); j++) {
-                b = getCircuitUnit().getCircuitBlock().getMatrix().get(i).get(j);
-                if (b.getBorder() != null) {
-                    g2.setColor(CircuitBorder.getColor(b.getBorder()));
-                    getPaintRect().setRect(
-                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth() + 1,
-                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight() + 1,
-                            UNIT_PIXEL * getPaintRatio() - 2,
-                            UNIT_PIXEL * getPaintRatio() - 2
-                    );
-                    g2.fill(getPaintRect());
-                }
-            }
-        }
-        /* 部品の描画 */
-        for (int i = 0; i < getCircuitSize().getHeight(); i++) {
-            for (int j = 0; j < getCircuitSize().getWidth(); j++) {
-                b = getCircuitUnit().getCircuitBlock().getMatrix().get(i).get(j);
-                e = b.getElecomInfo();
-                c = b.getCircuitInfo();
-                if (b.isExist()) {
-                    g2.drawImage(
-                            ImageMaster.getImageMaster().getImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsStates(), e.getPartsDirections(), c.getReco().getHeight(), c.getReco().getWidth()).getImage(),
-                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth(),
-                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            this
-                    );
-                }
-            }
-        }
+        AffineTransform affine;
+        int baseSize = getBaseSize();
+
+        /* 基本描画 */
+        paintBase(g2);
+        paintBorder(g2);
+        paintParts(g2);
+
         /* 予測部品の描画 */
-        switch (getCircuitUnit().getMode().getMode()) {
-            case PARTS_ADD:
-                switch (getCircuitUnit().getCommand().getCommand()) {
-                    case PARTS_ADD:
-                        if (getTmp() != null && getCursorCo() != null) {
-                            IntegerDimension size = getTmp().getElecomInfo().getSize();
-                            e = getTmp().getElecomInfo();
-                            g2.drawImage(ImageMaster.getImageMaster().getTempImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsDirections()).getImage(),
-                                    UNIT_PIXEL * getPaintRatio() * (getCursorCo().getWidth() - size.getWidth() / 2) + getPaintBaseCo().getWidth(),
-                                    UNIT_PIXEL * getPaintRatio() * (getCursorCo().getHeight() - size.getHeight() / 2) + getPaintBaseCo().getHeight(),
-                                    UNIT_PIXEL * getPaintRatio() * size.getWidth(),
-                                    UNIT_PIXEL * getPaintRatio() * size.getHeight(),
-                                    this
-                            );
-                        }
-                        break;
+        Mode mode = getCircuitUnit().getMode().getMode();
+        Command command = getCircuitUnit().getCommand().getCommand();
+        Behavior behavior = getCircuitUnit().getBehavior().getBehavior();
+
+        if (mode == Mode.PARTS_ADD && command == Command.PARTS_ADD) {
+            if (getTmp() != null && getCursorCo() != null) {
+                IntegerDimension size = getTmp().getElecomInfo().getSize();
+                e = getTmp().getElecomInfo();
+                affine = new AffineTransform();
+                affine.translate(
+                    baseSize * (getCursorCo().getWidth() - size.getWidth() / 2) + getPaintBaseCo().getWidth(),
+                    baseSize * (getCursorCo().getHeight() - size.getHeight() / 2) + getPaintBaseCo().getHeight()
+                );
+                affine.scale(getPaintRatio(), getPaintRatio());
+                if (ImageMaster.isOnlyStatesParts(e)) {
+                    affine.rotate(
+                        ImageMaster.getIntFromPartsDirection(e) * Math.PI / 2,
+                        baseSize * e.getSize().getWidth() / 2,
+                        baseSize * e.getSize().getHeight() / 2
+                    );
                 }
-                break;
-            case WIRE_BOND:
-                switch (getCircuitUnit().getCommand().getCommand()) {
-                    case WIRE_BOND:
-                        switch (getCircuitUnit().getBehavior().getBehavior()) {
-                            case RANGING:
-                                ArrayList<CircuitBlock> blocks = getOperateOperate().predictionMatchWire(this);
-                                if (blocks != null) {
-                                    for (CircuitBlock b1 : blocks) {
-                                        c = b1.getCircuitInfo();
-                                        e = b1.getElecomInfo();
-                                        g2.drawImage(ImageMaster.getImageMaster().getTempImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsDirections()).getImage(),
-                                                UNIT_PIXEL * getPaintRatio() * c.getAbco().getWidth() + getPaintBaseCo().getWidth(),
-                                                UNIT_PIXEL * getPaintRatio() * c.getAbco().getHeight() + getPaintBaseCo().getHeight(),
-                                                UNIT_PIXEL * getPaintRatio(),
-                                                UNIT_PIXEL * getPaintRatio(),
-                                                this
-                                        );
-                                    }
-                                }
-                                break;
-                        }
-                        break;
+                g2.drawImage(ImageMaster.getImageMaster().getTempImage(e).getImage(), affine, null);
+            }
+        } else if (mode == Mode.WIRE_BOND && command == Command.WIRE_BOND && behavior == Behavior.RANGING) {
+            ArrayList<CircuitBlock> blocks = getOperateOperate().predictionMatchWire(this);
+            if (blocks != null) {
+                for (CircuitBlock b1 : blocks) {
+                    c = b1.getCircuitInfo();
+                    e = b1.getElecomInfo();
+
+                    affine = new AffineTransform();
+                    affineProcess(affine, e, c.getAbco().getHeight(), c.getAbco().getWidth());
+                    g2.drawImage(ImageMaster.getImageMaster().getTempImage(e).getImage(), affine, null);
                 }
-                break;
-            case PARTS_MOVE:
-                switch (getCircuitUnit().getCommand().getCommand()) {
-                    case PARTS_MOVE:
-                    case PARTS_COPY:
-                        switch (getCircuitUnit().getBehavior().getBehavior()) {
-                            case MOVE:
-                                if (getCursorCo() != null && moveCursorCo != null && getTmps() != null) {
-                                    int recoY, recoX, abcoY, abcoX;
-                                    ElecomInfo e1;
-                                    recoY = getCursorCo().getHeight() - moveCursorCo.getHeight();
-                                    recoX = getCursorCo().getWidth() - moveCursorCo.getWidth();
-                                    for (CircuitBlock b1 : getTmps()) {
-                                        if (b1.getCircuitInfo().getReco().equals(0, 0)) {
-                                            e1 = b1.getElecomInfo();
-                                            abcoY = b1.getCircuitInfo().getAbco().getHeight() + recoY;
-                                            abcoX = b1.getCircuitInfo().getAbco().getWidth() + recoX;
-                                            g2.drawImage(ImageMaster.getImageMaster().getTempImage(e1.getPartsVarieties(), e1.getPartsStandards(), e1.getPartsDirections()).getImage(),
-                                                    UNIT_PIXEL * getPaintRatio() * abcoX + getPaintBaseCo().getWidth(),
-                                                    UNIT_PIXEL * getPaintRatio() * abcoY + getPaintBaseCo().getHeight(),
-                                                    UNIT_PIXEL * getPaintRatio() * e1.getSize().getWidth(),
-                                                    UNIT_PIXEL * getPaintRatio() * e1.getSize().getHeight(),
-                                                    this
-                                            );
-                                        }
-                                    }
-                                }
-                                break;
-                        }
-                        break;
+            }
+        } else if (mode == Mode.PARTS_MOVE && (command == Command.PARTS_MOVE || command == Command.PARTS_COPY) && behavior == Behavior.MOVE) {
+            if (getCursorCo() != null && moveCursorCo != null && getTmps() != null) {
+                int recoY, recoX, abcoY, abcoX;
+                ElecomInfo e1;
+                recoY = getCursorCo().getHeight() - moveCursorCo.getHeight();
+                recoX = getCursorCo().getWidth() - moveCursorCo.getWidth();
+                for (CircuitBlock b1 : getTmps()) {
+                    if (b1.getCircuitInfo().getReco().equals(0, 0)) {
+                        e1 = b1.getElecomInfo();
+                        abcoY = b1.getCircuitInfo().getAbco().getHeight() + recoY;
+                        abcoX = b1.getCircuitInfo().getAbco().getWidth() + recoX;
+
+                        affine = new AffineTransform();
+                        affineProcess(affine, e1, abcoY, abcoX);
+                        g2.drawImage(ImageMaster.getImageMaster().getTempImage(e1).getImage(), affine, null);
+                    }
                 }
-                break;
+            }
         }
     }
 
@@ -1229,7 +1180,7 @@ public class CircuitUnitPanel extends UnitPanel {
                                     }
                                 } else {
                                     /* 指定範囲の始点と終点を参照し、その中点を基準として右回転する */
-                                    if (getOperateOperate().rotate(this, false)) {
+                                    if (getOperateOperate().rotate(this, true)) {
                                         getCircuitUnit().getBehavior().setBehavior(Behavior.RANGED);
                                         getFrame().getHelpLabel().setText("部品や導線を回転させるモード：領域内をクリックすることで連続して回転させることが出来ます。");
                                     } else {

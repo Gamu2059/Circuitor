@@ -87,7 +87,7 @@ public class BaseFrame extends JFrame implements ComponentListener,WindowStateLi
         addWindowListener(this);
         setTitle("Circuitor");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setIconImage((new ImageIcon(ImageMaster.getImageMaster().getCircuitorIcon().getImage())).getImage());
+        setIconImage(ImageMaster.getImageMaster().getCircuitorIcon().getImage());
         setVisible(true);
     }
 

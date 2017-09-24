@@ -53,8 +53,8 @@ public class ImageMaster {
         builder.delete(0, builder.length());
     }
 
-    public static int getIntFromPartsStates(PartsStates s) {
-        switch (s) {
+    private int getIntFromPartsStates(ElecomInfo e) {
+        switch (e.getPartsStates()) {
             case ON:
                 return 1;
             case OFF:
@@ -65,18 +65,23 @@ public class ImageMaster {
     }
 
     /**
-     * 引数のbooleanがtrueの場合、DOWNがUPに、RIGHTがLEFTに絞られる。
+     * 与えられた向きに応じた数値が返される。
      */
-    public static int getIntFromPartsDirection(PartsDirections d, boolean f) {
+    public static int getIntFromPartsDirection(ElecomInfo e) {
+        boolean f = isOnlyTwoDirections(e);
+        return getIntFromPartsDirection(e.getPartsDirections()) % (f ? 2 : 4);
+    }
+
+    public static int getIntFromPartsDirection(PartsDirections d) {
         switch (d) {
             case UP:
                 return 0;
-            case LEFT:
+            case RIGHT:
                 return 1;
             case DOWN:
-                return f?0:2;
-            case RIGHT:
-                return f?1:3;
+                return 2;
+            case LEFT:
+                return 3;
             default:
                 return 0;
         }
@@ -111,15 +116,6 @@ public class ImageMaster {
             case RESISTANCE:
             case SWITCH:
                 return true;
-            case WIRE:
-                switch (e.getPartsStandards()) {
-                    case _0:
-                    case _2:
-                    case _3:
-                        return false;
-                    default:
-                        return true;
-                }
             default:
                 return false;
         }
@@ -130,9 +126,9 @@ public class ImageMaster {
      */
     private Object getStates(ElecomInfo e) {
         if (isOnlyStatesParts(e)) {
-            return getIntFromPartsStates(e.getPartsStates());
+            return getIntFromPartsStates(e);
         } else {
-            return getIntFromPartsStates(e.getPartsStates()) + '_' + getIntFromPartsDirection(e.getPartsDirections(), isOnlyTwoDirections(e));
+            return getIntFromPartsStates(e) + "_" + getIntFromPartsDirection(e);
         }
     }
 
@@ -140,23 +136,20 @@ public class ImageMaster {
      * リソースをストアする。
      * 引数がtrueの場合は本設置、falseの場合は仮設置の画像を参照する。
      */
-    private boolean store(String pass, boolean f) {
+    private boolean store(String path) {
         /* マスタに登録されていなければ、生成して登録 */
-        if (!urlMaster.containsKey(pass)) {
+        if (!urlMaster.containsKey(path)) {
             try {
-                urlMaster.put(pass, getClass().getClassLoader().getResource(pass));
-                if (!f) {
-                    // 透過した画像を生成する
-                    Toolkit tk = Toolkit.getDefaultToolkit();
-                    Image image = tk.createImage(urlMaster.get(pass));
-                    image = tk.createImage(new FilteredImageSource(image.getSource(), filter));
-                    imageMaster.put(pass + false, new ImageIcon(image));
-                } else {
-                    imageMaster.put(pass + true, new ImageIcon(urlMaster.get(pass)));
-                }
-            } catch (NullPointerException e) {
+                urlMaster.put(path, getClass().getClassLoader().getResource(path));
+                // 透過した画像と普通の画像を保存する
+                Toolkit tk = Toolkit.getDefaultToolkit();
+                Image image = tk.createImage(urlMaster.get(path));
+                image = tk.createImage(new FilteredImageSource(image.getSource(), filter));
+                imageMaster.put(path + false, new ImageIcon(image));
+                imageMaster.put(path + true, new ImageIcon(urlMaster.get(path)));
+            }catch (NullPointerException e) {
                 System.out.println("ImageMasterで例外が発生しました。");
-                System.out.println("例外が発生したパス：" + pass);
+                System.out.println("例外が発生したパス：" + path);
                 return false;
             }
         }
@@ -176,7 +169,7 @@ public class ImageMaster {
      */
     private String createPass(ElecomInfo e) {
         stringReset();
-        return builder.append("Resource/").append(e.getPartsVarieties()).append('/').append(e.getPartsStandards()).append('/').append(getStates(e)).append(".png").toString();
+        return  builder.append("Resource/").append(e.getPartsVarieties()).append('/').append(e.getPartsStandards()).append('/').append(getStates(e)).append(".png").toString();
     }
 
     /**
@@ -189,56 +182,6 @@ public class ImageMaster {
     }
 
     /**
-     * イメージマスタから部品パネル専用のURLリソースを取得する。
-     *
-     * @since 1.2
-     */
-//    public URL getModelURL(PartsVarieties partsVarieties, PartsStandards partsStandards) {
-//        if (partsVarieties == null || partsStandards == null) {
-//            return null;
-//        }
-//        String pass = createModelPass(partsVarieties, partsStandards);
-//        if (store(pass)) {
-//            return urlMaster.get(pass);
-//        }
-//        return null;
-//    }
-
-    /**
-     * イメージマスタからURLリソースを取得する。
-     *
-     * @since 1.2
-     */
-//    public URL getURL(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsStates partsStates, PartsDirections partsDirections, int y, int x) {
-//        if (partsVarieties == null || partsStandards == null || partsStates == null || partsDirections == null) {
-//            return null;
-//        }
-//        String pass = createPass(partsVarieties, partsStandards, partsStates, partsDirections, y, x);
-//        /* マスタに登録されていなければ、生成して登録 */
-//        if (store(pass)) {
-//            return urlMaster.get(pass);
-//        }
-//        return null;
-//    }
-
-    /**
-     * イメージマスタから仮配置専用のURLリソースを取得する。
-     *
-     * @since 1.4
-     */
-//    public URL getTempURL(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsDirections partsDirections) {
-//        if (partsVarieties == null || partsStandards == null || partsDirections == null) {
-//            return null;
-//        }
-//        String pass = createTempPass(partsVarieties, partsStandards, partsDirections);
-//        /* マスタに登録されていなければ、生成して登録 */
-//        if (store(pass)) {
-//            return urlMaster.get(pass);
-//        }
-//        return null;
-//    }
-
-    /**
      * イメージマスタから部品パネル専用のアイコンリソースを取得する。
      * 画像統括バージョン。
      */
@@ -247,7 +190,7 @@ public class ImageMaster {
             return null;
         }
         String path = createModelPass(e);
-        if (store(path, true)) {
+        if (store(path)) {
             return imageMaster.get(path + true);
         }
         return null;
@@ -262,7 +205,7 @@ public class ImageMaster {
             return null;
         }
         String path = createPass(e);
-        if (store(path, true)) {
+        if (store(path)) {
             return imageMaster.get(path + true);
         }
         return null;
@@ -277,7 +220,7 @@ public class ImageMaster {
             return null;
         }
         String path = createPass(e);
-        if (store(path, false)) {
+        if (store(path)) {
             return imageMaster.get(path + false);
         }
         return null;
@@ -286,7 +229,7 @@ public class ImageMaster {
     private ImageIcon getGeneralIcon(String path) {
         stringReset();
         path = builder.append("Resource/_ICON/").append(path).append(".png").toString();
-        if (store(path, true)) {
+        if (store(path)) {
             return imageMaster.get(path + true);
         }
         return null;
