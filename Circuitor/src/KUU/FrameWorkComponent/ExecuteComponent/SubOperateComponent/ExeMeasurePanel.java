@@ -7,6 +7,8 @@ import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsVarieties;
+import Sho.CircuitObject.Circuit.ElecomInfo;
+import Sho.CircuitObject.SubCircuitPanelComponent.PartsAdd.PartsButton;
 
 /**
  * 計測器エリアのコンポーネントを設定するクラス。
@@ -23,7 +25,9 @@ public class ExeMeasurePanel extends NewJPanel {
         super(frame);
         setLayout(null);
 
-        add(indicateLabel = new GeneralItemPanel(null, ImageMaster.getImageMaster().getModelImage(PartsVarieties.MEASURE, isVolt ? PartsStandards.VOLTMETER : PartsStandards.AMMETER), isVolt ? "電圧計" : "電流計"));
+        ElecomInfo e = new ElecomInfo(PartsVarieties.MEASURE, isVolt ? PartsStandards.VOLTMETER : PartsStandards.AMMETER);
+
+        add(indicateLabel = new GeneralItemPanel(null, ImageMaster.getImageMaster().getModelImage(e), isVolt ? "電圧計" : "電流計"));
         add(titleLabel = new GeneralItemPanel("実際値:"));
         add(valueIndicateLabel = new ExeIndiCateLabel(isVolt ? "V" : "A"));
         add(graphPanel = new ExeGraphPanel());

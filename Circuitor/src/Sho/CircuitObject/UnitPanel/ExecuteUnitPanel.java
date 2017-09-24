@@ -1,6 +1,8 @@
 package Sho.CircuitObject.UnitPanel;
 
 import KUU.BaseComponent.BaseFrame;
+import KUU.FrameWorkComponent.ExecuteComponent.SubExecutePanel;
+import KUU.FrameWorkComponent.ExecuteComponent.SubOperateComponent.ExeMeasurePanel;
 import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
@@ -117,55 +119,18 @@ public class ExecuteUnitPanel extends UnitPanel {
         super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        CircuitBlock b;
-        CircuitInfo c;
-        ElecomInfo e;
         HighLevelExecuteInfo h;
         int sub;
 
-        /* 基板の描画 */
-        g2.setColor(ColorMaster.getSubstrateColor());
-        getPaintRect().setRect(getPaintBaseCo().getWidth(), getPaintBaseCo().getHeight(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getWidth(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getHeight());
-        g2.fill(getPaintRect());
-        /* ボーダの描画 */
-        for (int i = 0; i < getCircuitSize().getHeight(); i++) {
-            for (int j = 0; j < getCircuitSize().getWidth(); j++) {
-                b = getCircuitUnit().getCircuitBlock().getMatrix().get(i).get(j);
-                if (b.getBorder() != null) {
-                    g2.setColor(CircuitBorder.getColor(b.getBorder()));
-                    getPaintRect().setRect(
-                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth() + 1,
-                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight() + 1,
-                            UNIT_PIXEL * getPaintRatio() - 2,
-                            UNIT_PIXEL * getPaintRatio() - 2
-                    );
-                    g2.fill(getPaintRect());
-                }
-            }
-        }
-        /* 部品の描画 */
-        for (int i = 0; i < getCircuitSize().getHeight(); i++) {
-            for (int j = 0; j < getCircuitSize().getWidth(); j++) {
-                b = getCircuitUnit().getCircuitBlock().getMatrix().get(i).get(j);
-                e = b.getElecomInfo();
-                c = b.getCircuitInfo();
-                if (b.isExist()) {
-                    g2.drawImage(
-                            ImageMaster.getImageMaster().getImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsStates(), e.getPartsDirections(), c.getReco().getHeight(), c.getReco().getWidth()).getImage(),
-                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth(),
-                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            this
-                    );
-                }
-            }
-        }
+        paintBase(g2);
+        paintBorder(g2);
+        paintParts(g2);
+
         /* 点の描画 */
         for (HighLevelConnectInfo branch : getCircuitUnit().getHighLevelConnectList().getBranch()) {
             if (branch.getRole() == HighLevelConnectGroup.BRANCH) {
                 if (branch.getHighLevelExecuteInfo().getDrawCood().getPoints().size() > 0) {
-                    /* 電流の大きさが1000を超える場合はショートしているとみなし、赤色にする */
+                    /* 電流の大きさが1e3を超える場合はショートしているとみなし、赤色にする */
                     if (Math.abs(branch.getHighLevelExecuteInfo().getCurrent()) > 1e3) {
                         g2.setColor(Color.RED);
                     } else {
@@ -182,15 +147,23 @@ public class ExecuteUnitPanel extends UnitPanel {
                 }
             }
         }
-        if (interrupt) {
+
         /* 電圧計と電流計のリアルタイムな値をラベルとパネルに送信する */
+        if (interrupt) {
+            SubExecutePanel subExe = getFrame().getBasePanel().getSubExecutePanel();
+            ExeMeasurePanel measure;
+            double value;
             if (voltmeter != null) {
-                getFrame().getBasePanel().getSubExecutePanel().getVoltagePanel().getValueIndicateLabel().setFormattedValue(voltmeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getVoltage());
-                getFrame().getBasePanel().getSubExecutePanel().getVoltagePanel().getGraphPanel().setValueAndGraph(voltmeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getVoltage());
+                measure = subExe.getVoltagePanel();
+                value = voltmeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getVoltage();
+                measure.getValueIndicateLabel().setFormattedValue(value);
+                measure.getGraphPanel().setValueAndGraph(value);
             }
             if (ammeter != null) {
-                getFrame().getBasePanel().getSubExecutePanel().getCurrentPanel().getValueIndicateLabel().setFormattedValue(ammeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getCurrent());
-                getFrame().getBasePanel().getSubExecutePanel().getCurrentPanel().getGraphPanel().setValueAndGraph(ammeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getCurrent());
+                measure = subExe.getCurrentPanel();
+                value = ammeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getCurrent();
+                measure.getValueIndicateLabel().setFormattedValue(value);
+                measure.getGraphPanel().setValueAndGraph(value);
             }
             interrupt = false;
         }
