@@ -1,6 +1,10 @@
 package Master.ImageMaster;
 
+import Sho.CircuitObject.Circuit.ElecomInfo;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.FilteredImageSource;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -11,7 +15,7 @@ import static Master.ImageMaster.PartsVarieties.*;
 /**
  * 電子部品の画像のリソースを一括管理するクラス。
  * @author 翔
- * @version 1.2
+ * @version 1.0.3
  */
 public class ImageMaster {
     /**
@@ -24,6 +28,9 @@ public class ImageMaster {
      */
     private static HashMap<String,URL> urlMaster = new HashMap<>();
     private static HashMap<String,ImageIcon> imageMaster = new HashMap<>();
+
+    private TransparentFilter filter = new TransparentFilter();
+    private StringBuilder builder = new StringBuilder();
 
     /**
      * イメージマスタを呼び出す。
@@ -40,16 +47,113 @@ public class ImageMaster {
     private ImageMaster() {}
 
     /**
-     * リソースをストアする。
-     *
-     * @since 1.3
+     * StringBuilderの文字列を全て削除する。
      */
-    private boolean store(String pass) {
+    private void stringReset() {
+        builder.delete(0, builder.length());
+    }
+
+    public static int getIntFromPartsStates(PartsStates s) {
+        switch (s) {
+            case ON:
+                return 1;
+            case OFF:
+                return 0;
+            default:
+                return -1;
+        }
+    }
+
+    /**
+     * 引数のbooleanがtrueの場合、DOWNがUPに、RIGHTがLEFTに絞られる。
+     */
+    public static int getIntFromPartsDirection(PartsDirections d, boolean f) {
+        switch (d) {
+            case UP:
+                return 0;
+            case LEFT:
+                return 1;
+            case DOWN:
+                return f?0:2;
+            case RIGHT:
+                return f?1:3;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * 状態のみで情報を特定できる場合はtrueを返す。
+     * そうでない場合はfalseを返す。
+     */
+    public static boolean isOnlyStatesParts(ElecomInfo e) {
+        switch (e.getPartsVarieties()) {
+            case DIODE:
+            case LED:
+            case LOGIC_IC:
+            case POWER:
+            case RESISTANCE:
+            case WIRE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 向きが二つしか存在しない場合はtrueを返す。
+     * そうでない場合はfalseを返す。
+     */
+    public static boolean isOnlyTwoDirections(ElecomInfo e) {
+        switch (e.getPartsVarieties()) {
+            case MEASURE:
+            case PULSE:
+            case RESISTANCE:
+            case SWITCH:
+                return true;
+            case WIRE:
+                switch (e.getPartsStandards()) {
+                    case _0:
+                    case _2:
+                    case _3:
+                        return false;
+                    default:
+                        return true;
+                }
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 部品の種類によって向きごとの画像を参照するか否かを判断してファイル名をObjectクラスで返す。
+     */
+    private Object getStates(ElecomInfo e) {
+        if (isOnlyStatesParts(e)) {
+            return getIntFromPartsStates(e.getPartsStates());
+        } else {
+            return getIntFromPartsStates(e.getPartsStates()) + '_' + getIntFromPartsDirection(e.getPartsDirections(), isOnlyTwoDirections(e));
+        }
+    }
+
+    /**
+     * リソースをストアする。
+     * 引数がtrueの場合は本設置、falseの場合は仮設置の画像を参照する。
+     */
+    private boolean store(String pass, boolean f) {
         /* マスタに登録されていなければ、生成して登録 */
         if (!urlMaster.containsKey(pass)) {
             try {
                 urlMaster.put(pass, getClass().getClassLoader().getResource(pass));
-                imageMaster.put(pass, new ImageIcon(urlMaster.get(pass)));
+                if (!f) {
+                    // 透過した画像を生成する
+                    Toolkit tk = Toolkit.getDefaultToolkit();
+                    Image image = tk.createImage(urlMaster.get(pass));
+                    image = tk.createImage(new FilteredImageSource(image.getSource(), filter));
+                    imageMaster.put(pass + false, new ImageIcon(image));
+                } else {
+                    imageMaster.put(pass + true, new ImageIcon(urlMaster.get(pass)));
+                }
             } catch (NullPointerException e) {
                 System.out.println("ImageMasterで例外が発生しました。");
                 System.out.println("例外が発生したパス：" + pass);
@@ -60,62 +164,28 @@ public class ImageMaster {
     }
 
     /**
-     * 部品パネル専用のパスを作成する。
-     *
-     * @since 1.2
+     * ElecomInfoで部品の特徴を把握できない場合はtrueを返す。
      */
-    private String createModelPass(PartsVarieties partsVarieties, PartsStandards partsStandards) {
-        return "Resource/" + partsVarieties + "/" + partsStandards + "/MODEL/UP.png";
+    private boolean isNull(ElecomInfo e) {
+        return e.getPartsVarieties() == null || e.getPartsStandards() == null || e.getPartsDirections() == null || e.getPartsStates() == null;
     }
 
     /**
      * 部品のパスを作成する。
-     *
-     * @since 1.2
+     * 画像統括バージョン。
      */
-    private String createPass(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsStates partsStates, PartsDirections partsDirections, int y, int x) {
-        partsDirections = getDirection(partsVarieties, partsStandards, partsDirections);
-        /* パス形成 */
-        return "Resource/" + partsVarieties + "/" + partsStandards + "/" + partsStates + "/" + partsDirections + "/_" + y + "_" + x + ".png";
+    private String createPass(ElecomInfo e) {
+        stringReset();
+        return builder.append("Resource/").append(e.getPartsVarieties()).append('/').append(e.getPartsStandards()).append('/').append(getStates(e)).append(".png").toString();
     }
 
     /**
-     * 仮配置専用のパスを作成する。
-     *
-     * @since 1.4
+     * 部品パネル専用のパスを作成する。
+     * 画像統括バージョン。
      */
-    private String createTempPass(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsDirections partsDirections) {
-        partsDirections = getDirection(partsVarieties, partsStandards, partsDirections);
-        /* パス形成 */
-        return "Resource/" + partsVarieties + "/" + partsStandards + "/TEMPLACE/" + partsDirections + ".png";
-    }
-
-    /**
-     * 指定された部品と向きから、存在しない向きを修正して向きを返す。
-     */
-    private PartsDirections getDirection(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsDirections partsDirections) {
-        if (partsVarieties == RESISTANCE || partsVarieties == SWITCH || partsVarieties == PartsVarieties.PULSE) {
-            if (partsDirections == DOWN) {
-                return UP;
-            }
-            else if (partsDirections == LEFT) {
-                return RIGHT;
-            }
-        }
-        else if (partsVarieties == WIRE) {
-            if (partsStandards == _1 || partsStandards == _4) {
-                if (partsDirections == DOWN) {
-                    return UP;
-                }
-                else if (partsDirections == LEFT) {
-                    return RIGHT;
-                }
-            }
-            else if (partsStandards == _5 || partsStandards == _6) {
-                return UP;
-            }
-        }
-        return partsDirections;
+    private String createModelPass(ElecomInfo e) {
+        stringReset();
+        return builder.append("Resource/").append(e.getPartsVarieties()).append('/').append(e.getPartsStandards()).append("/MODEL.png").toString();
     }
 
     /**
@@ -123,378 +193,242 @@ public class ImageMaster {
      *
      * @since 1.2
      */
-    public URL getModelURL(PartsVarieties partsVarieties, PartsStandards partsStandards) {
-        if (partsVarieties == null || partsStandards == null) {
-            return null;
-        }
-        String pass = createModelPass(partsVarieties, partsStandards);
-        if (store(pass)) {
-            return urlMaster.get(pass);
-        }
-        return null;
-    }
+//    public URL getModelURL(PartsVarieties partsVarieties, PartsStandards partsStandards) {
+//        if (partsVarieties == null || partsStandards == null) {
+//            return null;
+//        }
+//        String pass = createModelPass(partsVarieties, partsStandards);
+//        if (store(pass)) {
+//            return urlMaster.get(pass);
+//        }
+//        return null;
+//    }
 
     /**
      * イメージマスタからURLリソースを取得する。
      *
      * @since 1.2
      */
-    public URL getURL(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsStates partsStates, PartsDirections partsDirections, int y, int x) {
-        if (partsVarieties == null || partsStandards == null || partsStates == null || partsDirections == null) {
-            return null;
-        }
-        String pass = createPass(partsVarieties, partsStandards, partsStates, partsDirections, y, x);
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return urlMaster.get(pass);
-        }
-        return null;
-    }
+//    public URL getURL(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsStates partsStates, PartsDirections partsDirections, int y, int x) {
+//        if (partsVarieties == null || partsStandards == null || partsStates == null || partsDirections == null) {
+//            return null;
+//        }
+//        String pass = createPass(partsVarieties, partsStandards, partsStates, partsDirections, y, x);
+//        /* マスタに登録されていなければ、生成して登録 */
+//        if (store(pass)) {
+//            return urlMaster.get(pass);
+//        }
+//        return null;
+//    }
 
     /**
      * イメージマスタから仮配置専用のURLリソースを取得する。
      *
      * @since 1.4
      */
-    public URL getTempURL(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsDirections partsDirections) {
-        if (partsVarieties == null || partsStandards == null || partsDirections == null) {
-            return null;
-        }
-        String pass = createTempPass(partsVarieties, partsStandards, partsDirections);
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return urlMaster.get(pass);
-        }
-        return null;
-    }
+//    public URL getTempURL(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsDirections partsDirections) {
+//        if (partsVarieties == null || partsStandards == null || partsDirections == null) {
+//            return null;
+//        }
+//        String pass = createTempPass(partsVarieties, partsStandards, partsDirections);
+//        /* マスタに登録されていなければ、生成して登録 */
+//        if (store(pass)) {
+//            return urlMaster.get(pass);
+//        }
+//        return null;
+//    }
 
     /**
      * イメージマスタから部品パネル専用のアイコンリソースを取得する。
-     *
-     * @since 1.3
+     * 画像統括バージョン。
      */
-    public ImageIcon getModelImage(PartsVarieties partsVarieties, PartsStandards partsStandards) {
-        if (partsVarieties == null || partsStandards == null) {
+    public ImageIcon getModelImage(ElecomInfo e) {
+        if (e.getPartsVarieties() == null || e.getPartsStandards() == null) {
             return null;
         }
-        String pass = createModelPass(partsVarieties, partsStandards);
-        if (store(pass)) {
-            return imageMaster.get(pass);
+        String path = createModelPass(e);
+        if (store(path, true)) {
+            return imageMaster.get(path + true);
         }
         return null;
     }
 
     /**
      * イメージマスタからアイコンリソースを取得する。
-     *
-     * @since 1.3
+     * 画像統括バージョン。
      */
-    public ImageIcon getImage(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsStates partsStates, PartsDirections partsDirections, int y, int x) {
-        if (partsVarieties == null || partsStandards == null || partsStates == null || partsDirections == null) {
+    public ImageIcon getImage(ElecomInfo e) {
+        if (isNull(e)) {
             return null;
         }
-        String pass = createPass(partsVarieties, partsStandards, partsStates, partsDirections, y, x);
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
+        String path = createPass(e);
+        if (store(path, true)) {
+            return imageMaster.get(path + true);
         }
         return null;
     }
 
     /**
      * イメージマスタから仮配置専用のアイコンリソースを取得する。
-     *
-     * @since 1.4
+     * 画像統括バージョン。
      */
-    public ImageIcon getTempImage(PartsVarieties partsVarieties, PartsStandards partsStandards, PartsDirections partsDirections) {
-        if (partsVarieties == null || partsStandards == null || partsDirections == null) {
+    public ImageIcon getTempImage(ElecomInfo e) {
+        if (isNull(e)) {
             return null;
         }
-        String pass = createTempPass(partsVarieties, partsStandards, partsDirections);
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
+        String path = createPass(e);
+        if (store(path, false)) {
+            return imageMaster.get(path + false);
+        }
+        return null;
+    }
+
+    private ImageIcon getGeneralIcon(String path) {
+        stringReset();
+        path = builder.append("Resource/_ICON/").append(path).append(".png").toString();
+        if (store(path, true)) {
+            return imageMaster.get(path + true);
         }
         return null;
     }
 
     /**
      * Circuitorのメインアイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getCircuitorIcon() {
-        String pass = "Resource/_ICON/circuitor.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("circuitor");
     }
 
     /**
      * キャンセルアイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getCancelIcon() {
-        String pass = "Resource/_ICON/cancel.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("cancel");
     }
 
     /**
      * 追加アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getAddIcon() {
-        String pass = "Resource/_ICON/add.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("add");
     }
 
     /**
      * 結合アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getBondIcon() {
-        String pass = "Resource/_ICON/bond.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("bond");
     }
 
     /**
      * 部品移動アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getPartsMoveIcon() {
-        String pass = "Resource/_ICON/parts_move.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("parts_move");
     }
 
     /**
      * 削除アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getDeleteIcon() {
-        String pass = "Resource/_ICON/delete.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("delete");
     }
 
     /**
      * 移動アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getMoveIcon() {
-        String pass = "Resource/_ICON/move.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("move");
     }
 
     /**
      * 編集アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getEditIcon() {
-        String pass = "Resource/_ICON/edit.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("edit");
     }
 
     /**
      * 実行開始アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getExecuteStartIcon() {
-        String pass = "Resource/_ICON/execute_start.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("execute_start");
     }
 
     /**
      * 実行停止アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getExecuteStopIcon() {
-        String pass = "Resource/_ICON/execute_stop.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("execute_stop");
     }
 
     /**
      * 関数アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getFunctionIcon() {
-        String pass = "Resource/_ICON/function.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("function");
     }
 
     /**
      * 変数アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getVariableIcon() {
-        String pass = "Resource/_ICON/variable.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("variable");
     }
 
     /**
      * 一次元配列アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getOneDimensionArrayIcon() {
-        String pass = "Resource/_ICON/oneDarray.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("oneDarray");
     }
 
     /**
      * 二次元配列アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getTwoDimensionArrayIcon() {
-        String pass = "Resource/_ICON/twoDarray.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("twoDarray");
     }
 
     /**
      * 部品複製アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getPartsCopyIcon() {
-        String pass = "Resource/_ICON/parts_copy.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("parts_copy");
     }
 
     /**
      * 部品回転アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getPartsRotateIcon() {
-        String pass = "Resource/_ICON/parts_rotate.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("parts_rotate");
     }
 
     /**
      * 部品削除アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getPartsDeleteIcon() {
-        String pass = "Resource/_ICON/parts_delete.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("parts_delete");
     }
 
     /**
      * 交点変更アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getCrossChangeIcon() {
-        String pass = "Resource/_ICON/crossChange.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("crossChange");
     }
 
     /**
      * 端子結合アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getHandBondIcon() {
-        String pass = "Resource/_ICON/handBond.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("handBond");
     }
 
     /**
      * 基板位置初期化アイコンを取得する。
-     *
-     * @since 1.5
      */
     public ImageIcon getPositionResetIcon() {
-        String pass = "Resource/_ICON/position_reset.png";
-        /* マスタに登録されていなければ、生成して登録 */
-        if (store(pass)) {
-            return imageMaster.get(pass);
-        }
-        return null;
+        return getGeneralIcon("position_reset");
     }
 }

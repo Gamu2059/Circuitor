@@ -144,25 +144,6 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
     }
 
     /**
-     * PartsDirectionから正方向に何回90度回転すれば良いかを返す。
-     * LEFTならば90度回転すれば良いので1、RIGHTならば270度回転すれば良いので3を返す。
-     */
-    protected int getRotateNum(PartsDirections directions) {
-        switch (directions) {
-            case UP:
-                return 0;
-            case LEFT:
-                return 1;
-            case DOWN:
-                return 2;
-            case RIGHT:
-                return 3;
-            default:
-                return 0;
-        }
-    }
-
-    /**
      * CircuitUnitオブジェクトはコンストラクタの後で生成するようにします。
      */
     protected void createCircuitUnit() {
