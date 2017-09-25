@@ -4,7 +4,6 @@ import KUU.BaseComponent.BaseFrame;
 import KUU.FrameWorkComponent.ExecuteComponent.SubExecutePanel;
 import KUU.FrameWorkComponent.ExecuteComponent.SubOperateComponent.ExeMeasurePanel;
 import Master.ColorMaster.ColorMaster;
-import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsStates;
 import Master.ImageMaster.PartsVarieties;
@@ -17,12 +16,10 @@ import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteInfo;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
-import Sho.Matrix.DoubleMatrix;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.ArrayList;
 
 /**
  * CircuitUnitを内包した実行エディタ用パネルクラス。
@@ -264,5 +261,24 @@ public class ExecuteUnitPanel extends UnitPanel {
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
         reDirection();
+
+        if (getCursorCo() == null) {
+            getPartsPopMenu().hidePop();
+            return;
+        }
+        boolean flg = false;
+        CircuitBlock b = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth());
+        CircuitInfo c = b.getCircuitInfo();
+        c = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
+        for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
+            if (group.getAbco().equals(c.getAbco())) {
+                getPartsPopMenu().controlPop(this, group, e);
+                flg = true;
+                break;
+            }
+        }
+        if (!flg) {
+            getPartsPopMenu().hidePop();
+        }
     }
 }

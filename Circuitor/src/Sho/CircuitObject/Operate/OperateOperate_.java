@@ -84,6 +84,8 @@ public class OperateOperate_ {
             if (panel.getCursorCo() == null) {
                 panel.setCursorCo(new IntegerDimension());
             }
+            panel.getDeltaCursorCo().setHeight(inY - panel.getCursorCo().getHeight());
+            panel.getDeltaCursorCo().setWidth(inX - panel.getCursorCo().getWidth());
             panel.getCursorCo().setHeight(inY);
             panel.getCursorCo().setWidth(inX);
         } else {
