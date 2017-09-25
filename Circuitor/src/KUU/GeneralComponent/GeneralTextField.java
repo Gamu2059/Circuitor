@@ -9,5 +9,4 @@ public class GeneralTextField extends JTextField{
     public GeneralTextField() {
         this.setHorizontalAlignment(CENTER);
     }
-
 }

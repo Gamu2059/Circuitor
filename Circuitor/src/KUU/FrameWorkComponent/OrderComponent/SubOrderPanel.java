@@ -215,25 +215,37 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
         /** 変数リスト*/
         if (e.getSource() instanceof JList) {
             /** SETUP関数とMAIN関数以外を選択すると編集/削除パネルがクリックできるようになる */
-            if (!programList.getSelectedValue().equals("SETUP") &&
-                !programList.getSelectedValue().equals("MAIN")) {
-                getFrame().setOrderPanelCanClick(true, false, true);
-            }else {
-                getFrame().setOrderPanelCanClick(false, false, true);
-            }
-            /** SelectOrderPanelのVisible設定 */
-            getFrame().getBasePanel().getEditOrderPanel().getSelectOrderPanel().setPanelVisible(programList.getSelectedValue());
-            lineNumber = programList.getSelectedIndex();
-            if (getFrame().getBasePanel().getMainOrderPanel().getVariableMode() == MainOrderVariableMode.FUNCTION) {
-                /**
-                 * メイン編集モードが関数のとき
-                 * リストを選択するとエディタパネルを更新し
-                 * lineNumberをプログラムの一番下にセットする
-                 */
-                functionName = programList.getSelectedValue();
-                getFrame().updateOrderPanel(false);
+            try {
+                if (!programList.getSelectedValue().equals("SETUP") &&
+                        !programList.getSelectedValue().equals("MAIN")) {
+                    getFrame().setOrderPanelCanClick(true, false, true);
+                } else {
+                    getFrame().setOrderPanelCanClick(false, false, true);
+                }
+                if (getFrame().getBasePanel().getMainOrderPanel().getVariableMode() == MainOrderVariableMode.FUNCTION) {
+                    /**
+                     * メイン編集モードが関数のとき
+                     * リストを選択するとエディタパネルを更新し
+                     * lineNumberをプログラムの一番下にセットする
+                     */
+                    functionName = programList.getSelectedValue();
+                    getFrame().updateOrderPanel(false);
+                    lineNumber = programList.getSelectedIndex();
+                    getFrame().getBasePanel().getEditOrderPanel().setLineNumber(getFrame().getBasePanel().getEditOrderPanel().getProgramModel().getSize() - 1);
+                    switch (functionName) {
+                        case "SETUP":
+                            getFrame().getHelpLabel().setText("SETUP関数です。主に変数の初期化等に使います。");
+                            break;
+                        case "MAIN":
+                            getFrame().getHelpLabel().setText("MAIN関数です。主な処理の流れが入るとよいでしょう。");
+                            break;
+                    }
+                }
+                /** SelectOrderPanelのVisible設定 */
+                getFrame().getBasePanel().getEditOrderPanel().getSelectOrderPanel().setPanelVisible(functionName);
                 lineNumber = programList.getSelectedIndex();
-                getFrame().getBasePanel().getEditOrderPanel().setLineNumber(getFrame().getBasePanel().getEditOrderPanel().getProgramModel().getSize() - 1);
+            } catch (Exception e1){
+                e1.printStackTrace();
             }
         }
     }
@@ -285,7 +297,6 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
                 }
             } else if (panel == editLabel && clickFlg) {
                 /** 編集ボタン */
-
                 switch (getFrame().getBasePanel().getMainOrderPanel().getVariableMode()) {
                     case FUNCTION:
                         String selectVariable = programList.getSelectedValue();
