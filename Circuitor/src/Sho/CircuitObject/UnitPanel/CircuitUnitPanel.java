@@ -19,7 +19,6 @@ import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerD
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
 import Sho.IntegerDimension.IntegerDimension;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import javax.swing.*;
 import java.awt.*;
@@ -1485,11 +1484,20 @@ public class CircuitUnitPanel extends UnitPanel {
 
     /**
      * マウスの位置から対象ボーダを付与します。
+     *
+     * 導線以外の電子部品でマウスオーバーしている場合、その部品の説明を表示します。
      */
     @Override
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
         reDetection();
+
+        if (getCursorCo() == null) {
+            getPartsPopMenu().hidePop();
+            return;
+        }
+        CircuitBlock b = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth());
+        getPartsPopMenu().controllPop(this, b, e);
     }
 
     /**

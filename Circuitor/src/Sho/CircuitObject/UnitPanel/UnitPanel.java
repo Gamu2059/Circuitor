@@ -1,12 +1,10 @@
 package Sho.CircuitObject.UnitPanel;
 
 import KUU.BaseComponent.BaseFrame;
+import KUU.CommonComponent.CommonPartsIndicatePopMenu;
 import KUU.NewComponent.NewJPanel;
 import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
-import Master.ImageMaster.PartsDirections;
-import Master.ImageMaster.PartsStandards;
-import Master.ImageMaster.PartsVarieties;
 import Sho.CircuitObject.Circuit.*;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
@@ -45,6 +43,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      * 基板のサイズ
      */
     private IntegerDimension circuitSize;
+    /**
+     * 部品状態表示ポップ
+     */
+    private CommonPartsIndicatePopMenu partsPopMenu;
 
     /*************************/
     /** 画面描画に関する情報 */
@@ -77,6 +79,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      * マウスの基板上の座標(ブロック単位)
      */
     private IntegerDimension cursorCo;
+    /**
+     * マウスの基板上の差分座標(ブロック単位)
+     */
+    private IntegerDimension deltaCursorCo;
 
     /*****************************/
     /** 処理上で使う汎用的な変数 */
@@ -128,6 +134,7 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
         circuitSize = new IntegerDimension(50, 80);
         /* このタイミングで生成しようとするとbasePanelのオブジェクトが完成していない状態なのでNullPointerExceptionが発生します */
 //        circuitUnit = new CircuitUnit(frame);
+        partsPopMenu = new CommonPartsIndicatePopMenu();
         /** 画像描画用変数の初期化 */
         paintBaseCo = new IntegerDimension();
         paintRatio = 1;
@@ -135,6 +142,7 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
         paintRect = new Rectangle2D.Double();
         /** マウス情報用変数の初期化 */
         pressedCo = new IntegerDimension();
+        deltaCursorCo = new IntegerDimension();
         /** 一時保存用変数の初期化 */
         tmps = new ArrayList<>();
         idTmps = new ArrayList<>();
@@ -170,6 +178,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      */
     public IntegerDimension getCircuitSize() {
         return circuitSize;
+    }
+
+    public CommonPartsIndicatePopMenu getPartsPopMenu() {
+        return partsPopMenu;
     }
 
     /**
@@ -239,6 +251,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
 
     public void setCursorCo(IntegerDimension cursorCo) {
         this.cursorCo = cursorCo;
+    }
+
+    public IntegerDimension getDeltaCursorCo() {
+        return deltaCursorCo;
     }
 
     /**

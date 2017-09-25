@@ -264,5 +264,24 @@ public class ExecuteUnitPanel extends UnitPanel {
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
         reDirection();
+
+        if (getCursorCo() == null) {
+            getPartsPopMenu().hidePop();
+            return;
+        }
+        boolean flg = false;
+        CircuitBlock b = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth());
+        CircuitInfo c = b.getCircuitInfo();
+        c = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
+        for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
+            if (group.getAbco().equals(c.getAbco())) {
+                getPartsPopMenu().controllPop(this, group, e);
+                flg = true;
+                break;
+            }
+        }
+        if (!flg) {
+            getPartsPopMenu().hidePop();
+        }
     }
 }
