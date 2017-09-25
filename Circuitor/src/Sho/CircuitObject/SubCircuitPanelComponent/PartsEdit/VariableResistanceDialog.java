@@ -36,7 +36,7 @@ public class VariableResistanceDialog extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    int value = Integer.parseInt(textField.getText());
+                    double value = Double.parseDouble(textField.getText());
                     if (value < 1 || value > 1e6) {
                         throw new Exception();
                     }
@@ -47,7 +47,7 @@ public class VariableResistanceDialog extends JDialog {
                     }
                     dispose();
                 } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(VariableResistanceDialog.this, "整数値で入力して下さい。", "入力エラー", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(VariableResistanceDialog.this, "実数値で入力して下さい。", "入力エラー", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception exc) {
                     JOptionPane.showMessageDialog(VariableResistanceDialog.this, "値が範囲外です。\n1～1000000の範囲で入力して下さい。", "入力エラー", JOptionPane.ERROR_MESSAGE);
                 }
@@ -69,7 +69,7 @@ public class VariableResistanceDialog extends JDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    double value = Integer.parseInt(textField.getText());
+                    double value = Double.parseDouble(textField.getText());
                     if (value < 1 || value > 1e6) {
                         throw new Exception();
                     }
@@ -78,7 +78,7 @@ public class VariableResistanceDialog extends JDialog {
                     }
                     dispose();
                 } catch (NumberFormatException nfe) {
-                    JOptionPane.showMessageDialog(VariableResistanceDialog.this, "整数値で入力して下さい。", "入力エラー", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(VariableResistanceDialog.this, "実数値で入力して下さい。", "入力エラー", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception exc) {
                     JOptionPane.showMessageDialog(VariableResistanceDialog.this, "値が範囲外です。\n1～1000000の範囲で入力して下さい。", "入力エラー", JOptionPane.ERROR_MESSAGE);
                 }
@@ -93,7 +93,7 @@ public class VariableResistanceDialog extends JDialog {
     /**
      * 汎用的な設定を行う。
      */
-    private void commonSetting(UnitPanel panel, int status) {
+    private void commonSetting(UnitPanel panel, double status) {
         Rectangle rect = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
         setBounds((int)(rect.getWidth() - 300) / 2,(int)(rect.getHeight() - 200) / 2,300,200);
         setResizable(false);
@@ -102,7 +102,7 @@ public class VariableResistanceDialog extends JDialog {
     }
 
     private class DialogBasePanel extends JPanel implements ComponentListener {
-        public DialogBasePanel(int status) {
+        public DialogBasePanel(double status) {
             super();
             setLayout(null);
             addComponentListener(this);

@@ -10,6 +10,7 @@ import Sho.CircuitObject.Circuit.ElecomInfo;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 
 /**
  * CircuitUnitを内包した命令モード時確認用パネルクラス。
@@ -35,32 +36,8 @@ public class OrderUnitPanel extends UnitPanel {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
-        CircuitBlock b;
-        CircuitInfo c;
-        ElecomInfo e;
-
-        /* 基板の描画 */
-        g2.setColor(ColorMaster.getSubstrateColor());
-        getPaintRect().setRect(getPaintBaseCo().getWidth(), getPaintBaseCo().getHeight(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getWidth(), UNIT_PIXEL * getPaintRatio() * getCircuitSize().getHeight());
-        g2.fill(getPaintRect());
-        /* 部品の描画 */
-        for (int i = 0; i < getCircuitSize().getHeight(); i++) {
-            for (int j = 0; j < getCircuitSize().getWidth(); j++) {
-                b = getFrame().getBasePanel().getEditCircuitPanel().getCircuitUnit().getCircuitBlock().getMatrix().get(i).get(j);
-                e = b.getElecomInfo();
-                c = b.getCircuitInfo();
-                if (b.isExist()) {
-                    g2.drawImage(
-                            ImageMaster.getImageMaster().getImage(e.getPartsVarieties(), e.getPartsStandards(), e.getPartsStates(), e.getPartsDirections(), c.getReco().getHeight(), c.getReco().getWidth()).getImage(),
-                            UNIT_PIXEL * getPaintRatio() * j + getPaintBaseCo().getWidth(),
-                            UNIT_PIXEL * getPaintRatio() * i + getPaintBaseCo().getHeight(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            UNIT_PIXEL * getPaintRatio(),
-                            this
-                    );
-                }
-            }
-        }
+        paintBase(g2);
+        paintParts(g2);
     }
 
     /**

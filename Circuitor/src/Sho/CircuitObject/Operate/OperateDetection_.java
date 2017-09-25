@@ -814,7 +814,7 @@ public class OperateDetection_ {
     /*******************************/
     /**
      * PARTS_EDITモードのPARTS_EDITコマンドのNO_ACTION場面での検知パターン。
-     * １：可変抵抗、可変パルス出力器
+     * １：直流電源、可変抵抗、可変パルス出力器
      * ２：マウスと重なった領域
      */
     public void partsEdit_partsEdit_noAction(UnitPanel panel) {
@@ -828,7 +828,11 @@ public class OperateDetection_ {
                 c = b.getCircuitInfo();
                 e = b.getElecomInfo();
                 if (c.getReco().equals(0, 0)) {
-                    if (e.getPartsVarieties() == PartsVarieties.RESISTANCE && e.getPartsStandards() == PartsStandards._variable) {
+                    if (e.getPartsVarieties() == PartsVarieties.POWER) {
+                        if (e.getPartsStandards() == PartsStandards.DC) {
+                            panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE);
+                        }
+                    } else if (e.getPartsVarieties() == PartsVarieties.RESISTANCE && e.getPartsStandards() == PartsStandards._variable) {
                         panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE);
                     } else if (e.getPartsVarieties() == PartsVarieties.PULSE && e.getPartsStandards() == PartsStandards.PULSE) {
                         panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE);
@@ -849,7 +853,7 @@ public class OperateDetection_ {
      * EXECUTEモードのEXECUTEコマンドのNO_ACTION場面での検知パターン。
      * スイッチ、可変抵抗、計測器を検知し、オンオフやフォーカスを行う。
      * １：スイッチ
-     * ２：可変抵抗、可変パルス出力器
+     * ２：直流電源、可変抵抗、可変パルス出力器
      * ３：電圧計、電流計
      * ４：フォーカスされた電圧計、電流計
      * ５：マウスと重なった領域
@@ -871,10 +875,12 @@ public class OperateDetection_ {
                             } else {
                                 panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), OFF_SWITCH);
                             }
-                        } else if (e.getPartsVarieties() == PartsVarieties.RESISTANCE || e.getPartsVarieties() == PartsVarieties.PULSE) {
-                            if (e.getPartsStandards() == PartsStandards._variable || e.getPartsStandards() == PartsStandards.PULSE) {
-                                panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE_VAR);
-                            }
+                        } else if (e.getPartsVarieties() == PartsVarieties.POWER) {
+                            panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE_VAR);
+                        } else if (e.getPartsVarieties() == PartsVarieties.RESISTANCE && e.getPartsStandards() == PartsStandards._variable) {
+                            panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE_VAR);
+                        } else if (e.getPartsVarieties() == PartsVarieties.PULSE && e.getPartsStandards() == PartsStandards.PULSE) {
+                            panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE_VAR);
                         } else if (e.getPartsVarieties() == PartsVarieties.MEASURE) {
                             if (e.getPartsStandards() == PartsStandards.VOLTMETER) {
                                 panel.getOperateBorder().setGroupBorder(panel, c.getAbco(), SELECTABLE_VOL);

@@ -299,26 +299,21 @@ public class MasterTerminal {
         return buffer;
     }
 
-    public static void main(String[] args) {
-        MasterTerminal masterTerminal = new MasterTerminal();
-        masterTerminal.prepareTerminal();
-
-        boolean[] pin = new boolean[18];
-        for (int i = 0; i < pin.length; i++) pin[i] = false;
-        pin[17]=true;
-        pin[10]=true;
-
-        try{
-            masterTerminal.getProgramIO().inputter(new BufferedReader(new FileReader(new File("C:\\Users\\aless\\Documents\\GitHub\\Circuitor\\Circuitor\\src\\ProcessTerminal\\Test5.cctp"))));
-        }catch(Exception e){
-            System.out.println("File Not Exist");
-        }
-
-        for (String text : masterTerminal.getListString("MAIN")) {
-            System.out.println(text);
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
+//    public static void main(String[] args) {
+//        MasterTerminal masterTerminal = new MasterTerminal();
+//
+//        boolean[] pin = new boolean[18];
+//        for (int i = 0; i < pin.length; i++) pin[i] = false;
+//        pin[17]=true;
+//        pin[10]=true;
+//
+//        masterTerminal.loadProgram();
+//
+//        for (String text : masterTerminal.getListString("MAIN")) {
+//            System.out.println(text);
+//        }
+//
+//        StringBuilder stringBuilder = new StringBuilder();
 //
 //        System.out.println(masterTerminal.moveOrder("MAIN",33,28));
 //
@@ -326,32 +321,26 @@ public class MasterTerminal {
 //            System.out.println(text);
 //        }
 //
-        masterTerminal.initSimulator();
-        for (int i = 0; i < 100; i++) {
-            masterTerminal.bootProgram(pin);
-        }
-
+//        masterTerminal.initSimulator();
+//        for (int i = 0; i < 10; i++) {
+//            masterTerminal.bootProgram(pin);
+//        }
 //
-        stringBuilder = new StringBuilder();
-        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("ピン").getVariableList()) {
-            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
-        }
-        System.out.println(stringBuilder.toString());
-
-        stringBuilder = new StringBuilder();
-        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("変数").getVariableList()) {
-            stringBuilder.append(variable.getName()).append(":").append(variable.getValue()).append(", ");
-        }
-        System.out.println(stringBuilder.toString());
-
-        stringBuilder = new StringBuilder();
-        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("出力ピン").getVariableList()) {
-            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
-        }
-
-        System.out.println(stringBuilder.toString());
-
-        System.out.println(Arrays.toString(pin));
-        System.out.println(Arrays.toString(masterTerminal.outputPinList));
-    }
+////
+////        stringBuilder = new StringBuilder();
+////        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("ピン").getVariableList()) {
+////            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
+////        }
+////        System.out.println(stringBuilder.toString());
+////
+////        stringBuilder = new StringBuilder();
+////        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("出力ピン").getVariableList()) {
+////            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
+////        }
+////
+////        System.out.println(stringBuilder.toString());
+//
+//        System.out.println(Arrays.toString(pin));
+//        System.out.println(Arrays.toString(masterTerminal.outputPinList));
+//    }
 }

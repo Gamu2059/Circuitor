@@ -1,5 +1,6 @@
 package Sho.CircuitObject.Execute;
 
+import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsVarieties;
 import Sho.CircuitObject.Circuit.CircuitUnit;
@@ -528,7 +529,7 @@ public class Execute extends Thread {
             if (info.getGroupVarieties() == PartsVarieties.MEASURE) {
                 capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
                 if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
-                    if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(exePanel.getOperateOperate().getIntForDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
+                    if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(ImageMaster.getIntFromPartsDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
                         /* 枝電流 */
                         info.getHighLevelExecuteInfo().setRealCurrent(branchCurrent.getMatrix().get(0).get(index));
                     }

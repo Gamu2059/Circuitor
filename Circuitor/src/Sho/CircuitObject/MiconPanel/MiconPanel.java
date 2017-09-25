@@ -8,6 +8,7 @@ import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsVarieties;
+import Sho.CircuitObject.Circuit.ElecomInfo;
 import Sho.CircuitObject.Circuit.TerminalDirection;
 
 import java.awt.*;
@@ -28,20 +29,23 @@ public class MiconPanel extends NewJPanel {
      */
     private MiconLabel miconLabel[];
 
+    private ElecomInfo miconInfo;
+
     public MiconPanel(BaseFrame frame) {
         super(frame);
         /** パネルの設定 */
         setLayout(null);
         setBackground(ColorMaster.getBackColor());
         setBorder(BorderMaster.getRegularBorder());
-        /** ピン設定の初期化 */
+
+        /* マイコンのElecomInfoを作成(モデル描画に用いる) */
+        miconInfo = new ElecomInfo(PartsVarieties.PIC, PartsStandards.MODEL);
+
+        /** コンポーネントの登録とピンの初期化 */
         miconPin = new TerminalDirection[18];
-        for (int i = 0; i < miconPin.length; i++) {
-            miconPin[i] = TerminalDirection.OUT;
-        }
-        /** コンポーネントの登録 */
         miconLabel = new MiconLabel[18];
         for (int i = 0; i < 18; i++) {
+            miconPin[i] = TerminalDirection.OUT;
             if (i != 4 && i != 13) {
                 if (i < 9) {
                     add(miconLabel[i] = new MiconLabel(frame, i, "出力"));
@@ -50,8 +54,10 @@ public class MiconPanel extends NewJPanel {
                     add(miconLabel[26 - i] = new MiconLabel(frame, 26 - i, "出力"));
                 }
             } else if (i == 4) {
+                miconPin[i] = TerminalDirection.GND;
                 add(miconLabel[i] = new MiconLabel(frame, i, "接地"));
             } else {
+                miconPin[i] = TerminalDirection.POWER;
                 add(miconLabel[i] = new MiconLabel(frame, i, "電源"));
             }
         }
@@ -91,7 +97,7 @@ public class MiconPanel extends NewJPanel {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(
-                ImageMaster.getImageMaster().getModelImage(PartsVarieties.PIC, PartsStandards.MODEL).getImage(),
+                ImageMaster.getImageMaster().getModelImage(miconInfo).getImage(),
                 getWidth() / 3,
                 0,
                 getWidth() - (getWidth() / 3) * 2,

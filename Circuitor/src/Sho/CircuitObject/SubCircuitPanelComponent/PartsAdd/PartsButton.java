@@ -26,7 +26,7 @@ public class PartsButton extends JButton implements MouseListener {
     private static Color color;
 
     public PartsButton(BaseFrame frame, ElecomInfo elecomInfo) {
-        super(ImageMaster.getImageMaster().getModelImage(elecomInfo.getPartsVarieties(), elecomInfo.getPartsStandards()));
+        super(ImageMaster.getImageMaster().getModelImage(elecomInfo));
         this.frame = frame;
         if (color == null) {
             color = new Color(180, 200, 200);
@@ -82,7 +82,7 @@ public class PartsButton extends JButton implements MouseListener {
                 title = "マイコン";
                 break;
             case DC:
-                title = "1.5V 直流電源";
+                title = "直流電源";
                 break;
             case _10:
                 title = "10Ω";

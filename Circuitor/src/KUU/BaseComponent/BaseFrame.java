@@ -1,5 +1,6 @@
 package KUU.BaseComponent;
 
+import DataIO.CctIO;
 import KUU.Mode.MainOrderVariableMode;
 import Master.ImageMaster.ImageMaster;
 import ProcessTerminal.MasterTerminal;
@@ -27,9 +28,9 @@ public class BaseFrame extends JFrame implements ComponentListener,WindowStateLi
      */
     private BaseMenuBar baseMenuBar;
     /**
-     * 回路データの入出力オブジェクト
+     * データの入出力オブジェクト
      */
-    private CircuitIO circuitIO;
+    private CctIO cctIO;
     /**
      * プログラム部
      */
@@ -42,10 +43,11 @@ public class BaseFrame extends JFrame implements ComponentListener,WindowStateLi
         helpLabel = new HelpLabel(this);
         baseMenuBar = new BaseMenuBar(this);
 
-        /** IOオブジェクト */
-        circuitIO = new CircuitIO(this);
         /** プログラム制御オブジェクト */
         masterTerminal = new MasterTerminal(this);
+
+        /** IOオブジェクト(MasterTerminalを内部で参照しているため、MasterTerminalの生成前にCctIOを生成してはいけない) */
+        cctIO = new CctIO(this);
 
         /** CircuitUnitオブジェクトの生成 */
         basePanel.getEditCircuitPanel().createCircuitUnit();
@@ -85,7 +87,7 @@ public class BaseFrame extends JFrame implements ComponentListener,WindowStateLi
         addWindowListener(this);
         setTitle("Circuitor");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setIconImage((new ImageIcon(ImageMaster.getImageMaster().getCircuitorIcon().getImage())).getImage());
+        setIconImage(ImageMaster.getImageMaster().getCircuitorIcon().getImage());
         setVisible(true);
     }
 
@@ -133,8 +135,8 @@ public class BaseFrame extends JFrame implements ComponentListener,WindowStateLi
         return baseMenuBar;
     }
 
-    public CircuitIO getCircuitIO() {
-        return circuitIO;
+    public CctIO getCctIO() {
+        return cctIO;
     }
 
     public MasterTerminal getMasterTerminal() {

@@ -7,6 +7,8 @@ import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsVarieties;
+import Sho.CircuitObject.Circuit.ElecomInfo;
+import Sho.CircuitObject.SubCircuitPanelComponent.PartsAdd.PartsButton;
 
 /**
  * 計測器エリアのコンポーネントを設定するクラス。
@@ -23,7 +25,9 @@ public class ExeMeasurePanel extends NewJPanel {
         super(frame);
         setLayout(null);
 
-        add(indicateLabel = new GeneralItemPanel(null, ImageMaster.getImageMaster().getModelImage(PartsVarieties.MEASURE, isVolt ? PartsStandards.VOLTMETER : PartsStandards.AMMETER), isVolt ? "電圧計" : "電流計"));
+        ElecomInfo e = new ElecomInfo(PartsVarieties.MEASURE, isVolt ? PartsStandards.VOLTMETER : PartsStandards.AMMETER);
+
+        add(indicateLabel = new GeneralItemPanel(null, ImageMaster.getImageMaster().getModelImage(e), isVolt ? "電圧計" : "電流計"));
         add(titleLabel = new GeneralItemPanel("実際値:"));
         add(valueIndicateLabel = new ExeIndiCateLabel(isVolt ? "V" : "A"));
         add(graphPanel = new ExeGraphPanel());
@@ -38,10 +42,10 @@ public class ExeMeasurePanel extends NewJPanel {
     @Override
     public void handResize(int width, int height) {
         indicateLabel.setBounds(0, 0, width, height / 7);
-        titleLabel.setBounds(0, height / 7, (width / 5) * 2, 20);
-        valueIndicateLabel.setBounds((width / 5) * 2, height / 7, width - (width / 5) * 2, 20);
-        valueLinePanel.setBounds(0, (height / 7) + 20, (width / 5) * 2, height - (height / 7) - 50);
-        graphPanel.setBounds((width / 5) * 2, (height / 7) + 20, width - (width / 5) * 2, height - (height / 7) - 50);
+        titleLabel.setBounds(0, height / 7, (width / 3), 20);
+        valueIndicateLabel.setBounds(width / 3, height / 7, width - (width / 3), 20);
+        valueLinePanel.setBounds(0, (height / 7) + 20, (width / 3), height - (height / 7) - 50);
+        graphPanel.setBounds(width / 3, (height / 7) + 20, width - (width / 3), height - (height / 7) - 50);
         rangeChangePanel.setBounds(0,height - 30, width, 30);
     }
 
