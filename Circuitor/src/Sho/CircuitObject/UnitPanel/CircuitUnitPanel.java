@@ -1497,7 +1497,7 @@ public class CircuitUnitPanel extends UnitPanel {
             return;
         }
         CircuitBlock b = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth());
-        getPartsPopMenu().controllPop(this, b, e);
+        getPartsPopMenu().controlPop(this, b, e);
     }
 
     /**

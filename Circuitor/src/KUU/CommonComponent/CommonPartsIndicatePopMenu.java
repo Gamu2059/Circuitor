@@ -5,27 +5,32 @@ import Master.ImageMaster.PartsVarieties;
 import Sho.CircuitObject.Circuit.CircuitBlock;
 import Sho.CircuitObject.Circuit.CircuitInfo;
 import Sho.CircuitObject.Circuit.ElecomInfo;
-import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
 import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteGroup;
 import Sho.CircuitObject.UnitPanel.UnitPanel;
 import Sho.IntegerDimension.IntegerDimension;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 /**
  * 電子部品の説明を表示するポップアップメニュー。
  * UnitPanelが所有する形でこのインスタンスは再利用する。
  */
-public class CommonPartsIndicatePopMenu extends JPopupMenu {
+public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentListener {
     private JLabel label;
     private IntegerDimension abco, currentCo;
+    private boolean sizeChange;
 
     public CommonPartsIndicatePopMenu() {
         super();
         label = new JLabel();
         add(label);
+        setBorder(null);
+        setBorderPainted(false);
+        addComponentListener(this);
     }
 
     /**
@@ -35,37 +40,50 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu {
      * 部品の範囲内で少しでもマウスが動いた時、ポップを非表示する。
      * 部品が存在しない場合でもポップを非表示にする。
      */
-    public void controllPop(UnitPanel panel, CircuitBlock b, MouseEvent e) {
+    public void controlPop(UnitPanel panel, CircuitBlock b, MouseEvent e) {
         if (!b.isExist()) {
             hidePop();
             return;
         }
         CircuitInfo c = b.getCircuitInfo();
         currentCo = new IntegerDimension(c.getAbco().getHeight()-c.getReco().getHeight(), c.getAbco().getWidth() - c.getReco().getWidth());
-        if (isShowable(panel)) {
+        int cont = controlShowing(panel);
+        if (cont > 0) {
             setVisible(true);
             showPop(b, e);
-        } else {
+        } else if (cont < 0) {
             setVisible(false);
         }
     }
 
-    public void controllPop(UnitPanel panel, HighLevelExecuteGroup group, MouseEvent e) {
+    public void controlPop(UnitPanel panel, HighLevelExecuteGroup group, MouseEvent e) {
         currentCo = group.getAbco();
-        if (isShowable(panel)) {
+        int cont = controlShowing(panel);
+        if (cont > 0) {
             setVisible(true);
             showPop(group, e);
-        } else {
+        } else if (cont < 0) {
             setVisible(false);
         }
     }
 
-    private boolean isShowable(UnitPanel panel) {
+    /**
+     * 表示するかどうかを数値で返す。
+     * 0より大きければ表示、0未満ならば非表示、0ならば何もしない。
+     */
+    private int controlShowing(UnitPanel panel) {
         if (isVisible()) {
-            return !currentCo.equals(abco) || panel.getDeltaCursorCo().equals(0, 0);
+            if (!currentCo.equals(abco)) {
+                return 1;
+            } else if (!panel.getDeltaCursorCo().equals(0, 0)) {
+                return -1;
+            }
         } else {
-            return !currentCo.equals(abco);
+            if (abco == null || !currentCo.equals(abco)) {
+                return 1;
+            }
         }
+        return 0;
     }
 
     private void showPop(CircuitBlock b, MouseEvent e) {
@@ -92,10 +110,12 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu {
     public void hidePop() {
         setVisible(false);
         abco = null;
+        currentCo = null;
     }
 
     public void changeContent(ElecomInfo ele) {
         label.setText(getContentString(ele));
+        sizeChange = true;
     }
 
     private String getContentString(ElecomInfo ele) {
@@ -164,5 +184,36 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu {
                 }
         }
         return null;
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (sizeChange) {
+            int y,x;
+            y = g.getFontMetrics().getHeight();
+            x = g.getFontMetrics().stringWidth(label.getText());
+            label.setSize(x, y);
+            setSize(x, y);
+        }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 }
