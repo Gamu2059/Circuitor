@@ -9,11 +9,12 @@ import ProcessTerminal.FunctionSettings.FunctionGroup;
 import ProcessTerminal.SaveLoadModule.ProgramIO;
 import ProcessTerminal.SyntaxSettings.ListElement;
 import ProcessTerminal.SyntaxSettings.Syntax;
-import ProcessTerminal.VariableSettings.PinElement;
-import ProcessTerminal.VariableSettings.Variable;
-import ProcessTerminal.VariableSettings.VariableGroup;
+import ProcessTerminal.VariableSettings.*;
 
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 

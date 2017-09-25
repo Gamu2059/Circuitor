@@ -76,6 +76,7 @@ public class ForDialog extends NewJDialog implements ItemListener{
         basePanel.add(orderIndicateLabel = new GeneralItemPanel(null,null,""));
         basePanel.add(confirmLabel = new GeneralItemPanel(true,null,"確定"));
         basePanel.add(panel);
+
         add(basePanel);
 
         conditionBox.addItemListener(this);

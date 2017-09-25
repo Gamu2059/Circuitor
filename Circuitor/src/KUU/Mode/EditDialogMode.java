@@ -10,4 +10,5 @@ public enum EditDialogMode {
     FOR,
     WHILE,
     LOADFUNCTION,
+    SELECTVARIABLE,
 }

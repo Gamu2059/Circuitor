@@ -23,8 +23,7 @@ public class VariablePanel extends NewJPanel implements ItemListener{
 
     @Override
     public void handResize(int width, int height) {
-
-        variableBox.setBounds((width/7) * 2, (height/7) * 2, (width/7) * 3, (height/7) * 3);
+        variableBox.setBounds((width/7)*2, (height/7)*2, (width/7)*3, (height/7)*3);
     }
 
     @Override

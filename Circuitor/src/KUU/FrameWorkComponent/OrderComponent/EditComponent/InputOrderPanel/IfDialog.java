@@ -256,7 +256,7 @@ public class IfDialog extends NewJDialog implements ItemListener{
             updateOrderIndicateLabel();
         }
 
-        setBounds(e.getXOnScreen() - 305, e.getYOnScreen() - 350, 610, 300);
+        setBounds(e.getXOnScreen() - 330, e.getYOnScreen() - 350, 660, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -300,9 +300,9 @@ public class IfDialog extends NewJDialog implements ItemListener{
             conditionBoxTitleLabel.setBounds(270, 0, 70, 20);
             conditionBox.setBounds(270, partsHeight/3 + 20, 70, partsHeight/3);
 
-            secondSelectConstantVariableTitleLabel.setBounds(340, 0, 270, 20);
-            secondSelectConstantVariablePanel.setBounds(340, 20, 270, partsHeight);
-            secondSelectConstantVariablePanel.handResize(270, partsHeight);
+            secondSelectConstantVariableTitleLabel.setBounds(340, 0, 320, 20);
+            secondSelectConstantVariablePanel.setBounds(340, 20, 320, partsHeight);
+            secondSelectConstantVariablePanel.handResize(320, partsHeight);
         }
 
         @Override

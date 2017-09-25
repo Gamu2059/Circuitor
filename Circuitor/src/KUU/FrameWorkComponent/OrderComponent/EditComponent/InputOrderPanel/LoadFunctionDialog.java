@@ -22,7 +22,6 @@ public class LoadFunctionDialog extends NewJDialog implements ItemListener{
 
     private JComboBox        firstFunctionBox;
     private ArrayList        firstFunctionArray;
-    private GeneralItemPanel firstFunctionTitleLabel;
 
     private DialogBasePanel basePanel;
     private JPanel panel;
@@ -42,7 +41,7 @@ public class LoadFunctionDialog extends NewJDialog implements ItemListener{
         firstFunctionArray.remove("SETUP");
         firstFunctionArray.remove("MAIN");
         panel.add(firstFunctionBox = new JComboBox<>(firstFunctionArray.toArray()));
-        panel.add(firstFunctionTitleLabel = new GeneralItemPanel(null,null,"追加したい関数"));
+        firstFunctionBox.addItemListener(this);
 
         basePanel = new DialogBasePanel(frame);
         basePanel.setLayout(null);
@@ -50,7 +49,6 @@ public class LoadFunctionDialog extends NewJDialog implements ItemListener{
         basePanel.add(confirmLabel       = new GeneralItemPanel(true,null,"確定"));
         basePanel.add(panel);
 
-        firstFunctionBox.addItemListener(this);
 
         add(basePanel);
 
@@ -118,8 +116,7 @@ public class LoadFunctionDialog extends NewJDialog implements ItemListener{
             /** 下の空欄の幅/高さ */
             int partsHeight = panel.getHeight() - 30;
 
-            firstFunctionTitleLabel.setBounds(0, 0, width, 20);
-            firstFunctionBox.setBounds(width/4, partsHeight/3 + 20, width/2, partsHeight/3);
+            firstFunctionBox.setBounds(width/4, partsHeight/3, width/2, partsHeight/3);
         }
 
         @Override
