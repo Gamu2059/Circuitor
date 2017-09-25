@@ -1,5 +1,6 @@
 package KUU.CommonComponent;
 
+import Master.FontMaster.FontMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsVarieties;
 import Sho.CircuitObject.Circuit.CircuitBlock;
@@ -11,26 +12,20 @@ import Sho.IntegerDimension.IntegerDimension;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 
 /**
- * 電子部品の説明を表示するポップアップメニュー。
+ * 電子部品の説明を描画する処理クラス。
  * UnitPanelが所有する形でこのインスタンスは再利用する。
  */
-public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentListener {
-    private JLabel label;
-    private IntegerDimension abco, currentCo;
-    private boolean sizeChange;
+public class CommonPartsIndicatePopMenu {
+    private boolean isShown;
+    private String text;
+    private IntegerDimension preCo, currentCo, mouseCo;
 
     public CommonPartsIndicatePopMenu() {
         super();
-        label = new JLabel();
-        add(label);
-        setBorder(null);
-        setBorderPainted(false);
-        addComponentListener(this);
+        mouseCo = new IntegerDimension();
     }
 
     /**
@@ -49,10 +44,10 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentL
         currentCo = new IntegerDimension(c.getAbco().getHeight()-c.getReco().getHeight(), c.getAbco().getWidth() - c.getReco().getWidth());
         int cont = controlShowing(panel);
         if (cont > 0) {
-            setVisible(true);
+            isShown = true;
             showPop(b, e);
         } else if (cont < 0) {
-            setVisible(false);
+            isShown = false;
         }
     }
 
@@ -60,10 +55,10 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentL
         currentCo = group.getAbco();
         int cont = controlShowing(panel);
         if (cont > 0) {
-            setVisible(true);
+            isShown = true;
             showPop(group, e);
         } else if (cont < 0) {
-            setVisible(false);
+            isShown = false;
         }
     }
 
@@ -72,14 +67,14 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentL
      * 0より大きければ表示、0未満ならば非表示、0ならば何もしない。
      */
     private int controlShowing(UnitPanel panel) {
-        if (isVisible()) {
-            if (!currentCo.equals(abco)) {
+        if (isShown) {
+            if (!currentCo.equals(preCo)) {
                 return 1;
             } else if (!panel.getDeltaCursorCo().equals(0, 0)) {
                 return -1;
             }
         } else {
-            if (abco == null || !currentCo.equals(abco)) {
+            if (preCo == null || !currentCo.equals(preCo)) {
                 return 1;
             }
         }
@@ -87,35 +82,27 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentL
     }
 
     private void showPop(CircuitBlock b, MouseEvent e) {
-        if (b.getElecomInfo().getPartsVarieties() == PartsVarieties.WIRE) {
-            setVisible(false);
-            return;
-        }
-        setLocation(e.getXOnScreen() + UnitPanel.UNIT_PIXEL, e.getYOnScreen() + UnitPanel.UNIT_PIXEL);
-        abco = currentCo;
-        changeContent(b.getElecomInfo());
+        changeContent(b.getElecomInfo(), e);
     }
 
     private void showPop(HighLevelExecuteGroup group, MouseEvent e) {
         ElecomInfo ele = group.getBehavior().getElecomInfo();
-        if (ele.getPartsVarieties() == PartsVarieties.WIRE) {
-            setVisible(false);
-            return;
-        }
-        setLocation(e.getXOnScreen() + UnitPanel.UNIT_PIXEL, e.getYOnScreen() + UnitPanel.UNIT_PIXEL);
-        abco = currentCo;
-        changeContent(ele);
+        changeContent(ele, e);
     }
 
     public void hidePop() {
-        setVisible(false);
-        abco = null;
+        isShown = false;
+        preCo = null;
         currentCo = null;
     }
 
-    public void changeContent(ElecomInfo ele) {
-        label.setText(getContentString(ele));
-        sizeChange = true;
+    public void changeContent(ElecomInfo ele, MouseEvent e) {
+        if (ele.getPartsVarieties() == PartsVarieties.WIRE) {
+            isShown = false;
+            return;
+        }
+        preCo = currentCo;
+        text = getContentString(ele);
     }
 
     private String getContentString(ElecomInfo ele) {
@@ -186,34 +173,25 @@ public class CommonPartsIndicatePopMenu extends JPopupMenu implements ComponentL
         return null;
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        if (sizeChange) {
-            int y,x;
-            y = g.getFontMetrics().getHeight();
-            x = g.getFontMetrics().stringWidth(label.getText());
-            label.setSize(x, y);
-            setSize(x, y);
+    public void drawIndicate(Graphics g2, UnitPanel panel) {
+        if (!isShown) {
+            return;
         }
-    }
 
-    @Override
-    public void componentResized(ComponentEvent e) {
-    }
+        mouseCo.setHeight((panel.getCursorCo().getHeight() + 2) * UnitPanel.UNIT_PIXEL);
+        mouseCo.setWidth((panel.getCursorCo().getWidth() + 2) * UnitPanel.UNIT_PIXEL);
 
-    @Override
-    public void componentMoved(ComponentEvent e) {
+        g2.setFont(FontMaster.getRegularFont());
 
-    }
+        int y, x;
+        y = g2.getFontMetrics().getHeight() + 4;
+        x = g2.getFontMetrics().stringWidth(text) + 4;
 
-    @Override
-    public void componentShown(ComponentEvent e) {
-
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
-
+        g2.setColor(Color.WHITE);
+        g2.fillRect(mouseCo.getWidth(), mouseCo.getHeight(), x, y);
+        if (text != null) {
+            g2.setColor(Color.BLACK);
+            g2.drawString(text, mouseCo.getWidth() + 2, mouseCo.getHeight() + g2.getFontMetrics().getAscent() + 2);
+        }
     }
 }

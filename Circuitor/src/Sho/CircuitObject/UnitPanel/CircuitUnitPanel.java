@@ -234,6 +234,9 @@ public class CircuitUnitPanel extends UnitPanel {
                 }
             }
         }
+
+        /* 部品説明描画 */
+        getPartsPopMenu().drawIndicate(g2, this);
     }
 
     /**
