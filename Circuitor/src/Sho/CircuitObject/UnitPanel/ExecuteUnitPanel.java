@@ -164,6 +164,9 @@ public class ExecuteUnitPanel extends UnitPanel {
             }
             interrupt = false;
         }
+
+        /* 部品説明の描画 */
+        getPartsPopMenu().drawIndicate(g2, this);
     }
 
     /**
@@ -197,38 +200,41 @@ public class ExecuteUnitPanel extends UnitPanel {
             b = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth());
             c = b.getCircuitInfo();
             ele = b.getElecomInfo();
-            if (ele.getPartsVarieties() == PartsVarieties.SWITCH) {
-                /* オンオフを切り替える */
-                if (ele.getPartsStates() == PartsStates.ON) {
-                    getOperateOperate().setPartsStates(this, getCursorCo(), PartsStates.OFF);
-                } else {
-                    getOperateOperate().setPartsStates(this, getCursorCo(), PartsStates.ON);
+
+            c1 = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
+            for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
+                if (!isSettablePartsVarieties(ele.getPartsVarieties())) {
+                    continue;
                 }
-            } else if (isSettablePartsVarieties(ele.getPartsVarieties())) {
-                c1 = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
-                for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
-                    if (group.getAbco().equals(c1.getAbco())) {
-                        if (ele.getPartsStandards() == PartsStandards.DC) {
-                            /* 直流電源の電圧値を変更する */
-                            new VariableDirectPowerDialog(this, group);
-                        } else if (ele.getPartsStandards() == PartsStandards._variable) {
-                            /* 抵抗値を変更する */
-                            new VariableResistanceDialog(this, group.getExecuteInfos());
-                        } else if (ele.getPartsStandards() == PartsStandards.PULSE) {
-                            /* 周波数を変更する */
-                            new VariablePulseDialog(this, group);
-                        } else if (ele.getPartsStandards() == PartsStandards.VOLTMETER) {
-                            if (voltmeter != group) {
-                                voltmeter = group;
-                                getFrame().getBasePanel().getSubExecutePanel().getVoltagePanel().getGraphPanel().initValueAndGraph();
-                            }
-                        } else if (ele.getPartsStandards() == PartsStandards.AMMETER) {
-                            if (ammeter != group) {
-                                ammeter = group;
-                                getFrame().getBasePanel().getSubExecutePanel().getCurrentPanel().getGraphPanel().initValueAndGraph();
-                            }
+                switch (ele.getPartsStandards()) {
+                    case TACT:
+                        getOperateOperate().setPartsStates(this, c1.getAbco(), (ele.getPartsStates() == PartsStates.ON ? PartsStates.OFF : PartsStates.ON));
+                        getPartsPopMenu().changeContent(ele, ele.getPartsStates());
+                        break;
+                    case DC:
+                        /* 直流電源の電圧値を変更する */
+                        new VariableDirectPowerDialog(this, group);
+                        break;
+                    case _variable:
+                        /* 抵抗値を変更する */
+                        new VariableResistanceDialog(this, group.getExecuteInfos());
+                        break;
+                    case PULSE:
+                        /* 周波数を変更する */
+                        new VariablePulseDialog(this, group);
+                        break;
+                    case VOLTMETER:
+                        if (voltmeter != group) {
+                            voltmeter = group;
+                            getFrame().getBasePanel().getSubExecutePanel().getVoltagePanel().getGraphPanel().initValueAndGraph();
                         }
-                    }
+                        break;
+                    case AMMETER:
+                        if (ammeter != group) {
+                            ammeter = group;
+                            getFrame().getBasePanel().getSubExecutePanel().getCurrentPanel().getGraphPanel().initValueAndGraph();
+                        }
+                        break;
                 }
             }
         }
@@ -236,7 +242,12 @@ public class ExecuteUnitPanel extends UnitPanel {
     }
 
     private boolean isSettablePartsVarieties(PartsVarieties pV) {
-        return pV == PartsVarieties.POWER || pV == PartsVarieties.RESISTANCE || pV == PartsVarieties.PULSE || pV == PartsVarieties.MEASURE;
+        return
+                pV == PartsVarieties.SWITCH ||
+                pV == PartsVarieties.POWER ||
+                pV == PartsVarieties.RESISTANCE ||
+                pV == PartsVarieties.PULSE ||
+                pV == PartsVarieties.MEASURE;
     }
 
     /**
@@ -272,7 +283,7 @@ public class ExecuteUnitPanel extends UnitPanel {
         c = getCircuitUnit().getCircuitBlock().getMatrix().get(c.getAbco().getHeight() - c.getReco().getHeight()).get(c.getAbco().getWidth() - c.getReco().getWidth()).getCircuitInfo();
         for (HighLevelExecuteGroup group : executor.getExecuteGroups()) {
             if (group.getAbco().equals(c.getAbco())) {
-                getPartsPopMenu().controlPop(this, group, e);
+                getPartsPopMenu().controlPop(this, group);
                 flg = true;
                 break;
             }

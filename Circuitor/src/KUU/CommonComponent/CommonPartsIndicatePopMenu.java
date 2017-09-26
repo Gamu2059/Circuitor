@@ -2,6 +2,7 @@ package KUU.CommonComponent;
 
 import Master.FontMaster.FontMaster;
 import Master.ImageMaster.PartsStandards;
+import Master.ImageMaster.PartsStates;
 import Master.ImageMaster.PartsVarieties;
 import Sho.CircuitObject.Circuit.CircuitBlock;
 import Sho.CircuitObject.Circuit.CircuitInfo;
@@ -35,7 +36,7 @@ public class CommonPartsIndicatePopMenu {
      * 部品の範囲内で少しでもマウスが動いた時、ポップを非表示する。
      * 部品が存在しない場合でもポップを非表示にする。
      */
-    public void controlPop(UnitPanel panel, CircuitBlock b, MouseEvent e) {
+    public void controlPop(UnitPanel panel, CircuitBlock b) {
         if (!b.isExist()) {
             hidePop();
             return;
@@ -45,18 +46,18 @@ public class CommonPartsIndicatePopMenu {
         int cont = controlShowing(panel);
         if (cont > 0) {
             isShown = true;
-            showPop(b, e);
+            showPop(b);
         } else if (cont < 0) {
             isShown = false;
         }
     }
 
-    public void controlPop(UnitPanel panel, HighLevelExecuteGroup group, MouseEvent e) {
+    public void controlPop(UnitPanel panel, HighLevelExecuteGroup group) {
         currentCo = group.getAbco();
         int cont = controlShowing(panel);
         if (cont > 0) {
             isShown = true;
-            showPop(group, e);
+            showPop(group);
         } else if (cont < 0) {
             isShown = false;
         }
@@ -81,13 +82,13 @@ public class CommonPartsIndicatePopMenu {
         return 0;
     }
 
-    private void showPop(CircuitBlock b, MouseEvent e) {
-        changeContent(b.getElecomInfo(), e);
+    private void showPop(CircuitBlock b) {
+        changeContent(b.getElecomInfo(), b.getElecomInfo().getPartsStates());
     }
 
-    private void showPop(HighLevelExecuteGroup group, MouseEvent e) {
+    private void showPop(HighLevelExecuteGroup group) {
         ElecomInfo ele = group.getBehavior().getElecomInfo();
-        changeContent(ele, e);
+        changeContent(ele, group.getBehavior().getState());
     }
 
     public void hidePop() {
@@ -96,16 +97,16 @@ public class CommonPartsIndicatePopMenu {
         currentCo = null;
     }
 
-    public void changeContent(ElecomInfo ele, MouseEvent e) {
+    public void changeContent(ElecomInfo ele, PartsStates states) {
         if (ele.getPartsVarieties() == PartsVarieties.WIRE) {
             isShown = false;
             return;
         }
         preCo = currentCo;
-        text = getContentString(ele);
+        text = getContentString(ele, states);
     }
 
-    private String getContentString(ElecomInfo ele) {
+    private String getContentString(ElecomInfo ele, PartsStates states) {
         PartsVarieties v = ele.getPartsVarieties();
         PartsStandards s = ele.getPartsStandards();
         switch (v) {
@@ -113,11 +114,11 @@ public class CommonPartsIndicatePopMenu {
                 return "整流ダイオード";
             case LED:
                 if (s == PartsStandards.RED) {
-                    return "赤色LED";
+                    return "赤色LED " + states;
                 } else if (s == PartsStandards.GREEN) {
-                    return "緑色LED";
+                    return "緑色LED " + states;
                 } else {
-                    return "青色LED";
+                    return "青色LED " + states;
                 }
             case MEASURE:
                 if (s == PartsStandards.VOLTMETER) {
@@ -155,7 +156,7 @@ public class CommonPartsIndicatePopMenu {
             case TRANSISTOR:
                 return "NPN型バイポーラトランジスタ";
             case SWITCH:
-                return "タクトスイッチ";
+                return "タクトスイッチ " + states;
             case RESISTANCE:
                 switch (s) {
                     case _10:
@@ -178,8 +179,10 @@ public class CommonPartsIndicatePopMenu {
             return;
         }
 
-        mouseCo.setHeight((panel.getCursorCo().getHeight() + 2) * UnitPanel.UNIT_PIXEL);
-        mouseCo.setWidth((panel.getCursorCo().getWidth() + 2) * UnitPanel.UNIT_PIXEL);
+        int baseSize = panel.getBaseSize();
+
+        mouseCo.setHeight((panel.getCursorCo().getHeight() + 2) * baseSize + panel.getPaintBaseCo().getHeight());
+        mouseCo.setWidth((panel.getCursorCo().getWidth() + 2) * baseSize + panel.getPaintBaseCo().getWidth());
 
         g2.setFont(FontMaster.getRegularFont());
 
