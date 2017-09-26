@@ -3,6 +3,7 @@ package Sho.Matrix;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * 行列を表現するクラス。実数版。
@@ -41,6 +42,65 @@ public class DoubleMatrix extends OriginMatrix {
 
     public void setMatrix(ArrayList<ArrayList<Double>> matrix) {
         this.matrix = matrix;
+    }
+
+    /**
+     * 行列を行数y、列数xで初期化する。
+     * 初期化される値は乱数生成される。
+     */
+    public static double[][] initDoubleMatrix(int y, int x) {
+        double[][] mat = new double[y][x];
+        int i, j;
+        Random rnd = new Random();
+        for (i = 0;i<y;i++) {
+            for (j=0;j<x;j++) {
+                mat[i][j] = rnd.nextDouble() * (-200) + 100;
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * 行列を行数y、列数xで初期化する。
+     * 全ての要素をvalueで初期化する。
+     */
+    public static double[][] initDoubleMatrix(int y, int x, double value) {
+        double[][] mat = new double[y][x];
+        int i, j;
+        for (i = 0;i<y;i++) {
+            for (j=0;j<x;j++) {
+                mat[i][j] = value;
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * ベクトルを次数nで初期化する。
+     * 初期化される値は乱数生成される。
+     */
+    public static double[] initDoubleVector(int n) {
+        double[] vec = new double[n];
+        int i;
+        Random rnd = new Random();
+        for (i = 0;i<n;i++) {
+                vec[i] = rnd.nextDouble() * (-200) + 100;
+            }
+        return vec;
+    }
+
+
+    /**
+     * ベクトルを次数nで初期化する。
+     * 全ての要素をvalueで初期化する。
+     */
+    public static double[] initDoubleVector(int n, double value) {
+        double[] vec = new double[n];
+        int i;
+        for (i = 0;i<n;i++) {
+            vec[i] = value;
+        }
+        return vec;
     }
 
     @Override
@@ -459,11 +519,24 @@ public class DoubleMatrix extends OriginMatrix {
         return ans;
     }
 
-    private static void out(DoubleMatrix d) {
+    public static void out(DoubleMatrix d) {
         int N = d.getMatrix().size();
         for (int i=0;i<N;i++) {
             for (int j=0;j<=N;j++) {
                 System.out.print(d.getMatrix().get(i).get(j)+", ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public static void out(double[][] d) {
+        int y, x;
+        y = d.length;
+        x = d[0].length;
+        for (int i=0;i<y;i++) {
+            for (int j=0;j<x;j++) {
+                System.out.print(d[i][j]+", ");
             }
             System.out.println();
         }
