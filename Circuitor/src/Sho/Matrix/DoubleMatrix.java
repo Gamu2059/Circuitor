@@ -3,6 +3,7 @@ package Sho.Matrix;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * 行列を表現するクラス。実数版。
@@ -41,6 +42,65 @@ public class DoubleMatrix extends OriginMatrix {
 
     public void setMatrix(ArrayList<ArrayList<Double>> matrix) {
         this.matrix = matrix;
+    }
+
+    /**
+     * 行列を行数y、列数xで初期化する。
+     * 初期化される値は乱数生成される。
+     */
+    public static double[][] initDoubleMatrix(int y, int x) {
+        double[][] mat = new double[y][x];
+        int i, j;
+        Random rnd = new Random();
+        for (i = 0;i<y;i++) {
+            for (j=0;j<x;j++) {
+                mat[i][j] = rnd.nextDouble() * (-200) + 100;
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * 行列を行数y、列数xで初期化する。
+     * 全ての要素をvalueで初期化する。
+     */
+    public static double[][] initDoubleMatrix(int y, int x, double value) {
+        double[][] mat = new double[y][x];
+        int i, j;
+        for (i = 0;i<y;i++) {
+            for (j=0;j<x;j++) {
+                mat[i][j] = value;
+            }
+        }
+        return mat;
+    }
+
+    /**
+     * ベクトルを次数nで初期化する。
+     * 初期化される値は乱数生成される。
+     */
+    public static double[] initDoubleVector(int n) {
+        double[] vec = new double[n];
+        int i;
+        Random rnd = new Random();
+        for (i = 0;i<n;i++) {
+                vec[i] = rnd.nextDouble() * (-200) + 100;
+            }
+        return vec;
+    }
+
+
+    /**
+     * ベクトルを次数nで初期化する。
+     * 全ての要素をvalueで初期化する。
+     */
+    public static double[] initDoubleVector(int n, double value) {
+        double[] vec = new double[n];
+        int i;
+        for (i = 0;i<n;i++) {
+            vec[i] = value;
+        }
+        return vec;
     }
 
     @Override
@@ -329,110 +389,99 @@ public class DoubleMatrix extends OriginMatrix {
      * matrixは正方行列、vectorはmatrixと同次であることが前提条件。
      */
     public static ArrayList<ArrayList<Double>> getGaussEquation(double[][] matrix, double[] vector) {
-        int N = matrix.length;
-        double cor[][] = new double[N][N];
-        DoubleMatrix equation = new DoubleMatrix();
-        /* matrixとvectorをequationに代入する */
-        for (int i = 0; i < N; i++) {
-            // 縦の処理だが、面倒なのでここで横側のリストインデックスを初期化する
-            equation.getColumnRelatedIndex().add(i, i);
-            equation.getMatrix().add(i, new ArrayList<>());
-            for (int j = 0; j < N; j++) {
-                cor[i][j] = 0;
-                equation.getMatrix().get(i).add(j, matrix[i][j]);
-            }
-            equation.getMatrix().get(i).add(N, vector[i]);
-        }
+        int n = matrix.length;
+
+        double[][] ecm = createECM(matrix, vector);
+
         /* ガウスの消去法 */
-        for (int f = 0; f < N; f++) {
-            pivot(N, f, equation);
-            forward(N, f, equation, cor);
-        }
-        /* 補正行列を係数行列に加算する */
-        for (int i=0;i<N;i++) {
-            for (int j=0;j<N;j++) {
-                matrix[i][j] += cor[i][j];
-            }
+        for (int f = 0; f < n; f++) {
+            pivot(n, f, ecm);
+            forward(n, f, ecm);
         }
         /* 後退代入を行い、そのまま返す */
-        return backward(N, equation);
+        return backward(n, ecm);
+    }
+
+    /**
+     * 拡大係数行列を生成する。
+     * 引数のmatrixがn次正則行列だとすると、返される行列はn+1次正則行列となる。
+     */
+    private static double[][] createECM(double[][] matrix, double[] vector) {
+        if (matrix.length != matrix[0].length) {
+            return null;
+        }
+
+        int i, j, n = matrix.length;
+        double[][] ecm = new double[n+1][n+1];
+        for (i=0;i<n;i++) {
+            for(j=0;j<n;j++) {
+                ecm[i][j] = matrix[i][j];
+            }
+            ecm[i][j] = vector[i];
+            ecm[n][i] = i;
+        }
+        return ecm;
     }
 
     /**
      * 完全ピボット選択を行う
-     *
-     * @param f 現在注目している対角要素のインデックス
      */
-    public static void pivot(int N, int f, DoubleMatrix equation) {
+    private static void pivot(int n, int f, double[][] ecm) {
         /* 選択した座標を管理する */
         int pInX, pInY;
-        double max;
-        double tmp;
-        max = Math.abs(equation.getMatrix().get(f).get(f));
+        double max = 0, tmp;
         pInX = pInY = f;
         /* 現在注目している(f, f)以降の行列から絶対値最大のものを選択する */
-        if (f != N - 1) {
-            for (int i = f; i < N; i++) {
-                for (int j = f; j < N; j++) {
-                    if (i != f || j != f) {
-                        if (Math.abs(equation.getMatrix().get(i).get(j)) > max) {
-                            max = Math.abs(equation.getMatrix().get(i).get(j));
-                            pInY = i;
-                            pInX = j;
-                        }
-                    }
+        for (int i = f; i < n; i++) {
+            for (int j = f; j < n; j++) {
+                tmp = Math.abs(ecm[i][j]);
+                if (tmp > max) {
+                    max = tmp;
+                    pInY = i;
+                    pInX = j;
                 }
-
             }
         }
         /* 行を入れ替える */
         if(pInY != f) {
-            for (int j = 0; j <= N; j++) {
-                tmp = equation.getMatrix().get(f).get(j);
-                equation.getMatrix().get(f).set(j, equation.getMatrix().get(pInY).get(j));
-                equation.getMatrix().get(pInY).set(j, tmp);
+            for (int j = 0; j <= n; j++) {
+                tmp = ecm[f][j];
+                ecm[f][j] = ecm[pInY][j];
+                ecm[pInY][j] = tmp;
             }
         }
         /* 列を入れ替える */
         if(pInX != f) {
-            for (int i = 0; i < N; i++) {
-                tmp = equation.getMatrix().get(i).get(f);
-                equation.getMatrix().get(i).set(f, equation.getMatrix().get(i).get(pInX));
-                equation.getMatrix().get(i).set(pInX, tmp);
+            for (int i = 0; i <= n; i++) {
+                tmp = ecm[i][f];
+                ecm[i][f] = ecm[i][pInX];
+                ecm[i][pInX] = tmp;
             }
-            /* 列のインデックスも入れ替える */
-            int InTmp = equation.getColumnRelatedIndex().get(f);
-            equation.getColumnRelatedIndex().set(f, equation.getColumnRelatedIndex().get(pInX));
-            equation.getColumnRelatedIndex().set(pInX, InTmp);
         }
     }
 
     /**
      * 前進消去
-     *
-     * @param cor 補正値行列
-     * @param f 現在注目している対角要素のインデックス
      */
-    private static void forward(int N, int f, DoubleMatrix equation, double[][] cor) {
+    private static void forward(int n, int f, double[][] ecm) {
         double p, q;
         /* 対角成分が限りなく小さい時、補正値を加える */
-        if (Math.abs(equation.getMatrix().get(f).get(f)) < MINVALUE) {
-            if (equation.getMatrix().get(f).get(f) >= 0) {
-                equation.getMatrix().get(f).set(f, equation.getMatrix().get(f).get(f) + CORRECTION);
-                cor[f][equation.getColumnRelatedIndex().indexOf(f)] += CORRECTION;
+        p = Math.abs(ecm[f][f]);
+        if (p < MINVALUE) {
+            if (p >= 0) {
+                ecm[f][f] += CORRECTION;
             } else {
-                equation.getMatrix().get(f).set(f, equation.getMatrix().get(f).get(f) - CORRECTION);
-                cor[f][equation.getColumnRelatedIndex().indexOf(f)] -= CORRECTION;
+                ecm[f][f] -= CORRECTION;
             }
         }
-        p = equation.getMatrix().get(f).get(f);
-        for (int j = f; j <= N; j++) {
-            equation.getMatrix().get(f).set(j, equation.getMatrix().get(f).get(j) / p);
+        p = ecm[f][f];
+        for (int j = f; j <= n; j++) {
+            ecm[f][j] /= p;
         }
-        for (int i = f + 1; i < N; i++) {
-            q = equation.getMatrix().get(i).get(f);
-            for (int l = f; l <= N; l++) {
-                equation.getMatrix().get(i).set(l, equation.getMatrix().get(i).get(l) - q * equation.getMatrix().get(f).get(l));
+        for (int i = f + 1; i < n; i++) {
+            q = ecm[i][f];
+            for (int l = f; l <= n; l++) {
+                ecm[i][l] -= q * ecm[f][l];
             }
         }
     }
@@ -440,30 +489,50 @@ public class DoubleMatrix extends OriginMatrix {
     /**
      * 後退代入
      */
-    private static ArrayList<ArrayList<Double>> backward(int N, DoubleMatrix equation) {
-        double x[] = new double[N];
-        x[N - 1] = equation.getMatrix().get(N - 1).get(N) / equation.getMatrix().get(N - 1).get(N - 1);
-        for (int k = N - 2; k >= 0; k--) {
-            double sum = 0.0;
-            for (int j = k + 1; j < N; j++) {
-                sum += equation.getMatrix().get(k).get(j) * x[j];
+    private static ArrayList<ArrayList<Double>> backward(int n, double[][] ecm) {
+        double[] x = new double[n];
+        x[n - 1] = ecm[n - 1][n] / ecm[n - 1][n - 1];
+        for (int k = n - 2; k >= 0; k--) {
+            double sum = 0;
+            for (int j = k + 1; j < n; j++) {
+                sum += ecm[k][j] * x[j];
             }
-            x[k] = equation.getMatrix().get(k).get(N) - sum;
+            x[k] = ecm[k][n] - sum;
         }
         /* 列の入れ替えを考慮しながら答えを返す */
         ArrayList<ArrayList<Double>> ans = new ArrayList<>();
         ans.add(new ArrayList<>());
-        for (int i = 0; i < N; i++) {
-            ans.get(0).add(i, x[equation.getColumnRelatedIndex().indexOf(i)]);
+        for (int i = 0; i < n; i++) {
+            int j;
+            for (j = 0; j < n; j++) {
+                if (ecm[n][j] == i) {
+                    break;
+                }
+            }
+            ans.get(0).add(x[j]);
         }
         return ans;
     }
 
-    private static void out(DoubleMatrix d) {
-        int N = d.getMatrix().size();
-        for (int i=0;i<N;i++) {
-            for (int j=0;j<=N;j++) {
+    public static void out(DoubleMatrix d) {
+        int n = d.getMatrix().size();
+        int m = d.getMatrix().get(0).size();
+        for (int i=0;i<n;i++) {
+            for (int j=0;j<m;j++) {
                 System.out.print(d.getMatrix().get(i).get(j)+", ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+    public static void out(double[][] d) {
+        int y, x;
+        y = d.length;
+        x = d[0].length;
+        for (int i=0;i<y;i++) {
+            for (int j=0;j<x;j++) {
+                System.out.print(d[i][j]+", ");
             }
             System.out.println();
         }
