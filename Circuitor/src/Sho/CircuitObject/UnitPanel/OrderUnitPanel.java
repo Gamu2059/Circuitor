@@ -5,6 +5,7 @@ import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import Sho.CircuitObject.Circuit.CircuitBlock;
 import Sho.CircuitObject.Circuit.CircuitInfo;
+import Sho.CircuitObject.Circuit.CircuitUnit;
 import Sho.CircuitObject.Circuit.ElecomInfo;
 
 import java.awt.*;
@@ -16,6 +17,9 @@ import java.awt.geom.AffineTransform;
  * CircuitUnitを内包した命令モード時確認用パネルクラス。
  */
 public class OrderUnitPanel extends UnitPanel {
+    // アクセスで手間取るのが嫌なのでバッファリング
+    private CircuitUnit circuitUnitPanelUnit;
+
     public OrderUnitPanel(BaseFrame frame) {
         super(frame);
         /** リスナの設定 */
@@ -35,9 +39,13 @@ public class OrderUnitPanel extends UnitPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        if (circuitUnitPanelUnit == null) {
+            circuitUnitPanelUnit = getFrame().getBasePanel().getEditCircuitPanel().getCircuitUnit();
+        }
+
         Graphics2D g2 = (Graphics2D) g;
         paintBase(g2);
-        paintParts(g2);
+        paintParts(g2, circuitUnitPanelUnit);
     }
 
     /**
