@@ -563,7 +563,11 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      * 部品描画のための汎用的なメソッド。
      */
     protected void paintParts(Graphics2D g2) {
-        Matrix<CircuitBlock> mat = circuitUnit.getCircuitBlock();
+        paintParts(g2, circuitUnit);
+    }
+
+    protected void paintParts(Graphics2D g2, CircuitUnit unit) {
+        Matrix<CircuitBlock> mat = unit.getCircuitBlock();
         CircuitBlock b;
         ElecomInfo e;
         CircuitInfo c;
