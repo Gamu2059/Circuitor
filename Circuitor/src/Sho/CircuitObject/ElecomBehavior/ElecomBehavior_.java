@@ -25,13 +25,12 @@ public abstract class ElecomBehavior_ {
     /** 汎用的な出力リスト。使わなくても構わない */
     private boolean[] outputList;
     /** 電子部品の状態を保持する。使わなくても構わない */
-    private PartsStates state;
     private ElecomInfo elecomInfo;
 
     protected ElecomBehavior_(ExecuteUnitPanel exePanel, ElecomInfo info) {
-        state = PartsStates.OFF;
         elecomInfo = new ElecomInfo();
         info.copyTo(elecomInfo);
+        elecomInfo.setPartsStates(PartsStates.OFF);
         this.exePanel = exePanel;
     }
 
@@ -64,11 +63,11 @@ public abstract class ElecomBehavior_ {
     }
 
     public PartsStates getState() {
-        return state;
+        return elecomInfo.getPartsStates();
     }
 
     public void setState(PartsStates states) {
-        this.state = states;
+        elecomInfo.setPartsStates(states);
     }
 
     public ElecomInfo getElecomInfo() {

@@ -109,9 +109,11 @@ public class LEDBehavior_ extends ElecomBehavior_ {
         if (getState() == PartsStates.ON && Math.abs(getExePanel().getExecutor().getBranchCurrent().getMatrix().get(0).get(getExePanel().getExecutor().getBranchCurrent().getColumnRelatedIndex().indexOf(getInfos().get(0).getInfo().getIndex()))) >= THRESHOLD_CURRENT) {
             if (getDirectionWithCurrent(0, HighLevelConnectGroup.CENTER_NODE) < 0) {
                 getExePanel().getOperateOperate().setPartsStates(getExePanel(), getInfos().get(0).getInfo().getAbcos().get(0), PartsStates.ON);
+                setState(PartsStates.ON);
             }
         } else {
             getExePanel().getOperateOperate().setPartsStates(getExePanel(), getInfos().get(0).getInfo().getAbcos().get(0), PartsStates.OFF);
+            setState(PartsStates.OFF);
         }
     }
 

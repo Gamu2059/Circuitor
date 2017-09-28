@@ -124,25 +124,29 @@ public class ExecuteUnitPanel extends UnitPanel {
         paintParts(g2);
 
         /* 点の描画 */
-        for (HighLevelConnectInfo branch : getCircuitUnit().getHighLevelConnectList().getBranch()) {
-            if (branch.getRole() == HighLevelConnectGroup.BRANCH) {
-                if (branch.getHighLevelExecuteInfo().getDrawCood().getPoints().size() > 0) {
+        try {
+            for (HighLevelConnectInfo branch : getCircuitUnit().getHighLevelConnectList().getBranch()) {
+                if (branch.getRole() == HighLevelConnectGroup.BRANCH) {
+                    if (branch.getHighLevelExecuteInfo().getDrawCood().getPoints().size() > 0) {
                     /* 電流の大きさが1e3を超える場合はショートしているとみなし、赤色にする */
-                    if (Math.abs(branch.getHighLevelExecuteInfo().getCurrent()) > 1e3) {
-                        g2.setColor(Color.RED);
-                    } else {
-                        g2.setColor(ColorMaster.getRegularCurrentColor());
-                    }
-                    h = branch.getHighLevelExecuteInfo();
-                    g2.fill(h.getDrawCood().getDrawCoordinate(this, h.getDrawCood().getBasePoint()));
-                    for (sub = h.getDrawCood().getBasePoint() + 3; sub < h.getDrawCood().getCoods().size(); sub += 3) {
-                        g2.fill(h.getDrawCood().getDrawCoordinate(this, sub));
-                    }
-                    for (sub = h.getDrawCood().getBasePoint() - 3; sub >= 0; sub -= 3) {
-                        g2.fill(h.getDrawCood().getDrawCoordinate(this, sub));
+                        if (Math.abs(branch.getHighLevelExecuteInfo().getCurrent()) > 1e3) {
+                            g2.setColor(Color.RED);
+                        } else {
+                            g2.setColor(ColorMaster.getRegularCurrentColor());
+                        }
+                        h = branch.getHighLevelExecuteInfo();
+                        g2.fill(h.getDrawCood().getDrawCoordinate(this, h.getDrawCood().getBasePoint()));
+                        for (sub = h.getDrawCood().getBasePoint() + 3; sub < h.getDrawCood().getCoods().size(); sub += 3) {
+                            g2.fill(h.getDrawCood().getDrawCoordinate(this, sub));
+                        }
+                        for (sub = h.getDrawCood().getBasePoint() - 3; sub >= 0; sub -= 3) {
+                            g2.fill(h.getDrawCood().getDrawCoordinate(this, sub));
+                        }
                     }
                 }
             }
+        } catch (NullPointerException nulE) {
+            nulE.printStackTrace();
         }
 
         /* 電圧計と電流計のリアルタイムな値をラベルとパネルに送信する */
@@ -209,7 +213,6 @@ public class ExecuteUnitPanel extends UnitPanel {
                 switch (ele.getPartsStandards()) {
                     case TACT:
                         getOperateOperate().setPartsStates(this, c1.getAbco(), (ele.getPartsStates() == PartsStates.ON ? PartsStates.OFF : PartsStates.ON));
-                        getPartsPopMenu().changeContent(ele, ele.getPartsStates());
                         break;
                     case DC:
                         /* 直流電源の電圧値を変更する */
