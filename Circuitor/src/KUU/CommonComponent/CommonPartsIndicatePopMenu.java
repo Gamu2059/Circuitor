@@ -24,6 +24,9 @@ public class CommonPartsIndicatePopMenu {
     private String text;
     private IntegerDimension preCo, currentCo, mouseCo;
 
+    // リアルタイムでステートを反映させるために、部品のElecomInfoを保持する
+    private ElecomInfo stateBuffer;
+
     public CommonPartsIndicatePopMenu() {
         super();
         mouseCo = new IntegerDimension();
@@ -83,12 +86,11 @@ public class CommonPartsIndicatePopMenu {
     }
 
     private void showPop(CircuitBlock b) {
-        changeContent(b.getElecomInfo(), b.getElecomInfo().getPartsStates());
+        changeContent(b.getElecomInfo());
     }
 
     private void showPop(HighLevelExecuteGroup group) {
-        ElecomInfo ele = group.getBehavior().getElecomInfo();
-        changeContent(ele, group.getBehavior().getState());
+        changeContent(group.getBehavior().getElecomInfo());
     }
 
     public void hidePop() {
@@ -97,37 +99,43 @@ public class CommonPartsIndicatePopMenu {
         currentCo = null;
     }
 
-    public void changeContent(ElecomInfo ele, PartsStates states) {
+    /**
+     * 表示するコンテンツを切り替える。
+     * この時点で文章は決定しない。
+     */
+    public void changeContent(ElecomInfo ele) {
         if (ele.getPartsVarieties() == PartsVarieties.WIRE) {
             isShown = false;
             return;
         }
         preCo = currentCo;
-        text = getContentString(ele, states);
+        stateBuffer = ele;
     }
 
-    private String getContentString(ElecomInfo ele, PartsStates states) {
-        PartsVarieties v = ele.getPartsVarieties();
-        PartsStandards s = ele.getPartsStandards();
+    private String getContentString() {
+        PartsVarieties v = stateBuffer.getPartsVarieties();
+        PartsStandards sd = stateBuffer.getPartsStandards();
+        PartsStates st = stateBuffer.getPartsStates();
+        double par = stateBuffer.getEtcStatus();
         switch (v) {
             case DIODE:
                 return "整流ダイオード";
             case LED:
-                if (s == PartsStandards.RED) {
-                    return "赤色LED " + states;
-                } else if (s == PartsStandards.GREEN) {
-                    return "緑色LED " + states;
+                if (sd == PartsStandards.RED) {
+                    return "赤色LED " + st;
+                } else if (sd == PartsStandards.GREEN) {
+                    return "緑色LED " + st;
                 } else {
-                    return "青色LED " + states;
+                    return "青色LED " + st;
                 }
             case MEASURE:
-                if (s == PartsStandards.VOLTMETER) {
+                if (sd == PartsStandards.VOLTMETER) {
                     return "電圧計";
                 } else {
                     return "電流計";
                 }
             case LOGIC_IC:
-                switch (s) {
+                switch (sd) {
                     case AND_CHIP:
                         return "論理積回路";
                     case AND_IC:
@@ -148,17 +156,17 @@ public class CommonPartsIndicatePopMenu {
             case PIC:
                 return "18ピン PICマイコン";
             case POWER:
-                if (s == PartsStandards.DC) {
-                    return "直流電源 " + ele.getEtcStatus() + "[V]";
+                if (sd == PartsStandards.DC) {
+                    return "直流電源 " + par + "[V]";
                 }
             case PULSE:
-                return "パルス出力器 " + ele.getEtcStatus() + "[Hz]";
+                return "パルス出力器 " + par + "[Hz]";
             case TRANSISTOR:
                 return "NPN型バイポーラトランジスタ";
             case SWITCH:
-                return "タクトスイッチ " + states;
+                return "タクトスイッチ " + st;
             case RESISTANCE:
-                switch (s) {
+                switch (sd) {
                     case _10:
                         return "抵抗器 10[Ω]";
                     case _100:
@@ -168,7 +176,7 @@ public class CommonPartsIndicatePopMenu {
                     case _10000:
                         return "抵抗器 10000[Ω]";
                     default:
-                        return "抵抗器 " + ele.getEtcStatus() + "[Ω]";
+                        return "抵抗器 " + par + "[Ω]";
                 }
         }
         return null;
@@ -179,14 +187,16 @@ public class CommonPartsIndicatePopMenu {
             return;
         }
 
+        // 文章決定
+        text = getContentString();
+
         int baseSize = panel.getBaseSize();
+        int y, x;
 
         mouseCo.setHeight((panel.getCursorCo().getHeight() + 2) * baseSize + panel.getPaintBaseCo().getHeight());
         mouseCo.setWidth((panel.getCursorCo().getWidth() + 2) * baseSize + panel.getPaintBaseCo().getWidth());
 
         g2.setFont(FontMaster.getRegularFont());
-
-        int y, x;
         y = g2.getFontMetrics().getHeight() + 4;
         x = g2.getFontMetrics().stringWidth(text) + 4;
 

@@ -213,7 +213,6 @@ public class ExecuteUnitPanel extends UnitPanel {
                 switch (ele.getPartsStandards()) {
                     case TACT:
                         getOperateOperate().setPartsStates(this, c1.getAbco(), (ele.getPartsStates() == PartsStates.ON ? PartsStates.OFF : PartsStates.ON));
-                        getPartsPopMenu().changeContent(ele, ele.getPartsStates());
                         break;
                     case DC:
                         /* 直流電源の電圧値を変更する */
