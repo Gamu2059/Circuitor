@@ -298,48 +298,46 @@ public class MasterTerminal {
         return buffer;
     }
 
-//    public static void main(String[] args) {
-//        MasterTerminal masterTerminal = new MasterTerminal();
+    public static void main(String[] args) {
+        MasterTerminal masterTerminal = new MasterTerminal();
+
+        boolean[] pin = new boolean[18];
+        for (int i = 0; i < pin.length; i++) pin[i] = false;
+        pin[17]=true;
+        pin[10]=true;
+
+        for (String text : masterTerminal.getListString("MAIN")) {
+            System.out.println(text);
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        System.out.println(masterTerminal.moveOrder("MAIN",33,28));
+
+        for (String text : masterTerminal.getListString("MAIN")) {
+            System.out.println(text);
+        }
+
+        masterTerminal.initSimulator();
+        for (int i = 0; i < 10; i++) {
+            masterTerminal.bootProgram(pin);
+        }
+
 //
-//        boolean[] pin = new boolean[18];
-//        for (int i = 0; i < pin.length; i++) pin[i] = false;
-//        pin[17]=true;
-//        pin[10]=true;
+//        stringBuilder = new StringBuilder();
+//        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("ピン").getVariableList()) {
+//            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
+//        }
+//        System.out.println(stringBuilder.toString());
 //
-//        masterTerminal.loadProgram();
-//
-//        for (String text : masterTerminal.getListString("MAIN")) {
-//            System.out.println(text);
+//        stringBuilder = new StringBuilder();
+//        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("出力ピン").getVariableList()) {
+//            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
 //        }
 //
-//        StringBuilder stringBuilder = new StringBuilder();
-//
-//        System.out.println(masterTerminal.moveOrder("MAIN",33,28));
-//
-//        for (String text : masterTerminal.getListString("MAIN")) {
-//            System.out.println(text);
-//        }
-//
-//        masterTerminal.initSimulator();
-//        for (int i = 0; i < 10; i++) {
-//            masterTerminal.bootProgram(pin);
-//        }
-//
-////
-////        stringBuilder = new StringBuilder();
-////        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("ピン").getVariableList()) {
-////            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
-////        }
-////        System.out.println(stringBuilder.toString());
-////
-////        stringBuilder = new StringBuilder();
-////        for (Variable variable : masterTerminal.getVariableGroup().searchVariableList("出力ピン").getVariableList()) {
-////            stringBuilder.append(variable.getName()).append(":").append(variable.getIntValue()).append(", ");
-////        }
-////
-////        System.out.println(stringBuilder.toString());
-//
-//        System.out.println(Arrays.toString(pin));
-//        System.out.println(Arrays.toString(masterTerminal.outputPinList));
-//    }
+//        System.out.println(stringBuilder.toString());
+
+        System.out.println(Arrays.toString(pin));
+        System.out.println(Arrays.toString(masterTerminal.outputPinList));
+    }
 }
