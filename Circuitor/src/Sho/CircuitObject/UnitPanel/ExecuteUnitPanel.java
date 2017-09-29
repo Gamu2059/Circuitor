@@ -201,6 +201,7 @@ public class ExecuteUnitPanel extends UnitPanel {
             CircuitBlock b;
             CircuitInfo c, c1;
             ElecomInfo ele;
+
             b = getCircuitUnit().getCircuitBlock().getMatrix().get(getCursorCo().getHeight()).get(getCursorCo().getWidth());
             c = b.getCircuitInfo();
             ele = b.getElecomInfo();
@@ -239,6 +240,7 @@ public class ExecuteUnitPanel extends UnitPanel {
                         }
                         break;
                 }
+                break;
             }
         }
         reDirection();
