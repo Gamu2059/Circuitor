@@ -111,7 +111,6 @@ public class ImageMaster {
      */
     public static boolean isOnlyTwoDirections(ElecomInfo e) {
         switch (e.getPartsVarieties()) {
-            case MEASURE:
             case PULSE:
             case RESISTANCE:
             case SWITCH:

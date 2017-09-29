@@ -392,11 +392,18 @@ public class DoubleMatrix extends OriginMatrix {
         int n = matrix.length;
 
         double[][] ecm = createECM(matrix, vector);
+        double[][] cor = new double[n][n];
 
         /* ガウスの消去法 */
         for (int f = 0; f < n; f++) {
             pivot(n, f, ecm);
-            forward(n, f, ecm);
+            forward(n, f, ecm, cor);
+        }
+        /* 補正行列によって値を補正する */
+        for (int i=0;i<n;i++) {
+            for (int j=0;j<n;j++) {
+                ecm[i][j] += cor[i][j];
+            }
         }
         /* 後退代入を行い、そのまま返す */
         return backward(n, ecm);
@@ -463,7 +470,7 @@ public class DoubleMatrix extends OriginMatrix {
     /**
      * 前進消去
      */
-    private static void forward(int n, int f, double[][] ecm) {
+    private static void forward(int n, int f, double[][] ecm, double[][] cor) {
         double p, q;
         /* 対角成分が限りなく小さい時、補正値を加える */
         p = Math.abs(ecm[f][f]);

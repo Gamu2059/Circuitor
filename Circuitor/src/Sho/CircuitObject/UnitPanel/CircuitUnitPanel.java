@@ -1181,8 +1181,8 @@ public class CircuitUnitPanel extends UnitPanel {
                                         resetTmps();
                                     }
                                 } else {
-                                    /* 指定範囲の始点と終点を参照し、その中点を基準として右回転する */
-                                    if (getOperateOperate().rotate(this, true)) {
+                                    /* 指定範囲の始点と終点を参照し、その中点を基準として左回転する */
+                                    if (getOperateOperate().rotate(this, false)) {
                                         getCircuitUnit().getBehavior().setBehavior(Behavior.RANGED);
                                         getFrame().getHelpLabel().setText("部品や導線を回転させるモード：領域内をクリックすることで連続して回転させることが出来ます。");
                                     } else {

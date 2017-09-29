@@ -1,5 +1,6 @@
 package Sho.CircuitObject.ElecomBehavior;
 
+import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsStates;
 import Sho.CircuitObject.Circuit.ElecomInfo;
 import Sho.CircuitObject.Circuit.TerminalDirection;
