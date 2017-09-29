@@ -33,7 +33,25 @@ public class SingleArray extends Variable {
     }
 
     @Override
+    public int getStartingValue(int index) {
+        return arrays[index].getStartingValue();
+    }
+
+    @Override
     public int getArraySize() {
         return arrays.length;
+    }
+
+    @Override
+    public void bootInitialize() {
+        for (Variable variable : arrays) {
+            variable.bootInitialize();
+        }
+    }
+
+    @Override
+    public void setAllArrays(int[] setArrays) {
+        for (int i = 0; i < arrays.length; i++)
+            arrays[i].setIntValue(setArrays[i]);
     }
 }

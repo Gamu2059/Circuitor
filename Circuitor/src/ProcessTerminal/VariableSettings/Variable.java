@@ -4,15 +4,18 @@ public class Variable {
     public enum Type {
         INT, BOOL
     }
+    // 0=FALSE
 
     protected String name;
     protected Type type;
     protected int intValue;
+    protected int startingValue;
 
     public Variable(Type type, String name) {
         this.type = type;
         this.name = name;
         intValue = 0;
+        startingValue = 0;
     }
 
     public int getIntValue() {
@@ -62,11 +65,46 @@ public class Variable {
         return this;
     }
 
-    public int getArraySize(){
+    public int getStartingValue() {
+        return startingValue;
+    }
+
+    public int getStartingValue(int index) {
+        return getStartingValue();
+    }
+
+    public int getStartingValue(int index1, int index2) {
+        return getStartingValue();
+    }
+
+    public void setStartingValue(int value) {
+        startingValue = value;
+    }
+
+    public void setStartingValue(int index1, int value) {
+        setStartingValue(value);
+    }
+
+    public void setStartingValue(int index1, int index2, int value) {
+        setStartingValue(value);
+    }
+
+    public int getArraySize() {
         return 1;
     }
 
-    public int getArraySizeHorizontal(){
+    public int getArraySizeHorizontal() {
+        return 0;
+    }
+
+    public void bootInitialize() {
+        intValue = startingValue;
+    }
+
+    public void setAllArrays(int[] setArrays) {
+        return 0;
+    }
+    public void setAllArrays(int[][] setArrays) {
         return 0;
     }
 }

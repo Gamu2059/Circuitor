@@ -78,7 +78,7 @@ public class VariableList {
 
     public void resetValue(){
         for(Variable variable:variableList)
-            variable.resetValue();
+            variable.getStartingValue();
     }
 
     public static void main(String[] args) {
