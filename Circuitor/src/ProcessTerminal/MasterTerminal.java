@@ -8,10 +8,7 @@ import ProcessTerminal.FunctionSettings.Function;
 import ProcessTerminal.FunctionSettings.FunctionGroup;
 import ProcessTerminal.SaveLoadModule.ProgramIO;
 import ProcessTerminal.SyntaxSettings.ListElement;
-import ProcessTerminal.SyntaxSettings.Syntax;
-import ProcessTerminal.VariableSettings.PinElement;
-import ProcessTerminal.VariableSettings.Variable;
-import ProcessTerminal.VariableSettings.VariableGroup;
+import ProcessTerminal.VariableSettings.*;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -306,17 +303,18 @@ public class MasterTerminal {
         pin[17]=true;
         pin[10]=true;
 
-        for (String text : masterTerminal.getListString("MAIN")) {
-            System.out.println(text);
-        }
+        masterTerminal.generateNewVariable("2次元配列",new DoubleArray(Variable.Type.INT,"Test",3,2));
+        int[][] buf=new int[][]{new int[]{0,2},new int[]{1,3},new int[]{2,4}};
+        masterTerminal.searchVariable("2次元配列","Test").setAllStartingArrays(buf);
+//        for (String text : masterTerminal.getListString("MAIN")) {
+//            System.out.println(text);
+//        }
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        System.out.println(masterTerminal.moveOrder("MAIN",33,28));
-
-        for (String text : masterTerminal.getListString("MAIN")) {
-            System.out.println(text);
-        }
+//        for (String text : masterTerminal.getListString("MAIN")) {
+//            System.out.println(text);
+//        }
 
         masterTerminal.initSimulator();
         for (int i = 0; i < 10; i++) {

@@ -101,10 +101,9 @@ public class Variable {
         intValue = startingValue;
     }
 
-    public void setAllArrays(int[] setArrays) {
-        return 0;
+    public void setAllStartingArrays(int[] setArrays) {
     }
-    public void setAllArrays(int[][] setArrays) {
-        return 0;
+
+    public void setAllStartingArrays(int[][] setArrays) {
     }
 }

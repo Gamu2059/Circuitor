@@ -65,9 +65,9 @@ public class DoubleArray extends Variable {
     }
 
     @Override
-    public void setAllArrays(int[][] setArrays) {
+    public void setAllStartingArrays(int[][] setArrays) {
         for (int i = 0; i < arrays.length; i++)
             for (int j = 0; j < arrays[0].length; j++)
-                arrays[i][j].setIntValue(setArrays[i][j]);
+                arrays[i][j].setStartingValue(setArrays[i][j]);
     }
 }

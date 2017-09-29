@@ -50,8 +50,8 @@ public class SingleArray extends Variable {
     }
 
     @Override
-    public void setAllArrays(int[] setArrays) {
+    public void setAllStartingArrays(int[] setArrays) {
         for (int i = 0; i < arrays.length; i++)
-            arrays[i].setIntValue(setArrays[i]);
+            arrays[i].setStartingValue(setArrays[i]);
     }
 }
