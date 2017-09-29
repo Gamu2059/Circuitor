@@ -156,13 +156,13 @@ public class ExecuteUnitPanel extends UnitPanel {
             double value;
             if (voltmeter != null) {
                 measure = subExe.getVoltagePanel();
-                value = voltmeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getVoltage();
+                value = voltmeter.getBehavior().getInfos().get(0).getInfo().getHighLevelExecuteInfo().getVoltage();
                 measure.getValueIndicateLabel().setFormattedValue(value);
                 measure.getGraphPanel().setValueAndGraph(value);
             }
             if (ammeter != null) {
                 measure = subExe.getCurrentPanel();
-                value = ammeter.getExecuteInfos().get(0).getHighLevelExecuteInfo().getCurrent();
+                value = ammeter.getBehavior().getInfos().get(0).getInfo().getHighLevelExecuteInfo().getCurrent();
                 measure.getValueIndicateLabel().setFormattedValue(value);
                 measure.getGraphPanel().setValueAndGraph(value);
             }
@@ -211,6 +211,9 @@ public class ExecuteUnitPanel extends UnitPanel {
                 if (!isSettablePartsVarieties(ele.getPartsVarieties())) {
                     continue;
                 }
+                if (!group.getAbco().equals(c1.getAbco())) {
+                    continue;
+                }
                 switch (ele.getPartsStandards()) {
                     case TACT:
                         getOperateOperate().setPartsStates(this, c1.getAbco(), (ele.getPartsStates() == PartsStates.ON ? PartsStates.OFF : PartsStates.ON));
@@ -240,7 +243,6 @@ public class ExecuteUnitPanel extends UnitPanel {
                         }
                         break;
                 }
-                break;
             }
         }
         reDirection();
