@@ -193,6 +193,9 @@ public class CommonPartsIndicatePopMenu {
         int baseSize = panel.getBaseSize();
         int y, x;
 
+        if (panel.getCursorCo() == null) {
+            return;
+        }
         mouseCo.setHeight((panel.getCursorCo().getHeight() + 2) * baseSize + panel.getPaintBaseCo().getHeight());
         mouseCo.setWidth((panel.getCursorCo().getWidth() + 2) * baseSize + panel.getPaintBaseCo().getWidth());
 

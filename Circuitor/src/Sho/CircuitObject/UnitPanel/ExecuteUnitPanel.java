@@ -224,7 +224,7 @@ public class ExecuteUnitPanel extends UnitPanel {
                         break;
                     case _variable:
                         /* 抵抗値を変更する */
-                        new VariableResistanceDialog(this, group.getExecuteInfos());
+                        new VariableResistanceDialog(this, group);
                         break;
                     case PULSE:
                         /* 周波数を変更する */
@@ -243,6 +243,7 @@ public class ExecuteUnitPanel extends UnitPanel {
                         }
                         break;
                 }
+                break;
             }
         }
         reDirection();

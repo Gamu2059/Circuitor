@@ -89,6 +89,7 @@ public class PulseBehavior_ extends ElecomBehavior_ {
 
     public void setFreq(double freq) {
         this.freq = freq;
+        getElecomInfo().setEtcStatus(freq);
         pulseGenerator.setTiming(freq);
     }
 

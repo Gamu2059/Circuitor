@@ -132,6 +132,7 @@ public abstract class ElecomBehavior_ {
     protected void setInput() {
         for (int i = 0; i < infos.size(); i++) {
             if (infos.get(i) != null) {
+                inputList[i] = false;
                 if (infos.get(i).getRole() == TerminalDirection.IN) {
                     inputList[i] = getDirectionWithCurrent(i, HighLevelConnectGroup.IN_NODE) < 0;
                 }
@@ -145,6 +146,7 @@ public abstract class ElecomBehavior_ {
     protected void setOutput() {
         for (int i = 0; i < infos.size(); i++) {
             if (infos.get(i) != null) {
+                outputList[i] = false;
                 if (infos.get(i).getRole() == TerminalDirection.OUT) {
                     if (outputList[i]) {
                         infos.get(i).getInfo().getHighLevelExecuteInfo().setResistance(100);
