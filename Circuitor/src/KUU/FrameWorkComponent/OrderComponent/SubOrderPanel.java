@@ -239,6 +239,7 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
                         case "MAIN":
                             getFrame().getHelpLabel().setText("MAIN関数です。主な処理の流れが入るとよいでしょう。");
                             break;
+                            
                     }
                 }
                 /** SelectOrderPanelのVisible設定 */
