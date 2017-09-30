@@ -26,6 +26,7 @@ public class VariableSettingDialog extends NewJDialog {
     private int arraySecondSize;
 
     private GeneralItemPanel resetButton;
+    private GeneralItemPanel setEmptyButton;
 
     private DialogBasePanel basePanel;
     private JPanel panel;
@@ -120,8 +121,9 @@ public class VariableSettingDialog extends NewJDialog {
             }
         }
 
+        /** INTの場合ボタンを配置 */
         if (variableRapperType== Variable.Type.INT) {
-            panel.add(resetButton = new GeneralItemPanel(true,null,"全てに0を入れる"));
+            panel.add(resetButton = new GeneralItemPanel(true,null,"全て0にする"));
             resetButton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -133,6 +135,47 @@ public class VariableSettingDialog extends NewJDialog {
                     }
                 }
             });
+            panel.add(setEmptyButton = new GeneralItemPanel(true,null,"全て空にする"));
+            setEmptyButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                    for (int i = 0; i < arrayFirstSize; i++) {
+                        for (int j = 0; j < arraySecondSize; j++) {
+                            arrayTextFields[i][j].setText("");
+                        }
+                    }
+                }
+            });
+        }
+
+        /** 初期値を格納 */
+        if (variableRapperType == Variable.Type.INT){
+            /** INT 値を格納 */
+            if (variableArrayType.equals("配列")){
+                for (int i = 0; i < arrayFirstSize; i++) {
+                    arrayTextFields[i][0].setText(String.valueOf(getFrame().getMasterTerminal().searchVariable("配列",variableName).getStartingValue(i)));
+                }
+            } else {
+                for (int i = 0; i < arrayFirstSize; i++) {
+                    for (int j = 0; j < arraySecondSize; j++) {
+                        arrayTextFields[i][j].setText(String.valueOf(getFrame().getMasterTerminal().searchVariable("2次元配列",variableName).getStartingValue(i,j)));
+                    }
+                }
+            }
+        } else {
+            /** BOOL falseなら反転 */
+            if (variableArrayType.equals("配列")){
+                for (int i = 0; i < arrayFirstSize; i++) {
+                    if (getFrame().getMasterTerminal().searchVariable("配列",variableName).getStartingValue(i)==1)arrayBoolFields[i][0].turn();
+                }
+            } else {
+                for (int i = 0; i < arrayFirstSize; i++) {
+                    for (int j = 0; j < arraySecondSize; j++) {
+                        if (getFrame().getMasterTerminal().searchVariable("2次元配列",variableName).getStartingValue(i,j)==1)arrayBoolFields[i][j].turn();
+                    }
+                }
+            }
         }
 
         basePanel = new DialogBasePanel(frame);
@@ -150,12 +193,12 @@ public class VariableSettingDialog extends NewJDialog {
                         int[] tmp = new int[arrayFirstSize];
                         if (variableRapperType == Variable.Type.BOOL) {
                             for (int i = 0; i < arrayFirstSize; i++) {
-                                tmp[i] = arrayBoolFields[arrayFirstSize][0].getNum();
+                                tmp[i] = arrayBoolFields[0][0].getNum();
                             }
                         } else {
                             for (int i = 0; i < arrayFirstSize; i++) {
                                 try {
-                                    tmp[i] = Integer.parseInt(arrayTextFields[arrayFirstSize][0].getText());
+                                    tmp[i] = Integer.parseInt(arrayTextFields[0][0].getText());
                                 } catch (Exception e1){
                                     if (("").equals(arrayTextFields[i][0].getText()))throw new Exception();
                                     tmp[i] = 0;
@@ -185,7 +228,7 @@ public class VariableSettingDialog extends NewJDialog {
                         }
                         getFrame().getMasterTerminal().searchVariable(variableArrayType, variableName).setAllStartingArrays(tmp);
                     }
-                    JOptionPane.showMessageDialog(confirmLabel, "変数"+variableName+"の初期値設定が完了しました。");
+                    JOptionPane.showMessageDialog(confirmLabel, "変数"+variableName+"の初期化が完了しました。");
                     getFrame().updateOrderPanel(false);
                     dispose();
                 }catch (Exception e1){
