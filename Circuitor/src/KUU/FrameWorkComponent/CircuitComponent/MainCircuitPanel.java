@@ -44,6 +44,7 @@ public class MainCircuitPanel extends NewJPanel implements MouseListener {
         executeStartLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                getFrame().getHelpLabel().setText("");
                 getFrame().getBasePanel().runExecuteMode();
             }
         });

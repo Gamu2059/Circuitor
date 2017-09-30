@@ -1,10 +1,7 @@
 package Sho.CircuitObject.Operate;
 
 import KUU.BaseComponent.BaseFrame;
-import Master.ImageMaster.PartsDirections;
-import Master.ImageMaster.PartsStandards;
-import Master.ImageMaster.PartsStates;
-import Master.ImageMaster.PartsVarieties;
+import Master.ImageMaster.*;
 import Sho.CircuitObject.Circuit.*;
 import Sho.CircuitObject.Circuit.CircuitBorder.Borders;
 import Sho.CircuitObject.Circuit.CircuitOperateCommand.Command;
@@ -87,6 +84,8 @@ public class OperateOperate_ {
             if (panel.getCursorCo() == null) {
                 panel.setCursorCo(new IntegerDimension());
             }
+            panel.getDeltaCursorCo().setHeight(inY - panel.getCursorCo().getHeight());
+            panel.getDeltaCursorCo().setWidth(inX - panel.getCursorCo().getWidth());
             panel.getCursorCo().setHeight(inY);
             panel.getCursorCo().setWidth(inX);
         } else {
@@ -431,9 +430,9 @@ public class OperateOperate_ {
      */
     public void rotateInfo(CircuitBlock b, PartsDirections direction) {
         int befNum, aftNum;
-        befNum = getIntForDirection(b.getElecomInfo().getPartsDirections());
-        aftNum = getIntForDirection(direction);
-        rotateInfo(b, (aftNum - befNum) % 4);
+        befNum = ImageMaster.getIntFromPartsDirection(b.getElecomInfo());
+        aftNum = ImageMaster.getIntFromPartsDirection(direction);
+        rotateInfo(b, (aftNum - befNum + 4) % 4);
     }
 
     /**
@@ -447,21 +446,6 @@ public class OperateOperate_ {
             sizeTmp = b.getElecomInfo().getSize().getHeight();
             b.getElecomInfo().getSize().setHeight(b.getElecomInfo().getSize().getWidth());
             b.getElecomInfo().getSize().setWidth(sizeTmp);
-        }
-    }
-
-    public int getIntForDirection(PartsDirections d) {
-        switch (d) {
-            case UP:
-                return 0;
-            case RIGHT:
-                return 1;
-            case DOWN:
-                return 2;
-            case LEFT:
-                return 3;
-            default:
-                return -1;
         }
     }
 
@@ -951,7 +935,7 @@ public class OperateOperate_ {
                         }
                         /* 一致した場合は配置処理 */
                         if (baseFlg == sampFlg) {
-                            rotateNum = getRotateNum(copy.getElecomInfo().getLinkedTerminal().get(0).getTerminalCorrespond(), dummy.getTerminalCorrespond(), copy);
+                            rotateNum = 4 - getRotateNum(copy.getElecomInfo().getLinkedTerminal().get(0).getTerminalCorrespond(), dummy.getTerminalCorrespond(), copy);
                             rotateInfo(copy, rotateNum);
                             specifiedAdd(panel, c.getAbco(), copy);
                             return;
@@ -1002,6 +986,8 @@ public class OperateOperate_ {
                 }
             }
             b.getElecomInfo().setPartsVarieties(PartsVarieties.WIRE);
+            b.getElecomInfo().setPartsStates(PartsStates.OFF);
+            b.getElecomInfo().setSize(new IntegerDimension(1, 1));
             if (num == 1) {
                 if (bList[3]) {
                     b.getElecomInfo().setPartsStandards(PartsStandards._0);

@@ -48,7 +48,7 @@ public class ExeValueLinePanel extends JPanel {
         String string;
         HashMap<Integer, Double> map = graphPanel.getLineAndValue();
         for (int key : map.keySet()) {
-            string = ExeIndiCateLabel.getFormattedValue(map.get(key), 9).append(unit).toString();
+            string = ExeIndiCateLabel.getFormattedValue(map.get(key), 3).append(unit).toString();
             g2.setColor(map.get(key) == 0d ? Color.RED : Color.BLACK);
             g2.drawString(string, getWidth() - g.getFontMetrics().stringWidth(string)- 1, key);
         }

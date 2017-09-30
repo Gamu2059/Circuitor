@@ -222,7 +222,7 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (speedRadioButton1.isSelected()) {
+//        if (speedRadioButton1.isSelected()) {
             /** リスト設定がオンのとき速度選択パネルを変更する */
             verySlowLabel.setBackground(ColorMaster.getNotSelectedColor());
             slowLabel.setBackground(ColorMaster.getNotSelectedColor());
@@ -278,7 +278,7 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
                                 getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().setText("カスタム設定:" + speedCustomText.getText());
                                 getFrame().getBasePanel().getMainExecutePanel().setSpeedMode(speedCustomText.getText());
                                 getFrame().getBasePanel().getMainExecutePanel().getSpeedIndicateLabel().repaint();
-                            /* 速度変化を適用 */
+                                /* 速度変化を適用 */
                                 getFrame().getBasePanel().getEditExecutePanel().setExeSpeed(input);
                                 dispose();
                             }else {
@@ -292,18 +292,14 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
                     speedCustomText.setText("");
                 }
             }
-        }
+//        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         /** 右側が有効な場合左側の色が変わらないようにする */
         if(speedRadioButton2.isSelected()){
-            verySlowLabel.setBackground(ColorMaster.getNotSelectedColor());
-            slowLabel.setBackground(ColorMaster.getNotSelectedColor());
-            normalLabel.setBackground(ColorMaster.getNotSelectedColor());
-            fastLabel.setBackground(ColorMaster.getNotSelectedColor());
-            veryFastLabel.setBackground(ColorMaster.getNotSelectedColor());
+            mouseActionColorChange();
         } else {
             JPanel panel = (JPanel) e.getSource();
         }
@@ -312,13 +308,18 @@ public class SpeedChangeDialog extends NewJDialog implements MouseListener{
     public void mouseReleased(MouseEvent e) {
         /** 右側が有効な場合左側の色が変わらないようにする */
         if(speedRadioButton2.isSelected()){
-            verySlowLabel.setBackground(ColorMaster.getNotSelectedColor());
-            slowLabel.setBackground(ColorMaster.getNotSelectedColor());
-            normalLabel.setBackground(ColorMaster.getNotSelectedColor());
-            fastLabel.setBackground(ColorMaster.getNotSelectedColor());
-            veryFastLabel.setBackground(ColorMaster.getNotSelectedColor());
+            mouseActionColorChange();
         }
     }
+
+    private void mouseActionColorChange() {
+        verySlowLabel.setBackground(ColorMaster.getNotSelectedColor());
+        slowLabel.setBackground(ColorMaster.getNotSelectedColor());
+        normalLabel.setBackground(ColorMaster.getNotSelectedColor());
+        fastLabel.setBackground(ColorMaster.getNotSelectedColor());
+        veryFastLabel.setBackground(ColorMaster.getNotSelectedColor());
+    }
+
     @Override
     public void mouseEntered(MouseEvent e) {
 

@@ -8,6 +8,7 @@ import Master.ColorMaster.ColorMaster;
 import Master.ImageMaster.ImageMaster;
 import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsVarieties;
+import Sho.CircuitObject.Circuit.ElecomInfo;
 import Sho.CircuitObject.Circuit.TerminalDirection;
 
 import java.awt.*;
@@ -28,12 +29,17 @@ public class MiconPanel extends NewJPanel {
      */
     private MiconLabel miconLabel[];
 
+    private ElecomInfo miconInfo;
+
     public MiconPanel(BaseFrame frame) {
         super(frame);
         /** パネルの設定 */
         setLayout(null);
         setBackground(ColorMaster.getBackColor());
         setBorder(BorderMaster.getRegularBorder());
+
+        /* マイコンのElecomInfoを作成(モデル描画に用いる) */
+        miconInfo = new ElecomInfo(PartsVarieties.PIC, PartsStandards.MODEL);
 
         /** コンポーネントの登録とピンの初期化 */
         miconPin = new TerminalDirection[18];
@@ -91,7 +97,7 @@ public class MiconPanel extends NewJPanel {
         super.paint(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.drawImage(
-                ImageMaster.getImageMaster().getModelImage(PartsVarieties.PIC, PartsStandards.MODEL).getImage(),
+                ImageMaster.getImageMaster().getModelImage(miconInfo).getImage(),
                 getWidth() / 3,
                 0,
                 getWidth() - (getWidth() / 3) * 2,

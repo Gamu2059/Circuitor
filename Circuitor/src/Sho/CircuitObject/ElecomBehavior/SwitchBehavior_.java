@@ -61,8 +61,10 @@ public class SwitchBehavior_ extends ElecomBehavior_ {
                 /* ボタンは、クリック判定が入っていたらON、そうでなければOFFにする */
                 if (getExePanel().getCircuitUnit().getCircuitBlock().getMatrix().get(info.getInfo().getAbcos().get(0).getHeight()).get(info.getInfo().getAbcos().get(0).getWidth()).getElecomInfo().getPartsStates() == PartsStates.ON) {
                     info.getInfo().getHighLevelExecuteInfo().setResistance(0);
+                    setState(PartsStates.ON);
                 } else {
                     info.getInfo().getHighLevelExecuteInfo().setResistance(DoubleMatrix.MAXVALUE / 2);
+                    setState(PartsStates.OFF);
                 }
             }
         }

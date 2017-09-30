@@ -52,11 +52,7 @@ public class ElecomInfoSelector {
                 direction[1] = CATHODE;
                 elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(1, 2, link, direction));
 
-                if (elecomInfo.getPartsVarieties() == PartsVarieties.LED) {
-                    elecomInfo.setPartsStates(PartsStates.OFF);
-                } else {
-                    elecomInfo.setPartsStates(PartsStates.ON);
-                }
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(3, 3));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -135,7 +131,7 @@ public class ElecomInfoSelector {
                             elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(1, 0, link, direction));
                         }
 
-                        elecomInfo.setPartsStates(PartsStates.ON);
+                        elecomInfo.setPartsStates(PartsStates.OFF);
                         elecomInfo.setSize(new IntegerDimension(3, 3));
                         elecomInfo.setHighLevelConnectSize(1);
                         elecomInfo.setBranch(false);
@@ -255,7 +251,7 @@ public class ElecomInfoSelector {
                             }
                         }
 
-                        elecomInfo.setPartsStates(PartsStates.ON);
+                        elecomInfo.setPartsStates(PartsStates.OFF);
                         elecomInfo.setSize(new IntegerDimension(3, 7));
                         elecomInfo.setHighLevelConnectSize(1);
                         elecomInfo.setBranch(false);
@@ -303,7 +299,7 @@ public class ElecomInfoSelector {
                     elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(y, x, link, direction));
                 }
 
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(3, 9));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -329,7 +325,7 @@ public class ElecomInfoSelector {
                 direction[1] = GND;
                 elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(1, 8, link, direction));
 
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(3, 9));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -355,7 +351,7 @@ public class ElecomInfoSelector {
                 direction[1] = EXIST;
                 elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(0, 2, link, direction));
 
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(1, 3));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -381,7 +377,7 @@ public class ElecomInfoSelector {
                 direction[1] = CATHODE;
                 elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(1, 2, link, direction));
 
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(3, 3));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -407,7 +403,7 @@ public class ElecomInfoSelector {
                 direction[1] = EXIST;
                 elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(1, 2, link, direction));
 
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(3, 3));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -472,7 +468,7 @@ public class ElecomInfoSelector {
                 direction[2] = BASE;
                 elecomInfo.getLinkedTerminal().add(new CircuitLinkInfo(2, 2, link, direction));
 
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(3, 3));
                 elecomInfo.setHighLevelConnectSize(1);
                 elecomInfo.setBranch(false);
@@ -486,7 +482,7 @@ public class ElecomInfoSelector {
                 for (int i = 0; i < correspond.length; i++) {
                     correspond[i] = -1;
                 }
-                elecomInfo.setPartsStates(PartsStates.ON);
+                elecomInfo.setPartsStates(PartsStates.OFF);
                 elecomInfo.setSize(new IntegerDimension(1, 1));
                 switch (elecomInfo.getPartsStandards()) {
                     case _0:

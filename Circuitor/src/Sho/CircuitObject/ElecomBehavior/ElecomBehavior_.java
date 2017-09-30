@@ -1,5 +1,6 @@
 package Sho.CircuitObject.ElecomBehavior;
 
+import Master.ImageMaster.PartsStandards;
 import Master.ImageMaster.PartsStates;
 import Sho.CircuitObject.Circuit.ElecomInfo;
 import Sho.CircuitObject.Circuit.TerminalDirection;
@@ -25,13 +26,12 @@ public abstract class ElecomBehavior_ {
     /** 汎用的な出力リスト。使わなくても構わない */
     private boolean[] outputList;
     /** 電子部品の状態を保持する。使わなくても構わない */
-    private PartsStates state;
     private ElecomInfo elecomInfo;
 
     protected ElecomBehavior_(ExecuteUnitPanel exePanel, ElecomInfo info) {
-        state = PartsStates.OFF;
         elecomInfo = new ElecomInfo();
         info.copyTo(elecomInfo);
+        elecomInfo.setPartsStates(PartsStates.OFF);
         this.exePanel = exePanel;
     }
 
@@ -64,11 +64,11 @@ public abstract class ElecomBehavior_ {
     }
 
     public PartsStates getState() {
-        return state;
+        return elecomInfo.getPartsStates();
     }
 
     public void setState(PartsStates states) {
-        this.state = states;
+        elecomInfo.setPartsStates(states);
     }
 
     public ElecomInfo getElecomInfo() {
@@ -132,6 +132,7 @@ public abstract class ElecomBehavior_ {
     protected void setInput() {
         for (int i = 0; i < infos.size(); i++) {
             if (infos.get(i) != null) {
+                inputList[i] = false;
                 if (infos.get(i).getRole() == TerminalDirection.IN) {
                     inputList[i] = getDirectionWithCurrent(i, HighLevelConnectGroup.IN_NODE) < 0;
                 }
@@ -145,6 +146,7 @@ public abstract class ElecomBehavior_ {
     protected void setOutput() {
         for (int i = 0; i < infos.size(); i++) {
             if (infos.get(i) != null) {
+//                outputList[i] = false;
                 if (infos.get(i).getRole() == TerminalDirection.OUT) {
                     if (outputList[i]) {
                         infos.get(i).getInfo().getHighLevelExecuteInfo().setResistance(100);

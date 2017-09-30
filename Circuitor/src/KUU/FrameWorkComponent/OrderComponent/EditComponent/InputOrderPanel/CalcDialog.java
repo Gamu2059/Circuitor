@@ -38,11 +38,13 @@ public class CalcDialog extends NewJDialog implements ItemListener{
     private GeneralItemPanel operateBoxTitleLabel;
     private String[] operateStrings = {"+","-","*","/","%"};
     private String   operateString;
+    private GeneralItemPanel frameLabel;
     private SelectConstantPinVariablePanel thirdSelectConstantPinVariablePanel;
     private GeneralItemPanel thirdSelectConstantPinVariableTitleLabel;
-    private String                         thirdSelectConstantPinVariableString;
 
+    private String                         thirdSelectConstantPinVariableString;
     private DialogBasePanel basePanel;
+
     private JPanel panel;
 
     public CalcDialog(BaseFrame frame, DialogOpenMode mode, MouseEvent e){
@@ -63,10 +65,13 @@ public class CalcDialog extends NewJDialog implements ItemListener{
         panel.add(secondSelectConstantPinVariableTitleLabel = new GeneralItemPanel(null,null,"計算される数"));
         panel.add(operateBox = new JComboBox<>(operateStrings));
         panel.add(operateBoxTitleLabel = new GeneralItemPanel(null,null,"演算子"));
+        panel.add(frameLabel = new GeneralItemPanel(""));
         panel.add(thirdSelectConstantPinVariablePanel = new SelectConstantPinVariablePanel(frame));
         panel.add(thirdSelectConstantPinVariableTitleLabel = new GeneralItemPanel(null,null,"計算する数"));
+
         equalsLabel.setBackground(null);
         equalsLabel.setFont(new Font("", Font.BOLD, 32));
+        frameLabel.setBackground(null);
 
         /** 編集モードで開かれた場合、内容を格納する */
         if (mode == DialogOpenMode.EDIT) {
@@ -360,9 +365,6 @@ public class CalcDialog extends NewJDialog implements ItemListener{
         /** 生成時に呼ばれる */
         @Override
         public void handResize(int width, int height) {
-            /** 上下端のラベル */
-            orderIndicateLabel.setBounds(0, 0, width, 20);
-            confirmLabel.setBounds(0, height - 30, width, 30);
             /** 内側のラベル */
             panel.setBounds(0, 20, width, height - 40);
 
@@ -380,11 +382,16 @@ public class CalcDialog extends NewJDialog implements ItemListener{
             secondSelectConstantPinVariablePanel.handResize(320, partsHeight);
 
             operateBoxTitleLabel.setBounds(660, 0, 70, 20);
-            operateBox.setBounds(660, partsHeight/3 + 20, 70, partsHeight/3);
+            operateBox.setBounds(661, partsHeight/3 + 20, 68, partsHeight/3);
+            frameLabel.setBounds(660, 20, 70, partsHeight);
 
             thirdSelectConstantPinVariableTitleLabel.setBounds(730, 0, 320, 20);
             thirdSelectConstantPinVariablePanel.setBounds(730, 20, 320, partsHeight);
-            thirdSelectConstantPinVariablePanel.handResize(270, partsHeight);
+            thirdSelectConstantPinVariablePanel.handResize(320, partsHeight);
+
+            /** 上下端のラベル */
+            orderIndicateLabel.setBounds(0, 0, width, 20);
+            confirmLabel.setBounds(0, height - 30, width, 30);
         }
 
         @Override

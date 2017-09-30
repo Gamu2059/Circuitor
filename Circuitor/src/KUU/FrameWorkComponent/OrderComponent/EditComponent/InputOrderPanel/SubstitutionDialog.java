@@ -267,9 +267,9 @@ public class SubstitutionDialog extends NewJDialog {
 
             equalsBaseLabel.setBounds(270, 0, 70, partsHeight + 20);
 
-            secondSelectConstantPinVariableTitleLabel.setBounds(340, 0, 320, 20);
-            secondSelectConstantPinVariablePanel.setBounds(340, 20, 320, partsHeight);
-            secondSelectConstantPinVariablePanel.handResize(320, partsHeight);
+            secondSelectConstantPinVariableTitleLabel.setBounds(340, 0, 320-6, 20);
+            secondSelectConstantPinVariablePanel.setBounds(340, 20, 320-6, partsHeight);
+            secondSelectConstantPinVariablePanel.handResize(320-6, partsHeight);
         }
 
         @Override

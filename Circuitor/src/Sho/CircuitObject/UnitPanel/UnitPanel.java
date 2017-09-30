@@ -1,11 +1,11 @@
 package Sho.CircuitObject.UnitPanel;
 
 import KUU.BaseComponent.BaseFrame;
+import KUU.CommonComponent.CommonPartsIndicatePopMenu;
 import KUU.NewComponent.NewJPanel;
 import Master.ColorMaster.ColorMaster;
-import Sho.CircuitObject.Circuit.CircuitBlock;
-import Sho.CircuitObject.Circuit.CircuitBorder;
-import Sho.CircuitObject.Circuit.CircuitUnit;
+import Master.ImageMaster.ImageMaster;
+import Sho.CircuitObject.Circuit.*;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
 import Sho.CircuitObject.Operate.ElecomInfoSelector;
@@ -13,11 +13,14 @@ import Sho.CircuitObject.Operate.OperateBorder_;
 import Sho.CircuitObject.Operate.OperateDetection_;
 import Sho.CircuitObject.Operate.OperateOperate_;
 import Sho.IntegerDimension.IntegerDimension;
+import Sho.Matrix.Matrix;
 
 import javax.swing.event.MouseInputListener;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
@@ -40,6 +43,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      * 基板のサイズ
      */
     private IntegerDimension circuitSize;
+    /**
+     * 部品状態表示ポップ
+     */
+    private CommonPartsIndicatePopMenu partsPopMenu;
 
     /*************************/
     /** 画面描画に関する情報 */
@@ -72,6 +79,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      * マウスの基板上の座標(ブロック単位)
      */
     private IntegerDimension cursorCo;
+    /**
+     * マウスの基板上の差分座標(ブロック単位)
+     */
+    private IntegerDimension deltaCursorCo;
 
     /*****************************/
     /** 処理上で使う汎用的な変数 */
@@ -123,6 +134,7 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
         circuitSize = new IntegerDimension(50, 80);
         /* このタイミングで生成しようとするとbasePanelのオブジェクトが完成していない状態なのでNullPointerExceptionが発生します */
 //        circuitUnit = new CircuitUnit(frame);
+        partsPopMenu = new CommonPartsIndicatePopMenu();
         /** 画像描画用変数の初期化 */
         paintBaseCo = new IntegerDimension();
         paintRatio = 1;
@@ -130,6 +142,7 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
         paintRect = new Rectangle2D.Double();
         /** マウス情報用変数の初期化 */
         pressedCo = new IntegerDimension();
+        deltaCursorCo = new IntegerDimension();
         /** 一時保存用変数の初期化 */
         tmps = new ArrayList<>();
         idTmps = new ArrayList<>();
@@ -165,6 +178,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
      */
     public IntegerDimension getCircuitSize() {
         return circuitSize;
+    }
+
+    public CommonPartsIndicatePopMenu getPartsPopMenu() {
+        return partsPopMenu;
     }
 
     /**
@@ -234,6 +251,10 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
 
     public void setCursorCo(IntegerDimension cursorCo) {
         this.cursorCo = cursorCo;
+    }
+
+    public IntegerDimension getDeltaCursorCo() {
+        return deltaCursorCo;
     }
 
     /**
@@ -493,8 +514,96 @@ public abstract class UnitPanel extends NewJPanel implements MouseInputListener,
         this.operateDetection = operateDetection;
     }
 
+    /**
+     * CircuitBlock一つを描画するのに必要なピクセル数を返す。
+     */
+    public int getBaseSize() {
+        return UNIT_PIXEL * paintRatio;
+    }
+
     @Override
     public void handResize(int w, int h) {
+    }
+
+    /**
+     * 基板描画のための汎用的なメソッド。
+     */
+    protected void paintBase(Graphics2D g2) {
+        int baseSize = getBaseSize();
+        g2.setColor(ColorMaster.getSubstrateColor());
+        paintRect.setRect(paintBaseCo.getWidth(), paintBaseCo.getHeight(), baseSize * circuitSize.getWidth(), baseSize * circuitSize.getHeight());
+        g2.fill(getPaintRect());
+    }
+
+    /**
+     * ボーダ描画のための汎用的なメソッド。
+     */
+    protected void paintBorder(Graphics2D g2) {
+        Matrix<CircuitBlock> mat = circuitUnit.getCircuitBlock();
+        CircuitBlock b;
+        int baseSize = getBaseSize();
+        for (int i = 0; i < circuitSize.getHeight(); i++) {
+            for (int j = 0; j < circuitSize.getWidth(); j++) {
+                b = mat.getMatrix().get(i).get(j);
+                if (b.getBorder() != null) {
+                    g2.setColor(CircuitBorder.getColor(b.getBorder()));
+                    getPaintRect().setRect(
+                        baseSize * j + paintBaseCo.getWidth() + 1,
+                        baseSize * i + paintBaseCo.getHeight() + 1,
+                        baseSize - 2,
+                        baseSize - 2
+                    );
+                    g2.fill(getPaintRect());
+                }
+            }
+        }
+    }
+
+    /**
+     * 部品描画のための汎用的なメソッド。
+     */
+    protected void paintParts(Graphics2D g2) {
+        paintParts(g2, circuitUnit);
+    }
+
+    protected void paintParts(Graphics2D g2, CircuitUnit unit) {
+        Matrix<CircuitBlock> mat = unit.getCircuitBlock();
+        CircuitBlock b;
+        ElecomInfo e;
+        CircuitInfo c;
+        AffineTransform affine;
+
+        for (int i = 0; i < circuitSize.getHeight(); i++) {
+            for (int j = 0; j < circuitSize.getWidth(); j++) {
+                b = mat.getMatrix().get(i).get(j);
+                e = b.getElecomInfo();
+                c = b.getCircuitInfo();
+                if (b.isExist() && c.getReco().equals(0, 0)) {
+                    affine = new AffineTransform();
+                    affineProcess(affine, e, i, j);
+                    g2.drawImage(ImageMaster.getImageMaster().getImage(e).getImage(), affine, null);
+                }
+            }
+        }
+    }
+
+    /**
+     * 定型的なアフィン行列操作を与える。
+     */
+    protected void affineProcess(AffineTransform affine, ElecomInfo e, int y, int x) {
+        int rotateNum;
+        int baseSize = getBaseSize();
+        if (ImageMaster.isOnlyStatesParts(e)) {
+            rotateNum = ImageMaster.getIntFromPartsDirection(e);
+            affine.translate(
+                baseSize * (x + (rotateNum == 1 || rotateNum == 2 ? e.getSize().getWidth() : 0)) + paintBaseCo.getWidth(),
+                baseSize * (y + (rotateNum == 2 || rotateNum == 3 ? e.getSize().getHeight() : 0)) + paintBaseCo.getHeight()
+            );
+            affine.rotate(rotateNum * Math.PI / 2);
+        } else {
+            affine.translate(baseSize * x + paintBaseCo.getWidth(), baseSize * y + paintBaseCo.getHeight());
+        }
+        affine.scale(paintRatio, paintRatio);
     }
 
     /**

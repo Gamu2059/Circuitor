@@ -100,6 +100,7 @@ public class MainOrderPanel extends NewJPanel implements MouseListener{
         getFrame().setOrderPanelCanClick(false, false, true);
         JPanel panel = (JPanel) e.getSource();
         if (panel == executeStartLabel) {
+            getFrame().getHelpLabel().setText("");
             getFrame().getBasePanel().runExecuteMode();
         }else {
             functionLabel.setBackground(ColorMaster.getNotSelectedColor());
@@ -107,7 +108,6 @@ public class MainOrderPanel extends NewJPanel implements MouseListener{
             oneDimensionArrayLabel.setBackground(ColorMaster.getNotSelectedColor());
             twoDimensionArrayLabel.setBackground(ColorMaster.getNotSelectedColor());
             panel.setBackground(ColorMaster.getSelectedColor());
-            String message = "";
             if (panel == functionLabel) {
                 variableMode = MainOrderVariableMode.FUNCTION;
                 getFrame().getHelpLabel().setText("関数モード：サブ操作パネルから編集できます。");

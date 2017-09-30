@@ -33,6 +33,7 @@ public class ForDialog extends NewJDialog implements ItemListener{
     private GeneralItemPanel conditionBoxTitleLabel;
     private String[]         conditionStrings = {">=",">","<=","<"};
     private String           conditionString;
+    private GeneralItemPanel frameLabel1;
     private SelectConstantVariablePanel thirdSelectConstantVariablePanel;
     private GeneralItemPanel            thirdSelectConstantVariableTitleLabel;
     private String                      thirdSelectConstantVariableString;
@@ -40,6 +41,7 @@ public class ForDialog extends NewJDialog implements ItemListener{
     private GeneralItemPanel incrementBoxTitleLabel;
     private String[]         incrementStrings = {"+","-"};
     private String           incrementString;
+    private GeneralItemPanel frameLabel2;
     private SelectConstantVariablePanel fourthSelectConstantVariablePanel;
     private GeneralItemPanel            fourthSelectConstantVariableTitleLabel;
     private String                      fourthSelectConstantVariableString;
@@ -64,18 +66,24 @@ public class ForDialog extends NewJDialog implements ItemListener{
         panel.add(secondSelectConstantVariableTitleLabel = new GeneralItemPanel(null,null,"初期値"));
         panel.add(conditionBox = new JComboBox<>(conditionStrings));
         panel.add(conditionBoxTitleLabel = new GeneralItemPanel(null,null,"条件符号"));
+        panel.add(frameLabel1 = new GeneralItemPanel(""));
         panel.add(thirdSelectConstantVariablePanel = new SelectConstantVariablePanel(frame));
         panel.add(thirdSelectConstantVariableTitleLabel = new GeneralItemPanel(null,null,"条件数値"));
         panel.add(incrementBox = new JComboBox<>(incrementStrings));
         panel.add(incrementBoxTitleLabel = new GeneralItemPanel(null,null,"増分符号"));
+        panel.add(frameLabel2 = new GeneralItemPanel(""));
         panel.add(fourthSelectConstantVariablePanel = new SelectConstantVariablePanel(frame));
         panel.add(fourthSelectConstantVariableTitleLabel = new GeneralItemPanel(null,null,"増分"));
+
+        frameLabel1.setBackground(null);
+        frameLabel2.setBackground(null);
 
         basePanel = new DialogBasePanel(frame);
         basePanel.setLayout(null);
         basePanel.add(orderIndicateLabel = new GeneralItemPanel(null,null,""));
         basePanel.add(confirmLabel = new GeneralItemPanel(true,null,"確定"));
         basePanel.add(panel);
+
         add(basePanel);
 
         conditionBox.addItemListener(this);
@@ -432,9 +440,6 @@ public class ForDialog extends NewJDialog implements ItemListener{
         /** 生成時に呼ばれる */
         @Override
         public void handResize(int width, int height) {
-            /** 上下端のラベル */
-            orderIndicateLabel.setBounds(0, 0, width, 20);
-            confirmLabel.setBounds(0, height - 30, width, 30);
             /** 内側のラベル */
             panel.setBounds(0, 20, width, height - 40);
 
@@ -451,18 +456,24 @@ public class ForDialog extends NewJDialog implements ItemListener{
             secondSelectConstantVariablePanel.handResize(270, partsHeight);
 
             conditionBoxTitleLabel.setBounds(490, 0, 70, 20);
-            conditionBox.setBounds(490, partsHeight/3 + 20, 70, partsHeight/3);
+            conditionBox.setBounds(491, partsHeight/3 + 20, 68, partsHeight/3);
+            frameLabel1.setBounds(490, 20, 70, partsHeight);
 
             thirdSelectConstantVariableTitleLabel.setBounds(560, 0, 270, 20);
             thirdSelectConstantVariablePanel.setBounds(560, 20, 270, partsHeight);
             thirdSelectConstantVariablePanel.handResize(270, partsHeight);
 
             incrementBoxTitleLabel.setBounds(830, 0, 70, 20);
-            incrementBox.setBounds(830, partsHeight/3 + 20, 70, partsHeight/3);
+            incrementBox.setBounds(831, partsHeight/3 + 20, 68, partsHeight/3);
+            frameLabel2.setBounds(830, 20, 70, partsHeight);
 
             fourthSelectConstantVariableTitleLabel.setBounds(900, 0, 270, 20);
             fourthSelectConstantVariablePanel.setBounds(900, 20, 270, partsHeight);
             fourthSelectConstantVariablePanel.handResize(270, partsHeight);
+
+            /** 上下端のラベル */
+            orderIndicateLabel.setBounds(0, 0, width, 20);
+            confirmLabel.setBounds(0, height - 30, width, 30);
         }
 
         @Override

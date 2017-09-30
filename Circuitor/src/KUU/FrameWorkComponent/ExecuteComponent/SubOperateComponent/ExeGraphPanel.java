@@ -89,6 +89,7 @@ public class ExeGraphPanel extends JPanel implements MouseInputListener, MouseWh
         baseUnit = BigDecimal.ONE;
         preUnit = BigDecimal.ONE;
         repaint();
+        valueLinePanel.repaint();
     }
 
     /**
@@ -139,7 +140,6 @@ public class ExeGraphPanel extends JPanel implements MouseInputListener, MouseWh
 
     /**
      * パネルにグラフを描画する。
-     *
      */
     @Override
     public void paint(Graphics g) {
