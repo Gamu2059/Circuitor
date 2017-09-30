@@ -89,6 +89,7 @@ public class ExeGraphPanel extends JPanel implements MouseInputListener, MouseWh
         baseUnit = BigDecimal.ONE;
         preUnit = BigDecimal.ONE;
         repaint();
+        valueLinePanel.repaint();
     }
 
     /**
