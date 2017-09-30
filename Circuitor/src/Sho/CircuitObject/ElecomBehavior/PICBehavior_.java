@@ -116,6 +116,8 @@ public class PICBehavior_ extends ICBehavior_ {
         addWithDirection(groups, abco);
         setInputList(new boolean[getElecomInfo().getLinkedTerminal().size()]);
         setOutputList(new boolean[getElecomInfo().getLinkedTerminal().size()]);
+
+        System.out.println();
     }
 
     @Override

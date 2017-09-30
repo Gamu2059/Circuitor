@@ -107,7 +107,6 @@ public class SelectVariablePanel extends NewJPanel implements MouseListener{
                 oneArrayPanel.setVisible(true);
                 editOrderVariableMode = EditOrderVariableMode.ARRAY;
             }else {
-
                 panelPaintFlg = false;
             }
         }

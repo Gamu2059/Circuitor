@@ -105,7 +105,7 @@ public class HighLevelExecuteInfo {
     }
 
     public void setVoltage(double voltage) {
-        this.voltage = Math.abs(voltage);
+        this.voltage = voltage;
     }
 
     public double getResistance() {

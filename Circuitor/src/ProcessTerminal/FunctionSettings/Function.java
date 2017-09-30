@@ -224,10 +224,10 @@ public class Function {
                                 isFunction = true;
                                 break;
                             case BREAK:
-                                data.setNowLineNumber(programList.indexOf(searchLoopEndSyntax(programList.indexOf(searchBeginningSyntax(programList.indexOf(booting))))));
+                                data.setNowLineNumber(programList.indexOf(searchLoopEndSyntax(programList.indexOf(searchLoopBeginSyntax(programList.indexOf(booting))))));
                                 break;
                             case CONTINUE:
-                                data.setNowLineNumber(programList.indexOf(searchLoopEndSyntax(programList.indexOf(searchBeginningSyntax(programList.indexOf(booting))))) - 1);
+                                data.setNowLineNumber(programList.indexOf(searchLoopEndSyntax(programList.indexOf(searchLoopBeginSyntax(programList.indexOf(booting))))) - 1);
                                 break;
                             default:
                                 break;
@@ -388,6 +388,29 @@ public class Function {
         return null;
     }
 
+    private Syntax searchLoopBeginSyntax(int nowLineNumber) {
+        int endCount = 0;
+        for (int i = nowLineNumber - 1; i >= 0; i--) {
+            if (programList.get(i).getElementType() == ListElement.ElementType.SYNTAX) {
+                if (programList.get(i) instanceof Syntax) {
+                    if (!isLabel(i)) {
+                        if (((Syntax) programList.get(i)).getsType() == Syntax.S_TYPE.END) {
+                            endCount++;
+                        } else {
+                            if (endCount == 0) {
+                                if (!(((Syntax) programList.get(i)).getsType() == Syntax.S_TYPE.IF))
+                                    return (Syntax) programList.get(i);
+                            }
+                            else
+                                endCount--;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     private Syntax searchLoopEndSyntax(int nowLineNumber) {
         int endCount = 0;
         for (int i = nowLineNumber + 1; i < programList.size(); i++) {
@@ -397,11 +420,11 @@ public class Function {
                         if (((Syntax) programList.get(i)).getsType() != Syntax.S_TYPE.END) {
                             endCount++;
                         } else {
-                            if (endCount == 0)
+                            if (endCount == 0) {
                                 if (!(searchBeginningSyntax(i).getsType() == Syntax.S_TYPE.IF))
                                     return (Syntax) programList.get(i);
-                                else
-                                    endCount--;
+                            } else
+                                endCount--;
                         }
                     }
                 }

@@ -104,7 +104,9 @@ public class ModeSelectPanel extends NewJPanel implements MouseListener {
                 getFrame().getBasePanel().setDisplay(BasePanel.OverAllMode.CIRCUIT);
             } else if (label == orderLabel) {
                 getFrame().getBasePanel().setDisplay(BasePanel.OverAllMode.ORDER);
+                getFrame().setOrderPanelCanClick(false, false, true);
                 getFrame().updateOrderPanel(true);
+                getFrame().getBasePanel().getEditOrderPanel().setLineNumber(0);
             }
         }
     }
@@ -114,7 +116,7 @@ public class ModeSelectPanel extends NewJPanel implements MouseListener {
     }
     @Override
     public void mouseEntered(MouseEvent e) {
-
+        getFrame().getHelpLabel().setText("");
     }
     @Override
     public void mouseExited(MouseEvent e) {
