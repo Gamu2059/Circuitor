@@ -84,6 +84,9 @@ public class PartsButton extends JButton implements MouseListener {
             case DC:
                 title = "直流電源";
                 break;
+            case AC:
+                title = "交流電源";
+                break;
             case _10:
                 title = "10Ω";
                 break;

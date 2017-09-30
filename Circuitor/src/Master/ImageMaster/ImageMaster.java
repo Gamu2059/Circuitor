@@ -112,7 +112,7 @@ public class ImageMaster {
             case SWITCH:
                 return true;
             default:
-                return false;
+                return e.getPartsStandards() == AC;
         }
     }
 

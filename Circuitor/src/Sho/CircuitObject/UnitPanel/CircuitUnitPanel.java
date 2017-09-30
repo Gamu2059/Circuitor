@@ -15,6 +15,7 @@ import Sho.CircuitObject.Circuit.CircuitOperateMode.*;
 import Sho.CircuitObject.Circuit.CircuitOperateCommand.*;
 import Sho.CircuitObject.Circuit.CircuitOperateBehavior.*;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsAdd.PartsButton;
+import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableAlternatingPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
@@ -298,6 +299,8 @@ public class CircuitUnitPanel extends UnitPanel {
             case POWER:
                 if (s == PartsStandards.DC) {
                     e.setEtcStatus(1.5);
+                } else {
+                    e.setEtcStatus(1);
                 }
                 break;
             case RESISTANCE:
@@ -945,6 +948,9 @@ public class CircuitUnitPanel extends UnitPanel {
                                         if (ele.getPartsStandards() == PartsStandards.DC) {
                                             // 直流電源の電圧値変更
                                             new VariableDirectPowerDialog(this, getCircuitUnit().getCircuitBlock().getMatrix().get(y).get(x));
+                                        } else {
+                                            // 交流電源の周波数変更
+                                            new VariableAlternatingPowerDialog(this, getCircuitUnit().getCircuitBlock().getMatrix().get(y).get(x));
                                         }
                                     } else if (ele.getPartsVarieties() == PartsVarieties.RESISTANCE && ele.getPartsStandards() == PartsStandards._variable) {
                                         // 可変抵抗の抵抗値変更

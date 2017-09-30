@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class PulseBehavior_ extends ElecomBehavior_ {
     /** パルス信号の切り替えを管理するスレッド */
     private PulseGenerate pulseGenerator;
-    private double freq;
+    private double hertz;
 
     public PulseBehavior_(ExecuteUnitPanel exePanel, ElecomInfo info) {
         super(exePanel, info);
@@ -51,13 +51,13 @@ public class PulseBehavior_ extends ElecomBehavior_ {
                 }
             }
         }
-        freq = getElecomInfo().getEtcStatus();
-        if (freq < 1) {
-            freq = 1;
-        } else if (freq > 100) {
-            freq = 100;
+        hertz = getElecomInfo().getEtcStatus();
+        if (hertz < 1) {
+            hertz = 1;
+        } else if (hertz > 100) {
+            hertz = 100;
         }
-        pulseGenerator = new PulseGenerate(freq);
+        pulseGenerator = new PulseGenerate(hertz);
     }
 
     @Override
@@ -83,14 +83,14 @@ public class PulseBehavior_ extends ElecomBehavior_ {
         }
     }
 
-    public double getFreq() {
-        return freq;
+    public double getHertz() {
+        return hertz;
     }
 
-    public void setFreq(double freq) {
-        this.freq = freq;
-        getElecomInfo().setEtcStatus(freq);
-        pulseGenerator.setTiming(freq);
+    public void setHertz(double hertz) {
+        this.hertz = hertz;
+        getElecomInfo().setEtcStatus(hertz);
+        pulseGenerator.setTiming(hertz);
     }
 
     /**
@@ -165,10 +165,6 @@ public class PulseBehavior_ extends ElecomBehavior_ {
 
         public boolean isPulseOutput() {
             return pulseOutput;
-        }
-
-        public boolean isChanged() {
-            return isChanged;
         }
 
         public void setChanged(boolean changed) {
