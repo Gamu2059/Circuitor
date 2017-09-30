@@ -28,4 +28,12 @@ public class GeneralBoolPanel extends JLabel {
             setText("true");
         }
     }
+
+    public int getNum() {
+        if (getBackground() == ColorMaster.getSelectedColor()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

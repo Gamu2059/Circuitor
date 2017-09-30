@@ -25,11 +25,10 @@ public class VariableSettingDialog extends NewJDialog {
     private int arrayFirstSize;
     private int arraySecondSize;
 
-    private JButton resetButton;
+    private GeneralItemPanel resetButton;
 
     private DialogBasePanel basePanel;
     private JPanel panel;
-    private JScrollPane scrollPane;
     public VariableSettingDialog(BaseFrame frame, Variable.Type variableRapperType, String variableName, String variableArrayType, MouseEvent e) {
         super(frame);
         setLayout(new GridLayout(1,1));
@@ -122,7 +121,7 @@ public class VariableSettingDialog extends NewJDialog {
         }
 
         if (variableRapperType== Variable.Type.INT) {
-            panel.add(resetButton = new JButton("全てに0を入れる"));
+            panel.add(resetButton = new GeneralItemPanel(true,null,"全てに0を入れる"));
             resetButton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -136,30 +135,70 @@ public class VariableSettingDialog extends NewJDialog {
             });
         }
 
-        scrollPane = new JScrollPane(panel);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
         basePanel = new DialogBasePanel(frame);
         basePanel.setLayout(null);
         basePanel.add(confirmLabel = new GeneralItemPanel(true,null,"確定"));
-        basePanel.add(scrollPane,CENTER_ALIGNMENT);
+        basePanel.add(panel);
         add(basePanel);
 
         confirmLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                /** execute処理 */
-
+                try {
+                    if (variableArrayType.equals("配列")) {
+                        int[] tmp = new int[arrayFirstSize];
+                        if (variableRapperType == Variable.Type.BOOL) {
+                            for (int i = 0; i < arrayFirstSize; i++) {
+                                tmp[i] = arrayBoolFields[arrayFirstSize][0].getNum();
+                            }
+                        } else {
+                            for (int i = 0; i < arrayFirstSize; i++) {
+                                try {
+                                    tmp[i] = Integer.parseInt(arrayTextFields[arrayFirstSize][0].getText());
+                                } catch (Exception e1){
+                                    if (("").equals(arrayTextFields[i][0].getText()))throw new Exception();
+                                    tmp[i] = 0;
+                                }
+                            }
+                        }
+                        getFrame().getMasterTerminal().searchVariable(variableArrayType, variableName).setAllStartingArrays(tmp);
+                    } else {
+                        int[][] tmp = new int[arrayFirstSize][arraySecondSize];
+                        if (variableRapperType == Variable.Type.BOOL) {
+                            for (int i = 0; i < arrayFirstSize; i++) {
+                                for (int j = 0; j < arraySecondSize; j++) {
+                                    tmp[i][j] = arrayBoolFields[i][j].getNum();
+                                }
+                            }
+                        } else {
+                            for (int i = 0; i < arrayFirstSize; i++) {
+                                for (int j = 0; j < arraySecondSize; j++) {
+                                    try {
+                                        tmp[i][j] = Integer.parseInt(arrayTextFields[i][j].getText());
+                                    } catch (Exception e1){
+                                        if (("").equals(arrayTextFields[i][j].getText()))throw new Exception();
+                                        tmp[i][j] = 0;
+                                    }
+                                }
+                            }
+                        }
+                        getFrame().getMasterTerminal().searchVariable(variableArrayType, variableName).setAllStartingArrays(tmp);
+                    }
+                    JOptionPane.showMessageDialog(confirmLabel, "変数"+variableName+"の初期値設定が完了しました。");
+                    getFrame().updateOrderPanel(false);
+                    dispose();
+                }catch (Exception e1){
+                    JOptionPane.showMessageDialog(confirmLabel, "未入力のマスがあります！");
+                }
             }
         });
 
         int[] bounds = new int[4];
         bounds[0] = e.getXOnScreen() - ((arrayFirstSize<10)?arrayFirstSize*20:200);
         bounds[1] = e.getYOnScreen() - ((arraySecondSize<15)?arraySecondSize*30:450) - ((variableRapperType==Variable.Type.INT)?150:80);
-        bounds[2] = ((arrayFirstSize<10)? arrayFirstSize*40+20:400+20) + ((variableRapperType==Variable.Type.INT)? 75:45);
-        bounds[3] = ((arraySecondSize<15)? arraySecondSize*30+20:450+20) + ((variableRapperType==Variable.Type.INT)? 120:90);
+        bounds[2] = ((arrayFirstSize<10)? arrayFirstSize*40:400) + 40;
+        bounds[3] = ((arraySecondSize<15)? arraySecondSize*30:450) + ((variableRapperType==Variable.Type.INT)? 120:90);
         setBounds(bounds[0], bounds[1], bounds[2], bounds[3]);
     }
 
@@ -175,8 +214,8 @@ public class VariableSettingDialog extends NewJDialog {
         public void handResize(int width, int height) {
             /** 下端のラベル */
             confirmLabel.setBounds(0, height - 30, width, 30);
-            /** 内側のラベル */
-            scrollPane.setBounds(0, 0, width, height - 30);
+            /** 内側のパネル */
+            panel.setBounds(0, 0, width, height - 30);
 
             /** Indicate */
             for (int i = 0; i < arrayFirstSize+1; i++) {
@@ -193,7 +232,7 @@ public class VariableSettingDialog extends NewJDialog {
                         arrayTextFields[i][j].setBounds(i*40 + 40, j*30 + 30, 35, 25);
                     }
                 }
-                resetButton.setBounds(width/2 - 40, arraySecondSize*30 + 30, 80, 25);
+                resetButton.setBounds(width/2 - 50, arraySecondSize*30 + 30, 100, 25);
             } else {
                 for (int i = 0; i < arrayFirstSize; i++) {
                     for (int j = 0; j < arraySecondSize; j++) {

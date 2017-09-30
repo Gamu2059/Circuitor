@@ -38,6 +38,8 @@ public class TwoArrayPanel extends NewJPanel implements MouseListener,DocumentLi
     private JLabel rightBracketLabel1;
     private JLabel rightBracketLabel2;
 
+    private GeneralItemPanel frameLabel;
+
     public TwoArrayPanel(BaseFrame frame) {
         super(frame);
         setLayout(null);
@@ -64,6 +66,8 @@ public class TwoArrayPanel extends NewJPanel implements MouseListener,DocumentLi
         add(leftBracketLabel2 = new JLabel("["));
         add(rightBracketLabel1 = new JLabel("]"));
         add(rightBracketLabel2 = new JLabel("]"));
+        add(frameLabel = new GeneralItemPanel(""));
+        frameLabel.setBackground(null);
 
         /** リスナ登録 */
         twoArrayBox.addItemListener(this);
@@ -127,6 +131,8 @@ public class TwoArrayPanel extends NewJPanel implements MouseListener,DocumentLi
 
         rightBracketLabel1.setBounds(partsWidth*6, partsHeight*3, 20, partsHeight);
         rightBracketLabel2.setBounds(partsWidth*9, partsHeight*3, 20, partsHeight);
+
+        frameLabel.setBounds(0, 0, width, height);
     }
 
     @Override

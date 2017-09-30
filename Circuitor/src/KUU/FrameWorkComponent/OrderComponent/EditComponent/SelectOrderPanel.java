@@ -26,10 +26,10 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
     private GeneralItemPanel ifLabel;
     private GeneralItemPanel forLabel;
     private GeneralItemPanel whileLabel;
-    private GeneralItemPanel loadFunctionLabel;
-    private GeneralItemPanel variableSettingLabel;
     private GeneralItemPanel breakLabel;
     private GeneralItemPanel continueLabel;
+    private GeneralItemPanel loadFunctionLabel;
+    private GeneralItemPanel variableSettingLabel;
     /** 命令ダイアログ */
     private SubstitutionDialog substitutionDialog;
     private CalcDialog         calcDialog;
@@ -47,25 +47,27 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
         setLayout(null);
 
         /** 命令選択ラベル */
-        add(substitutionLabel    = new GeneralItemPanel(false,null,"代入"));
-        add(calcLabel            = new GeneralItemPanel(false,null,"計算"));
-        add(ifLabel              = new GeneralItemPanel(false,null,"if文"));
-        add(forLabel             = new GeneralItemPanel(false,null,"for文"));
-        add(whileLabel           = new GeneralItemPanel(false,null,"while文"));
-        add(loadFunctionLabel    = new GeneralItemPanel(false,null,"関数の呼び出し"));
+        add(substitutionLabel    = new GeneralItemPanel(true,null,"代入"));
+        add(calcLabel            = new GeneralItemPanel(true,null,"計算"));
+        add(ifLabel              = new GeneralItemPanel(true,null,"if文"));
+        add(forLabel             = new GeneralItemPanel(true,null,"for文"));
+        add(whileLabel           = new GeneralItemPanel(true,null,"while文"));
+        add(breakLabel           = new GeneralItemPanel(true,null,"break文"));
+        add(continueLabel        = new GeneralItemPanel(true,null,"continue文"));
+        add(loadFunctionLabel    = new GeneralItemPanel(true,null,"関数の呼び出し"));
         add(variableSettingLabel = new GeneralItemPanel(false,null,"配列の初期化"));
-        add(breakLabel        = new GeneralItemPanel(true,null,"break文"));
-        add(continueLabel     = new GeneralItemPanel(true,null,"continue文"));
 
         substitutionLabel.addMouseListener(this);
         calcLabel.addMouseListener(this);
         ifLabel.addMouseListener(this);
         forLabel.addMouseListener(this);
         whileLabel.addMouseListener(this);
-        loadFunctionLabel.addMouseListener(this);
-        variableSettingLabel.addMouseListener(this);
         breakLabel.addMouseListener(this);
         continueLabel.addMouseListener(this);
+        loadFunctionLabel.addMouseListener(this);
+        variableSettingLabel.addMouseListener(this);
+
+        variableSettingLabel.setVisible(false);
 
         clickAddFlg = true;
     }
@@ -203,19 +205,9 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
     /** SETUP時に選べなくする命令の設定 */
     public void setPanelVisible(String str){
         if (str.equals("SETUP")){
-//            substitutionLabel.setVisible(false);
-//            calcLabel.setVisible(false);
-//            ifLabel.setVisible(false);
-//            forLabel.setVisible(false);
-//            whileLabel.setVisible(false);
             loadFunctionLabel.setVisible(false);
             variableSettingLabel.setVisible(true);
         }else {
-//            substitutionLabel.setVisible(true);
-//            calcLabel.setVisible(true);
-//            ifLabel.setVisible(true);
-//            forLabel.setVisible(true);
-//            whileLabel.setVisible(true);
             variableSettingLabel.setVisible(false);
             loadFunctionLabel.setVisible(true);
         }
@@ -284,6 +276,7 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
                     getFrame().getBasePanel().getMainOrderPanel().getVariableLabel().setBackground(ColorMaster.getSelectedColor());
                     getFrame().getBasePanel().getMainOrderPanel().getOneDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
                     getFrame().getBasePanel().getMainOrderPanel().getTwoDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
+                    getFrame().updateOrderPanel(true);
                 }
             } else if (panel == whileLabel) {
                 orderMode = EditDialogMode.WHILE;
@@ -304,6 +297,7 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
                     getFrame().getBasePanel().getMainOrderPanel().getVariableLabel().setBackground(ColorMaster.getNotSelectedColor());
                     getFrame().getBasePanel().getMainOrderPanel().getOneDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
                     getFrame().getBasePanel().getMainOrderPanel().getTwoDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
+                    getFrame().updateOrderPanel(true);
                 }
             } else if (panel == variableSettingLabel) {
                 if (!getFrame().getMasterTerminal().getVariableStringList("配列").equals(new ArrayList<>()) ||
@@ -320,8 +314,8 @@ public class SelectOrderPanel extends NewJPanel implements MouseListener{
                     getFrame().getBasePanel().getMainOrderPanel().getVariableLabel().setBackground(ColorMaster.getNotSelectedColor());
                     getFrame().getBasePanel().getMainOrderPanel().getOneDimensionArrayLabel().setBackground(ColorMaster.getSelectedColor());
                     getFrame().getBasePanel().getMainOrderPanel().getTwoDimensionArrayLabel().setBackground(ColorMaster.getNotSelectedColor());
+                    getFrame().updateOrderPanel(true);
                 }
-    /** 実装中 */
             } else if (panel == continueLabel) {
                 String functionName = getFrame().getBasePanel().getSubOrderPanel().getFunctionName();
                 int lineNumber = getFrame().getBasePanel().getEditOrderPanel().getLineNumber();

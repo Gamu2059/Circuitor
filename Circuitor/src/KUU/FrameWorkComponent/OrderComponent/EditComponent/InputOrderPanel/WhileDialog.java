@@ -33,6 +33,7 @@ public class WhileDialog extends NewJDialog implements ItemListener{
     private GeneralItemPanel conditionBoxTitleLabel;
     private String[] conditionStrings = {">",">=","==","!=","<=","<"};
     private String   conditionString;
+    private GeneralItemPanel frameLabel;
     private SelectConstantPinVariablePanel secondSelectConstantPinVariablePanel;
     private GeneralItemPanel               secondSelectConstantPinVariableTitleLabel;
     private String                         secondSelectConstantPinVariableString;
@@ -55,8 +56,11 @@ public class WhileDialog extends NewJDialog implements ItemListener{
         panel.add(firstSelectPinVariableTitleLabel = new GeneralItemPanel(null,null,"比べられる数"));
         panel.add(conditionBox = new JComboBox<>(conditionStrings));
         panel.add(conditionBoxTitleLabel = new GeneralItemPanel(null,null,"演算子"));
+        panel.add(frameLabel = new GeneralItemPanel(""));
         panel.add(secondSelectConstantPinVariablePanel = new SelectConstantPinVariablePanel(frame));
         panel.add(secondSelectConstantPinVariableTitleLabel = new GeneralItemPanel(null,null,"比べる数"));
+
+        frameLabel.setBackground(null);
 
         basePanel = new DialogBasePanel(frame);
         basePanel.setLayout(null);
@@ -297,7 +301,8 @@ public class WhileDialog extends NewJDialog implements ItemListener{
             firstSelectPinVariablePanel.handResize(270, partsHeight);
 
             conditionBoxTitleLabel.setBounds(270, 0, 70, 20);
-            conditionBox.setBounds(270, partsHeight/3 + 20, 70, partsHeight/3);
+            conditionBox.setBounds(271, partsHeight/3 + 20, 68, partsHeight/3);
+            frameLabel.setBounds(270, 20, 70, partsHeight);
 
             secondSelectConstantPinVariableTitleLabel.setBounds(340, 0, 320, 20);
             secondSelectConstantPinVariablePanel.setBounds(340, 20, 320, partsHeight);
