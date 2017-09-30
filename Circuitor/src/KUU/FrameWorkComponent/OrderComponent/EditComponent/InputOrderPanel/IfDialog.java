@@ -33,6 +33,7 @@ public class IfDialog extends NewJDialog implements ItemListener{
     private GeneralItemPanel conditionBoxTitleLabel;
     private String[] conditionStrings = {">",">=","==","!=","<=","<"};
     private String   conditionString;
+    private GeneralItemPanel frameLabel;
     private SelectConstantPinVariablePanel secondSelectConstantVariablePanel;
     private GeneralItemPanel               secondSelectConstantVariableTitleLabel;
     private String                         secondSelectConstantVariableString;
@@ -55,8 +56,11 @@ public class IfDialog extends NewJDialog implements ItemListener{
         panel.add(firstSelectPinVariableTitleLabel = new GeneralItemPanel(null,null,"比べられる数"));
         panel.add(conditionBox = new JComboBox<>(conditionStrings));
         panel.add(conditionBoxTitleLabel = new GeneralItemPanel(null,null,"演算子"));
+        panel.add(frameLabel = new GeneralItemPanel(""));
         panel.add(secondSelectConstantVariablePanel = new SelectConstantPinVariablePanel(frame));
         panel.add(secondSelectConstantVariableTitleLabel = new GeneralItemPanel(null,null,"比べる数"));
+
+        frameLabel.setBackground(null);
 
         basePanel = new DialogBasePanel(frame);
         basePanel.setLayout(null);
@@ -256,7 +260,7 @@ public class IfDialog extends NewJDialog implements ItemListener{
             updateOrderIndicateLabel();
         }
 
-        setBounds(e.getXOnScreen() - 305, e.getYOnScreen() - 350, 610, 300);
+        setBounds(e.getXOnScreen() - 330, e.getYOnScreen() - 350, 660, 300);
     }
 
     /** 命令プレビューの更新を行う */
@@ -284,9 +288,6 @@ public class IfDialog extends NewJDialog implements ItemListener{
         /** 生成時に呼ばれる */
         @Override
         public void handResize(int width, int height) {
-            /** 上下端のラベル */
-            orderIndicateLabel.setBounds(0, 0, width, 20);
-            confirmLabel.setBounds(0, height - 30, width, 30);
             /** 内側のラベル */
             panel.setBounds(0, 20, width, height - 40);
 
@@ -298,11 +299,16 @@ public class IfDialog extends NewJDialog implements ItemListener{
             firstSelectPinVariablePanel.handResize(270, partsHeight);
 
             conditionBoxTitleLabel.setBounds(270, 0, 70, 20);
-            conditionBox.setBounds(270, partsHeight/3 + 20, 70, partsHeight/3);
+            conditionBox.setBounds(271, partsHeight/3 + 20, 68, partsHeight/3);
+            frameLabel.setBounds(270, 20, 70, partsHeight);
 
-            secondSelectConstantVariableTitleLabel.setBounds(340, 0, 270, 20);
-            secondSelectConstantVariablePanel.setBounds(340, 20, 270, partsHeight);
-            secondSelectConstantVariablePanel.handResize(270, partsHeight);
+            secondSelectConstantVariableTitleLabel.setBounds(340, 0, 320, 20);
+            secondSelectConstantVariablePanel.setBounds(340, 20, 320, partsHeight);
+            secondSelectConstantVariablePanel.handResize(320, partsHeight);
+
+            /** 上下端のラベル */
+            orderIndicateLabel.setBounds(0, 0, width, 20);
+            confirmLabel.setBounds(0, height - 30, width, 30);
         }
 
         @Override

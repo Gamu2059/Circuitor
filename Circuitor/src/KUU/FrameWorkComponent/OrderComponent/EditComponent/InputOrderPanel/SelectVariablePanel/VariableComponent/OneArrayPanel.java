@@ -31,6 +31,8 @@ public class OneArrayPanel extends NewJPanel implements MouseListener,ItemListen
     private JLabel leftBracketLabel;
     private JLabel rightBracketLabel;
 
+    private GeneralItemPanel frameLabel;
+
     public OneArrayPanel(BaseFrame frame) {
         super(frame);
         setLayout(null);
@@ -47,6 +49,8 @@ public class OneArrayPanel extends NewJPanel implements MouseListener,ItemListen
         add(indexTitleLabel = new GeneralItemPanel("添え字"));
         add(leftBracketLabel = new JLabel("["));
         add(rightBracketLabel = new JLabel("]"));
+        add(frameLabel = new GeneralItemPanel(""));
+        frameLabel.setBackground(null);
 
         /** リスナ登録 */
         oneArrayBox.addItemListener(this);
@@ -89,6 +93,8 @@ public class OneArrayPanel extends NewJPanel implements MouseListener,ItemListen
         variableBox.setBounds(partsWidth*4, partsHeight*3, partsWidth*2, partsHeight);
 
         rightBracketLabel.setBounds(partsWidth*6, partsHeight*3, 20, partsHeight);
+
+        frameLabel.setBounds(0, 0, width, height);
     }
 
     @Override

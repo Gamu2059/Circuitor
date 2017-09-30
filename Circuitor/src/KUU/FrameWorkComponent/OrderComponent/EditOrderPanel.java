@@ -184,6 +184,18 @@ public class EditOrderPanel extends NewJPanel implements MouseListener {
     }
     @Override
     public void mouseEntered(MouseEvent e) {
+        if (e.getSource()instanceof JPanel && clickEditDeleteFlg){
+            JPanel panel = (JPanel)e.getSource();
+            String str="";
+            if (panel == editLabel){
+                str = "命令・構文の編集を行います。";
+            } else if (panel == deleteLabel){
+                str = "命令ではその一行を、構文では内側を含めて削除します。";
+            } else if (panel == allDeleteLabel){
+                str = "命令モードの内容を全て削除します。";
+            }
+            getFrame().getHelpLabel().setText(str);
+        }
     }
     @Override
     public void mouseExited(MouseEvent e) {
