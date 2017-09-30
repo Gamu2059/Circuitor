@@ -158,6 +158,8 @@ public class CommonPartsIndicatePopMenu {
             case POWER:
                 if (sd == PartsStandards.DC) {
                     return "直流電源 " + par + "[V]";
+                } else {
+                    return "交流電源" + par + "[Hz]";
                 }
             case PULSE:
                 return "パルス出力器 " + par + "[Hz]";

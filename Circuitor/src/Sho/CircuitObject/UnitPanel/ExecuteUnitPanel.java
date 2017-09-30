@@ -13,6 +13,7 @@ import Sho.CircuitObject.HighLevelConnect.HighLevelConnectGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
 import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteInfo;
+import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableAlternatingPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableDirectPowerDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariablePulseDialog;
 import Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit.VariableResistanceDialog;
@@ -221,6 +222,10 @@ public class ExecuteUnitPanel extends UnitPanel {
                     case DC:
                         /* 直流電源の電圧値を変更する */
                         new VariableDirectPowerDialog(this, group);
+                        break;
+                    case AC:
+                        /* 交流電源の周波数を変更する */
+                        new VariableAlternatingPowerDialog(this, group);
                         break;
                     case _variable:
                         /* 抵抗値を変更する */

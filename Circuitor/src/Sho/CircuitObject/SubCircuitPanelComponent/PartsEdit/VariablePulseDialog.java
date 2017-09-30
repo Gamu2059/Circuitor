@@ -1,25 +1,13 @@
 package Sho.CircuitObject.SubCircuitPanelComponent.PartsEdit;
 
-import KUU.GeneralComponent.GeneralItemPanel;
-import Master.BorderMaster.BorderMaster;
-import Master.ImageMaster.ImageMaster;
 import Sho.CircuitObject.Circuit.CircuitBlock;
 import Sho.CircuitObject.ElecomBehavior.PulseBehavior_;
-import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
 import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteGroup;
 import Sho.CircuitObject.UnitPanel.CircuitUnitPanel;
 import Sho.CircuitObject.UnitPanel.ExecuteUnitPanel;
-import Sho.CircuitObject.UnitPanel.UnitPanel;
-import Sho.IntegerDimension.IntegerDimension;
-import Sho.Matrix.Matrix;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 /**
  * 可変パルス出力器の値を設定するためのダイアログ。
@@ -44,7 +32,7 @@ public class VariablePulseDialog extends GeneralVariableDialog {
         setRunning(false);
         if (group.getBehavior() instanceof PulseBehavior_) {
             PulseBehavior_ behavior = (PulseBehavior_) group.getBehavior();
-            commonSetting(new DialogBasePanel(executeUnitPanel, group, behavior.getFreq(), min, max));
+            commonSetting(new DialogBasePanel(executeUnitPanel, group, behavior.getHertz(), min, max));
             setVisible(true);
             setRunning(true);
         }
@@ -61,7 +49,7 @@ public class VariablePulseDialog extends GeneralVariableDialog {
             if (value < min || value > max) {
                 throw new Exception();
             }
-            behavior.setFreq(value);
+            behavior.setHertz(value);
             // 周波数をダイアログ反映させるためにetcStatusにも代入
             group.getBehavior().getElecomInfo().setEtcStatus(value);
             dispose();
