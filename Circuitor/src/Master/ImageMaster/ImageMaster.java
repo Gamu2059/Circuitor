@@ -93,11 +93,7 @@ public class ImageMaster {
      */
     public static boolean isOnlyStatesParts(ElecomInfo e) {
         switch (e.getPartsVarieties()) {
-            case DIODE:
-            case LED:
             case LOGIC_IC:
-            case POWER:
-            case RESISTANCE:
             case WIRE:
                 return true;
             default:
