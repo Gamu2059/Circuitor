@@ -116,6 +116,8 @@ public class PICBehavior_ extends ICBehavior_ {
         addWithDirection(groups, abco);
         setInputList(new boolean[getElecomInfo().getLinkedTerminal().size()]);
         setOutputList(new boolean[getElecomInfo().getLinkedTerminal().size()]);
+
+        System.out.println();
     }
 
     @Override
@@ -128,9 +130,11 @@ public class PICBehavior_ extends ICBehavior_ {
         super.behavior();
         /* 入力を受け付ける */
         super.setInput();
+        System.out.println("INPUT LIST "+Arrays.toString(getInputList()));
         /* それぞれの振る舞いを考慮して出力リストを作成する */
         setOutputList(getExePanel().getFrame().getMasterTerminal().bootProgram(getInputList()));
         super.setOutput();
+        System.out.println("OUTPUT LIST "+Arrays.toString(getOutputList()));
         /* もしエラーがあれば、実行を中断する */
         if (getExePanel().getFrame().getMasterTerminal().isError()) {
             getExePanel().getExecutor().setRunStop(true);
