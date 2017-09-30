@@ -146,7 +146,7 @@ public abstract class ElecomBehavior_ {
     protected void setOutput() {
         for (int i = 0; i < infos.size(); i++) {
             if (infos.get(i) != null) {
-                outputList[i] = false;
+//                outputList[i] = false;
                 if (infos.get(i).getRole() == TerminalDirection.OUT) {
                     if (outputList[i]) {
                         infos.get(i).getInfo().getHighLevelExecuteInfo().setResistance(100);

@@ -264,7 +264,7 @@ public class Function {
         }
         if (name.equals("MAIN")) {
             data.setNowLineNumber(0);
-            data.setWaitTurn(100);
+            data.setWaitTurn(0);
         }
         return 0;
     }
