@@ -150,12 +150,12 @@ public class VariableSettingDialog extends NewJDialog {
                         int[] tmp = new int[arrayFirstSize];
                         if (variableRapperType == Variable.Type.BOOL) {
                             for (int i = 0; i < arrayFirstSize; i++) {
-                                tmp[i] = arrayBoolFields[arrayFirstSize][0].getNum();
+                                tmp[i] = arrayBoolFields[i][0].getNum();
                             }
                         } else {
                             for (int i = 0; i < arrayFirstSize; i++) {
                                 try {
-                                    tmp[i] = Integer.parseInt(arrayTextFields[arrayFirstSize][0].getText());
+                                    tmp[i] = Integer.parseInt(arrayTextFields[i][0].getText());
                                 } catch (Exception e1){
                                     if (("").equals(arrayTextFields[i][0].getText()))throw new Exception();
                                     tmp[i] = 0;
