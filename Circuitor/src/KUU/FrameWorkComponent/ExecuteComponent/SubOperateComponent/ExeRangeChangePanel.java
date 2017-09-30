@@ -15,8 +15,8 @@ public class ExeRangeChangePanel extends JPanel {
         super();
         setLayout(new GridLayout(1, 2));
         GeneralItemPanel upper, lower;
-        add(upper = new GeneralItemPanel(true,null,"罫線の単位を大きくする"));
-        add(lower = new GeneralItemPanel(true,null,"罫線の単位を小さくする"));
+        add(upper = new GeneralItemPanel(true,null,"単位を大きく"));
+        add(lower = new GeneralItemPanel(true,null,"単位を小さく"));
         upper.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
