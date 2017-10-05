@@ -35,7 +35,7 @@ public class HighLevelExecuteInfo {
         voltage = 0;
         resistance = 0;
         capacitance = 0;
-        potential = -1;
+        potential = 0;
         maxPotential = 0;
         drawCood = new DrawCood();
     }
@@ -125,11 +125,11 @@ public class HighLevelExecuteInfo {
     }
 
     public double getPotential() {
-        if (potential < 0) {
-            return 0;
-        } else {
+//        if (potential < 0) {
+//            return 0;
+//        } else {
             return potential;
-        }
+//        }
     }
 
     public void setPotential(double potential) {
