@@ -10,9 +10,6 @@ import Sho.CircuitObject.HighLevelConnect.HighLevelExecuteInfo;
 import Sho.CircuitObject.UnitPanel.ExecuteUnitPanel;
 import Sho.IntegerDimension.IntegerDimension;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
 import static Sho.Matrix.DoubleMatrix.MAXVALUE;
@@ -25,6 +22,7 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
     private double extraResistance;
     /** コンデンサの端子電圧 */
     private double terminalVoltage;
+    private double maxPotential;
     /** 経過時間 */
     private double time;
     /** 定数：１周期で進む時間 */
@@ -104,7 +102,7 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
         boolean changeFlag = false;
 
         /* 充放電状態を判定する */
-        if (getDirectionWithCurrent(0, HighLevelConnectGroup.CENTER_NODE) < 0) {
+        if (getDirectionWithCurrent(0, HighLevelConnectGroup.CENTER_NODE) < 0 && exeInfo.getPreResistance() < MAXVALUE) {
             /* 電流がない、もしくは電流が流入していれば、充電状態 */
             if (getState() == PartsStates.ON) {
                 changeFlag = true;
@@ -126,39 +124,47 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
             } else if (getState() == PartsStates.ON) {
                 /* 充電から放電へ */
                 exeInfo.setPotential(terminalVoltage);
+                maxPotential = terminalVoltage;
             }
+            System.out.println("--------------changed-------------------");
         }
         /* 充放電処理 */
         if (getState() == PartsStates.OFF) {
             /* 充電処理 */
-            extraResistance = exeInfo.getResistance();
+            extraResistance = exeInfo.getPreResistance();
             if (Double.isInfinite(Math.log(1 - terminalVoltage / exeInfo.getMaxPotential())) || Double.isNaN(Math.log(1 - terminalVoltage / exeInfo.getMaxPotential()))) {
                 time = MAXVALUE;
             } else {
                 time = -exeInfo.getCapacitance() * extraResistance * Math.log(1 - terminalVoltage / exeInfo.getMaxPotential());
             }
             terminalVoltage += exeInfo.getMaxPotential() * (Math.exp(-time / (exeInfo.getCapacitance() * extraResistance)) - Math.exp(-(time + TIME) / (exeInfo.getCapacitance() * extraResistance)));
-            if (terminalVoltage >= exeInfo.getMaxPotential() * 0.9999) {
+            if (terminalVoltage >= exeInfo.getMaxPotential()) {
                 exeInfo.setResistance(MAXVALUE);
                 terminalVoltage = exeInfo.getMaxPotential();
             } else {
-                exeInfo.setResistance(0);
+                exeInfo.setResistance(terminalVoltage/Math.abs(exeInfo.getCurrent()));
             }
         } else if (getState() == PartsStates.ON) {
             /* 放電処理 */
-            extraResistance = exeInfo.getResistance();
-            if (Double.isInfinite(Math.log(terminalVoltage / exeInfo.getMaxPotential())) || Double.isNaN(Math.log(terminalVoltage / exeInfo.getMaxPotential()))) {
+            extraResistance = exeInfo.getPreResistance();
+            System.out.println("pR"+extraResistance);
+            if (Double.isInfinite(Math.log(terminalVoltage / maxPotential)) || Double.isNaN(Math.log(terminalVoltage / maxPotential))) {
                 time = MAXVALUE;
+                System.out.println("tv:"+terminalVoltage);
+                System.out.println("mp:"+maxPotential);
+                System.out.println("111111111111111111111111111111111111111111111");
             } else {
-                time = -exeInfo.getCapacitance() * extraResistance * Math.log(terminalVoltage / exeInfo.getMaxPotential());
+                time = -exeInfo.getCapacitance() * extraResistance * Math.log(terminalVoltage / maxPotential);
             }
-            terminalVoltage += exeInfo.getMaxPotential() * (Math.exp(-(time + TIME) / (exeInfo.getCapacitance() * extraResistance)) - Math.exp(-time / (exeInfo.getCapacitance() * extraResistance)));
-            if (terminalVoltage <= exeInfo.getMaxPotential() * 0.0000001) {
+            terminalVoltage += maxPotential * (Math.exp(-(time + TIME) / (exeInfo.getCapacitance() * extraResistance)) - Math.exp(-time / (exeInfo.getCapacitance() * extraResistance)));
+            if (terminalVoltage <= 0) {
                 exeInfo.setPotential(0);
+                terminalVoltage = 0;
+            } else {
+                exeInfo.setPotential(terminalVoltage);
             }
             exeInfo.setResistance(0);
         }
-        System.out.println(terminalVoltage);
     }
 
     @Override

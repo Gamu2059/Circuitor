@@ -64,9 +64,9 @@ public class HighLevelExecuteGroup {
      */
     private void setBehavior(ExecuteUnitPanel exePanel, ElecomInfo info) {
         switch (info.getPartsVarieties()) {
-//            case CAPACITANCE:
-//                behavior = new CondenserBehavior_(exePanel, info);
-//                break;
+            case CAPACITANCE:
+                behavior = new CondenserBehavior_(exePanel, info);
+                break;
             case DIODE:
                 behavior = new DiodeBehavior_(exePanel, info);
                 break;

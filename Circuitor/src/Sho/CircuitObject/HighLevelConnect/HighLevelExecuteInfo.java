@@ -19,6 +19,8 @@ public class HighLevelExecuteInfo {
     private double voltage;
     /** 抵抗(コンデンサは公式を用いた場合の値を保持する) */
     private double resistance;
+    /** コンデンサを考慮しない抵抗(コンデンサのみ使う) */
+    private double preResistance;
     /** 静電容量 */
     private double capacitance;
     /** 電位 */
@@ -34,6 +36,7 @@ public class HighLevelExecuteInfo {
         preCurrent = 0;
         voltage = 0;
         resistance = 0;
+        preResistance = 0;
         capacitance = 0;
         potential = 0;
         maxPotential = 0;
@@ -114,6 +117,14 @@ public class HighLevelExecuteInfo {
 
     public void setResistance(double resistance) {
         this.resistance = resistance;
+    }
+
+    public double getPreResistance() {
+        return preResistance;
+    }
+
+    public void setPreResistance(double preResistance) {
+        this.preResistance = preResistance;
     }
 
     public double getCapacitance() {

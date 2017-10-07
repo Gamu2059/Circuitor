@@ -163,11 +163,13 @@ public class Execute extends Thread {
 
             /* 初期解析 */
             analysis();
+            double a;
             while (!runStop) {
                 try {
                     while (!running && !runStop) {
                         sleep(10);
                     }
+                    a = System.currentTimeMillis();
                     sleep(exePanel.getExeSpeed());
                     analysis();
                     /* 点の移動 */
@@ -183,6 +185,8 @@ public class Execute extends Thread {
                     }
                     exePanel.goOnInterrupt();
                     exePanel.reDirection();
+                    a = System.currentTimeMillis() - a;
+                    System.out.println(a+"[ms]");
                 } catch (InterruptedException e) {}
             }
         } finally {
@@ -434,26 +438,33 @@ public class Execute extends Thread {
 
     /**
      * 与えられた回路情報から連立方程式を数段構えで解き、各々の電子部品の振る舞いを抵抗値という形に反映させる。
-     * １．抵抗値を考慮し連立方程式を解く。
-     * ２．電子部品各々に流れる電流の向きを保持し、その電流に対する振る舞いを行う。
-     * ３．抵抗値を考慮し連立方程式を解く。
-     * ４．電子部品各々に流れる電流の向きを保持し、２の時の向きと比較し、一致しなければ極大抵抗とみなす。
-     * ５．抵抗値を考慮し連立方程式を解く。
-     * ６．閉路電流に閾値を設け、各ベクトルを求める。
-     * ７．電子部品各々に流れる電流に対する振る舞いを行う。
      */
     private void analysis() {
+        // 起電力ベクトルを取得する
         getPowerVector();
-        getBranchCurrentWithEquation();
+        // ダイオードやコンデンサの抵抗特性を考慮せずに電流ベクトルを取得する
+        getBranchCurrentWithEquation(false);
+        // 事前第一挙動として各電子素子が振る舞う
         for (HighLevelExecuteGroup group : executeGroups) {
             group.getBehavior().preBehavior(true);
         }
-        getBranchCurrentWithEquation();
+        // コンデンサの抵抗特性を考慮せずに電流ベクトルを取得する
+        getBranchCurrentWithEquation(false);
+        // 事前第二挙動として各電子素子が振る舞う
         for (HighLevelExecuteGroup group : executeGroups) {
             group.getBehavior().preBehavior(false);
         }
-        getBranchCurrentWithEquation();
-        getVectors();
+        // コンデンサの抵抗特性を考慮せずに電流ベクトルを取得する
+        getBranchCurrentWithEquation(false);
+        // 枝抵抗ベクトルを取得し、コンデンサを考慮しない抵抗値として記録する
+        getVectors(true);
+        // 静電容量方程式を解いて、その瞬間にコンデンサが蓄えられる最大電圧ベクトルを取得する
+        getBranchCoulombWithEquation();
+        // コンデンサの抵抗特性も考慮して電流ベクトルを取得する
+        getBranchCurrentWithEquation(true);
+        // 各ベクトルを取得する
+        getVectors(false);
+        // 各電子素子が振る舞う
         for (HighLevelExecuteGroup group : executeGroups) {
             group.getBehavior().behavior();
         }
@@ -469,7 +480,7 @@ public class Execute extends Thread {
         /* 入力枝、出力枝を有していても、それは起電力を有するものではないので、ここではパスする */
         for (HighLevelConnectInfo branch : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
             if (branch.getRole() == HighLevelConnectGroup.TERMINAL_BRANCH) {
-                if (/*branch.getGroupVarieties() == PartsVarieties.CAPACITANCE || */branch.getGroupVarieties() == PartsVarieties.POWER) {
+                if (branch.getGroupVarieties() == PartsVarieties.CAPACITANCE || branch.getGroupVarieties() == PartsVarieties.POWER) {
                     index = branchPower.getColumnRelatedIndex().indexOf(branch.getIndex());
                     /* その枝の根元が中心節なら電圧はそのまま、そうでなければ電圧は-1倍とする */
                     if (branch.getDirection().getRole() == HighLevelConnectGroup.CENTER_NODE) {
@@ -484,13 +495,19 @@ public class Execute extends Thread {
 
     /**
      * 抵抗値を考慮し連立方程式を使って閉路方程式を解き、線形結合を行って枝電流を求める。
+     * isConsiderがtrueの時、コンデンサ等の抵抗表現も考慮する。
      */
-    private void getBranchCurrentWithEquation() {
+    private void getBranchCurrentWithEquation(boolean isConsider) {
         int index;
         double tmp;
         /* 全ての枝に存在する抵抗値を抵抗行列に格納する */
         for (HighLevelConnectInfo branch : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
             index = resistance.getRowRelatedIndex().indexOf(branch.getIndex());
+            /* コンデンサを考慮しない時は、コンデンサは0Ω */
+            if (!isConsider && branch.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
+                resistance.getMatrix().get(index).set(index, 0.0);
+                continue;
+            }
             /* 何もない枝も極小抵抗として扱う */
             if (branch.getHighLevelExecuteInfo().getResistance() < MINVALUE) {
                 resistance.getMatrix().get(index).set(index, MINVALUE);
@@ -515,27 +532,83 @@ public class Execute extends Thread {
     }
 
     /**
-     * 各ベクトルを求める。
-     * この時、閉路電流に閾値を設ける。
-     * これにより、電流が孤立したように見える現象を防ぐ。
+     * キャパシタンスの静電容量を考慮して連立方程式を使って閉路方程式を解き、線形結合を行って枝クーロン力と最大蓄電圧を求める。
      */
-    private void getVectors() {
+    private void getBranchCoulombWithEquation() {
         double tmp;
         int index;
         ElecomInfo capaE;
-        /* 計測器のみ、生の電流値を別個に格納しておく */
-        for (HighLevelConnectInfo info : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
-            index = branchCurrent.getColumnRelatedIndex().indexOf(info.getIndex());
-            if (info.getGroupVarieties() == PartsVarieties.MEASURE) {
-                capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
-                if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
+        /* キャパシタの静電容量を静電容量行列に格納する。 */
+        for (HighLevelConnectInfo branch : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
+            index = capacitance.getRowRelatedIndex().indexOf(branch.getIndex());
+            if (branch.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
+                /* その枝がアノード側の場合のみキャパシタンスを登録する */
+                capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(branch.getAbcos().get(0).getHeight()).get(branch.getAbcos().get(0).getWidth()).getElecomInfo();
+                if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(branch.getAbcos().get(0).getHeight()).get(branch.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
                     if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(ImageMaster.getIntFromPartsDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
-                        /* 枝電流 */
-                        info.getHighLevelExecuteInfo().setRealCurrent(branchCurrent.getMatrix().get(0).get(index));
+                        capacitance.getMatrix().get(index).set(index, branch.getHighLevelExecuteInfo().getCapacitance());
                     }
                 }
             }
         }
+
+        /* 連立方程式を解くための閉路静電容量の係数行列を作成する */
+        loopCapacitanceMatrix = exePanel.getCircuitUnit().getLoopMatrix().getReciprocalMul(capacitance.getMul(exePanel.getCircuitUnit().getLoopMatrix().getTurn()));
+        /* 閉路クーロン力：閉路静電容量行列と起電力ベクトルの連立方程式を解いて求める */
+        loopCoulomb.setMatrix(DoubleMatrix.getGaussEquation(loopCapacitanceMatrix.getArrayMatrix(), loopVoltage.getArrayVector()));
+
+        /* 枝クーロン力：閉路行列の１の部分と対応する閉路クーロン力の線形結合を行う */
+        for (int i = 0; i < branchCoulomb.getColumnRelatedIndex().size(); i++) {
+            tmp = 0;
+            for (int j = 0; j < exePanel.getCircuitUnit().getLoopMatrix().getRowRelatedIndex().size(); j++) {
+                if (exePanel.getCircuitUnit().getLoopMatrix().getMatrix().get(j).get(i) == 1) {
+                    tmp += loopCoulomb.getMatrix().get(0).get(j);
+                }
+            }
+            branchCoulomb.getMatrix().get(0).set(i, tmp);
+        }
+        /* 最大蓄電圧：枝クーロン力を枝静電容量で割ったもの。ただし、キャパシタ以外は何もしない
+         * ただし、この最大蓄電圧は、その瞬間のものである。
+         */
+        for (HighLevelConnectInfo info : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
+            if (info.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
+                index = branchCurrent.getColumnRelatedIndex().indexOf(info.getIndex());
+                capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
+                if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
+                    if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(ImageMaster.getIntFromPartsDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
+                        info.getHighLevelExecuteInfo().setMaxPotential(Math.abs(branchCoulomb.getMatrix().get(0).get(index) / info.getHighLevelExecuteInfo().getCapacitance()));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 各ベクトルを求める。
+     * この時、閉路電流に閾値を設ける。
+     * これにより、電流が孤立したように見える現象を防ぐ。
+     * isConsiderがtrueの時、コンデンサへの記録する。
+     */
+    private void getVectors(boolean isConsider) {
+        double tmp;
+        int index;
+        ElecomInfo capaE;
+        /* 計測器のみ、生の電流値を別個に格納しておく */
+        if (!isConsider) {
+            for (HighLevelConnectInfo info : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
+                index = branchCurrent.getColumnRelatedIndex().indexOf(info.getIndex());
+                if (info.getGroupVarieties() == PartsVarieties.MEASURE) {
+                    capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
+                    if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
+                        if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(ImageMaster.getIntFromPartsDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
+                            /* 枝電流 */
+                            info.getHighLevelExecuteInfo().setRealCurrent(branchCurrent.getMatrix().get(0).get(index));
+                        }
+                    }
+                }
+            }
+        }
+
         /* 閉路電流：しきい値補正を行う */
         for (int i=0;i<loopCurrent.getColumnRelatedIndex().size(); i++) {
             if (Math.abs(loopCurrent.getMatrix().get(0).get(i)) < THRESHOLD_CURRENT) {
@@ -584,63 +657,23 @@ public class Execute extends Thread {
         for (int i = 0; i < branchVoltage.getColumnRelatedIndex().size(); i++) {
             branchVoltage.getMatrix().get(0).set(i, branchCurrent.getMatrix().get(0).get(i) * branchResistance.getMatrix().get(0).get(i));
         }
-//        /* キャパシタの静電容量を静電容量行列に格納する。しかし、これは定数のため閉路静電容量行列まで作成する。なお、この操作は一度しか行わない。 */
-//        if (loopCapacitanceMatrix == null) {
-//            for (HighLevelConnectInfo branch : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
-//                index = capacitance.getRowRelatedIndex().indexOf(branch.getIndex());
-//                if (branch.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
-//                    /* その枝がアノード側の場合のみキャパシタンスを登録する */
-//                    capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(branch.getAbcos().get(0).getHeight()).get(branch.getAbcos().get(0).getWidth()).getElecomInfo();
-//                    if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(branch.getAbcos().get(0).getHeight()).get(branch.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
-//                        if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(exePanel.getOperateOperate().getIntForDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
-//                            capacitance.getMatrix().get(index).set(index, branch.getHighLevelExecuteInfo().getCapacitance());
-//                        }
-//                    }
-//                }
-//            }
-//            /* 連立方程式を解くための閉路静電容量の係数行列を作成する */
-//            loopCapacitanceMatrix = exePanel.getCircuitUnit().getLoopMatrix().getReciprocalMul(capacitance.getMul(exePanel.getCircuitUnit().getLoopMatrix().getTurn()));
-//            /* 閉路クーロン力：閉路静電容量行列と起電力ベクトルの連立方程式を解いて求める */
-//            loopCoulomb.setMatrix(DoubleMatrix.getGaussEquation(loopCapacitanceMatrix.getArrayMatrix(), loopVoltage.getArrayVector()));
-//            /* 枝クーロン力：閉路行列の１の部分と対応する閉路クーロン力の線形結合を行う */
-//            for (int i = 0; i < branchCoulomb.getColumnRelatedIndex().size(); i++) {
-//                tmp = 0;
-//                for (int j = 0; j < exePanel.getCircuitUnit().getLoopMatrix().getRowRelatedIndex().size(); j++) {
-//                    if (exePanel.getCircuitUnit().getLoopMatrix().getMatrix().get(j).get(i) == 1) {
-//                        tmp += loopCoulomb.getMatrix().get(0).get(j);
-//                    }
-//                }
-//                branchCoulomb.getMatrix().get(0).set(i, tmp);
-//            }
-//            /* 最大蓄電圧：枝クーロン力を枝静電容量で割ったもの。ただし、キャパシタ以外は何もしない */
-//            for (HighLevelConnectInfo info : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
-//                if (info.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
-//                    index = branchCurrent.getColumnRelatedIndex().indexOf(info.getIndex());
-//                    capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
-//                    if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
-//                        if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(exePanel.getOperateOperate().getIntForDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
-//                            info.getHighLevelExecuteInfo().setMaxPotential(Math.abs(branchCoulomb.getMatrix().get(0).get(index) / info.getHighLevelExecuteInfo().getCapacitance()));
-//                        }
-//                    }
-//                }
-//            }
-//        }
+
         /* それぞれの枝に、電流、電圧、抵抗ベクトルの値を格納する */
         for (HighLevelConnectInfo info : exePanel.getCircuitUnit().getHighLevelConnectList().getBranch()) {
             index = branchCurrent.getColumnRelatedIndex().indexOf(info.getIndex());
             /* 枝電流 */
             info.getHighLevelExecuteInfo().setCurrent(branchCurrent.getMatrix().get(0).get(index));
-//            if (info.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
-//                capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
-//                if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
-//                    if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(exePanel.getOperateOperate().getIntForDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
-//                        /* 枝起電力 */
-//                        info.getHighLevelExecuteInfo().setVoltage(branchVoltage.getMatrix().get(0).get(index));
-//                        /* 枝抵抗 */
-//                        info.getHighLevelExecuteInfo().setResistance(branchResistance.getMatrix().get(0).get(index));
-//                    }
-//                }
-//            }
+            if (isConsider && info.getGroupVarieties() == PartsVarieties.CAPACITANCE) {
+                capaE = exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getElecomInfo();
+                if (capaE.getLinkedTerminal().get(0).getReco().equals(exePanel.getCircuitUnit().getCircuitBlock().getMatrix().get(info.getAbcos().get(0).getHeight()).get(info.getAbcos().get(0).getWidth()).getCircuitInfo().getReco())) {
+                    if (capaE.getLinkedTerminal().get(0).getTerminalDirection()[(ImageMaster.getIntFromPartsDirection(capaE.getPartsDirections()) + 3) % 4] == TerminalDirection.ANODE) {
+                        /* 枝電力 */
+                        info.getHighLevelExecuteInfo().setVoltage(branchVoltage.getMatrix().get(0).get(index));
+                        /* 枝抵抗 */
+                        info.getHighLevelExecuteInfo().setPreResistance(branchResistance.getMatrix().get(0).get(index));
+                    }
+                }
+            }
         }
     }
 

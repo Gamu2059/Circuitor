@@ -59,6 +59,7 @@ public class PartsPanelKeyWords {
         integerElecomInfoHashMap.put(29, new ElecomInfo(RESISTANCE, _variable));
         integerElecomInfoHashMap.put(30, new ElecomInfo(PartsVarieties.PULSE, PartsStandards.PULSE));
         integerElecomInfoHashMap.put(31, new ElecomInfo(POWER, AC));
+        integerElecomInfoHashMap.put(32, new ElecomInfo(CAPACITANCE, _10UF));
     }
 
     public static HashMap<Integer, ElecomInfo> getIntegerElecomInfoHashMap() {

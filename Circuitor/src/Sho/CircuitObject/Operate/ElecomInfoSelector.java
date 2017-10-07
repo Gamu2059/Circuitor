@@ -30,7 +30,7 @@ public class ElecomInfoSelector {
         elecomInfo.setPartsDirections(PartsDirections.UP);
         switch (elecomInfo.getPartsVarieties()) {
             case LED:
-//            case CAPACITANCE:
+            case CAPACITANCE:
             case DIODE:
                 /*[1][0]
                 * link : 左

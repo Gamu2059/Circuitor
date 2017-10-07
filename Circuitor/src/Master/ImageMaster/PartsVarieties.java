@@ -8,6 +8,8 @@ package Master.ImageMaster;
 public enum  PartsVarieties {
     /** 電源 */
     POWER,
+    /** コンデンサ */
+    CAPACITANCE,
     /** 抵抗 */
     RESISTANCE,
     /** ＬＥＤ */

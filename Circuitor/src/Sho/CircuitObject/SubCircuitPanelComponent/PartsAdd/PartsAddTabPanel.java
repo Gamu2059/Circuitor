@@ -28,9 +28,9 @@ public class PartsAddTabPanel extends NewJPanel implements ComponentListener,Mou
     public PartsAddTabPanel(BaseFrame frame, PartsVarieties varieties) {
         super(frame);
         switch (varieties) {
-//            case CAPACITANCE:
-//                title = "コンデンサ";
-//                break;
+            case CAPACITANCE:
+                title = "コンデンサ";
+                break;
             case DIODE:
                 title = "ダイオード";
                 break;

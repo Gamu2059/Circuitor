@@ -6,6 +6,10 @@ package Master.ImageMaster;
  * @version 1.1
  */
 public enum PartsStandards {
+    /* CAPACITANCE */
+    /** 10uF */
+    _10UF,
+
     /* DIODE */
     /** 整流用ダイオード */
     RECT,

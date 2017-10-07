@@ -39,9 +39,9 @@ public class PartsButton extends JButton implements MouseListener {
         setBackground(color);
         String title;
         switch (elecomInfo.getPartsStandards()) {
-//            case _10UF:
-//                title = "コンデンサ";
-//                break;
+            case _10UF:
+                title = "10uF";
+                break;
             case RECT:
                 title = "ダイオード";
                 break;

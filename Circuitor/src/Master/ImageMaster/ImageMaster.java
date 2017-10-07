@@ -93,6 +93,7 @@ public class ImageMaster {
      */
     public static boolean isOnlyStatesParts(ElecomInfo e) {
         switch (e.getPartsVarieties()) {
+            case CAPACITANCE:
             case LOGIC_IC:
             case WIRE:
                 return true;

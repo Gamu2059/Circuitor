@@ -118,6 +118,8 @@ public class CommonPartsIndicatePopMenu {
         PartsStates st = stateBuffer.getPartsStates();
         double par = stateBuffer.getEtcStatus();
         switch (v) {
+            case CAPACITANCE:
+                return "コンデンサ";
             case DIODE:
                 return "整流ダイオード";
             case LED:
