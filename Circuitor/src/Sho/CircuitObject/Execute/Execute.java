@@ -622,6 +622,7 @@ public class Execute extends Thread {
             } else {
                 loopResistance.getMatrix().get(0).set(i, Math.abs(loopVoltage.getMatrix().get(0).get(i)) / Math.abs(loopCurrent.getMatrix().get(0).get(i)));
             }
+            System.out.println("Index["+i+"]"+loopResistance.getMatrix().get(0).get(i));
         }
         /* 枝電流：閉路行列の１の部分の閉路電流を線形結合した値 */
         for (int i = 0; i < branchCurrent.getColumnRelatedIndex().size(); i++) {

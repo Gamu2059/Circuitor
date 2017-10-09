@@ -147,12 +147,12 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
         } else if (getState() == PartsStates.ON) {
             /* 放電処理 */
             extraResistance = exeInfo.getPreResistance();
-            System.out.println("pR"+extraResistance);
+            System.out.println("exR"+extraResistance);
+            System.out.println("brV"+exeInfo.getVoltage());
+            System.out.println("cuI"+Math.abs(exeInfo.getCurrent()));
+            System.out.println("tv:"+terminalVoltage);
             if (Double.isInfinite(Math.log(terminalVoltage / maxPotential)) || Double.isNaN(Math.log(terminalVoltage / maxPotential))) {
                 time = MAXVALUE;
-                System.out.println("tv:"+terminalVoltage);
-                System.out.println("mp:"+maxPotential);
-                System.out.println("111111111111111111111111111111111111111111111");
             } else {
                 time = -exeInfo.getCapacitance() * extraResistance * Math.log(terminalVoltage / maxPotential);
             }
