@@ -126,7 +126,7 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
                 exeInfo.setPotential(terminalVoltage);
                 maxPotential = terminalVoltage;
             }
-            System.out.println("--------------changed-------------------");
+            System.out.println("--------------changed-------------------" + getState());
         }
         /* 充放電処理 */
         if (getState() == PartsStates.OFF) {
@@ -147,10 +147,10 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
         } else if (getState() == PartsStates.ON) {
             /* 放電処理 */
             extraResistance = exeInfo.getPreResistance();
-            System.out.println("exR"+extraResistance);
-            System.out.println("brV"+exeInfo.getVoltage());
-            System.out.println("cuI"+Math.abs(exeInfo.getCurrent()));
-            System.out.println("tv:"+terminalVoltage);
+//            System.out.println("exR"+extraResistance);
+//            System.out.println("brV"+exeInfo.getVoltage());
+//            System.out.println("cuI"+Math.abs(exeInfo.getCurrent()));
+//            System.out.println("tv:"+terminalVoltage);
             if (Double.isInfinite(Math.log(terminalVoltage / maxPotential)) || Double.isNaN(Math.log(terminalVoltage / maxPotential))) {
                 time = MAXVALUE;
             } else {
@@ -164,6 +164,12 @@ public class CondenserBehavior_ extends ElecomBehavior_ {
                 exeInfo.setPotential(terminalVoltage);
             }
             exeInfo.setResistance(0);
+
+            if (changeFlag && getState() == PartsStates.ON) {
+                System.out.println("------------------------------------------------------");
+                System.out.println(terminalVoltage);
+                System.out.println("------------------------------------------------------");
+            }
         }
     }
 

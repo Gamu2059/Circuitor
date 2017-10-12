@@ -517,6 +517,7 @@ public class Execute extends Thread {
         }
         /* 閉路方程式の解を求め、各ベクトルを求める */
         loopResistanceMatrix = exePanel.getCircuitUnit().getLoopMatrix().getMul(resistance.getMul(exePanel.getCircuitUnit().getLoopMatrix().getTurn()));
+
         loopVoltage = exePanel.getCircuitUnit().getLoopMatrix().getMul(branchPower.getTurn()).getTurn();
         loopCurrent.setMatrix(DoubleMatrix.getGaussEquation(loopResistanceMatrix.getArrayMatrix(), loopVoltage.getArrayVector()));
         /* 枝電流：閉路行列の１の部分の閉路電流を線形結合した値 */
@@ -587,7 +588,7 @@ public class Execute extends Thread {
      * 各ベクトルを求める。
      * この時、閉路電流に閾値を設ける。
      * これにより、電流が孤立したように見える現象を防ぐ。
-     * isConsiderがtrueの時、コンデンサへの記録する。
+     * isConsiderがtrueの時、コンデンサへ記録する。
      */
     private void getVectors(boolean isConsider) {
         double tmp;
@@ -622,8 +623,11 @@ public class Execute extends Thread {
             } else {
                 loopResistance.getMatrix().get(0).set(i, Math.abs(loopVoltage.getMatrix().get(0).get(i)) / Math.abs(loopCurrent.getMatrix().get(0).get(i)));
             }
-            System.out.println("Index["+i+"]"+loopResistance.getMatrix().get(0).get(i));
         }
+//        System.out.println("-------------------------make vector : "+isConsider);
+//        System.out.println("LV:\n"+loopVoltage);
+//        System.out.println("LC:\n"+loopCurrent);
+//        System.out.println("LR:\n"+loopResistance);
         /* 枝電流：閉路行列の１の部分の閉路電流を線形結合した値 */
         for (int i = 0; i < branchCurrent.getColumnRelatedIndex().size(); i++) {
             tmp = 0;
@@ -654,6 +658,9 @@ public class Execute extends Thread {
             }
             branchResistance.getMatrix().get(0).set(i, 1 / tmp);
         }
+
+//        System.out.println("BR:\n"+branchResistance);
+
         /* 枝電圧：枝電流と枝抵抗の積 */
         for (int i = 0; i < branchVoltage.getColumnRelatedIndex().size(); i++) {
             branchVoltage.getMatrix().get(0).set(i, branchCurrent.getMatrix().get(0).get(i) * branchResistance.getMatrix().get(0).get(i));
