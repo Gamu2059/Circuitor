@@ -216,6 +216,7 @@ public class SubOrderPanel extends NewJPanel implements MouseListener{
         if (e.getSource() instanceof JList) {
             /** SETUP関数とMAIN関数以外を選択すると編集/削除パネルがクリックできるようになる */
             try {
+                if (programList.getSelectedIndex()==-1)throw new Exception(getFrame().getBasePanel().getMainOrderPanel().getVariableMode()+"が取得できません。");
                 if (!programList.getSelectedValue().equals("SETUP") &&
                         !programList.getSelectedValue().equals("MAIN")) {
                     getFrame().setOrderPanelCanClick(true, false, true);

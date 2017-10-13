@@ -16,7 +16,7 @@ public class SelectVariableDialog extends NewJDialog implements ItemListener{
     private String           orderIndicateString;
     private GeneralItemPanel confirmLabel;
 
-    private JComboBox        variableBox;
+    private JComboBox<String> variableBox;
     private int[]            variableCount;
 
     private VariableSettingDialog variableSettingDialog;
@@ -32,7 +32,7 @@ public class SelectVariableDialog extends NewJDialog implements ItemListener{
         panel = new JPanel();
         panel.setLayout(null);
         String[] str = {"配列","2次元配列"};
-        variableBox = new JComboBox();
+        variableBox = new JComboBox<>();
         variableCount = new int[2];
         for (int i = 0; i < 2; i++) {
             if (!getFrame().getMasterTerminal().getVariableStringList(str[i]).equals(new ArrayList<>())) {
