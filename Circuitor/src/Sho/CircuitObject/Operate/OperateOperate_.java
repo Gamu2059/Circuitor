@@ -277,11 +277,11 @@ public class OperateOperate_ {
                         b1 = new CircuitBlock(0, 0);
                         getWireSample().get(4).copyTo(b1);
                         panel.getElecomInfoSelector().elecomInfoSelector(b1.getElecomInfo());
-                        rotateInfo(b1, RIGHT);
+                        rotateInfo(b1, LEFT);
                         b1.copyTo(b);
                         b.setExist(true);
                         update(panel);
-                    } else if (e.getPartsDirections() == RIGHT) {
+                    } else if (e.getPartsDirections() == LEFT) {
                         b1 = new CircuitBlock(0, 0);
                         getWireSample().get(5).copyTo(b1);
                         panel.getElecomInfoSelector().elecomInfoSelector(b1.getElecomInfo());
