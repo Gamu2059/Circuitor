@@ -8,6 +8,7 @@ import Sho.CircuitObject.HighLevelConnect.HighLevelConnectGroup;
 import Sho.CircuitObject.HighLevelConnect.HighLevelConnectInfo;
 import Sho.CircuitObject.UnitPanel.ExecuteUnitPanel;
 import Sho.IntegerDimension.IntegerDimension;
+import Sho.Matrix.DoubleMatrix;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class PowerBehavior_ extends ElecomBehavior_ {
                         if (connectInfo.getRole() == HighLevelConnectGroup.TERMINAL_BRANCH && connectInfo.getAbcos().get(0).equals(abco.getHeight() + linkInfo.getReco().getHeight(), abco.getWidth() + linkInfo.getReco().getWidth())) {
                             if (connectInfo.getConnectDirection() == j) {
                                 getInfos().set(0, new CorrespondInfo(connectInfo, linkInfo.getTerminalDirection()[j]));
+                                connectInfo.getHighLevelExecuteInfo().setResistance(DoubleMatrix.MINVALUE);
                                 if (getElecomInfo().getPartsStandards() == PartsStandards.DC) {
                                     connectInfo.getHighLevelExecuteInfo().setPotential(getElecomInfo().getEtcStatus());
                                 } else {

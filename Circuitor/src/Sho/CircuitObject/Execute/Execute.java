@@ -509,11 +509,11 @@ public class Execute extends Thread {
                 continue;
             }
             /* 何もない枝も極小抵抗として扱う */
-            if (branch.getHighLevelExecuteInfo().getResistance() < MINVALUE) {
-                resistance.getMatrix().get(index).set(index, MINVALUE);
-            } else {
+//            if (branch.getHighLevelExecuteInfo().getResistance() < MINVALUE) {
+//                resistance.getMatrix().get(index).set(index, MINVALUE);
+//            } else {
                 resistance.getMatrix().get(index).set(index, branch.getHighLevelExecuteInfo().getResistance());
-            }
+//            }
         }
         /* 閉路方程式の解を求め、各ベクトルを求める */
         loopResistanceMatrix = exePanel.getCircuitUnit().getLoopMatrix().getMul(resistance.getMul(exePanel.getCircuitUnit().getLoopMatrix().getTurn()));
