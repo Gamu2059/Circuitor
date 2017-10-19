@@ -232,13 +232,22 @@ public class VariableSettingDialog extends NewJDialog {
                     if (variableArrayType.equals("配列")) {
                         int[] tmp = new int[arrayFirstSize];
                         if (variableRapperType == Variable.Type.BOOL) {
+<<<<<<< HEAD
                             for (int j = 0; j < arrayFirstSize; j++) {
                                 tmp[j] = arrayBoolFields[0][j].getNum();
+=======
+                            for (int i = 0; i < arrayFirstSize; i++) {
+                                tmp[i] = arrayBoolFields[i][0].getNum();
+>>>>>>> 7cb9e156e1ff24f103184795f0e329b7b9cb15e8
                             }
                         } else {
                             for (int j = 0; j < arrayFirstSize; j++) {
                                 try {
+<<<<<<< HEAD
                                     tmp[j] = Integer.parseInt(arrayTextFields[0][j].getText());
+=======
+                                    tmp[i] = Integer.parseInt(arrayTextFields[i][0].getText());
+>>>>>>> 7cb9e156e1ff24f103184795f0e329b7b9cb15e8
                                 } catch (Exception e1){
                                     if (("").equals(arrayTextFields[0][j].getText()))throw new Exception();
                                     tmp[j] = 0;
